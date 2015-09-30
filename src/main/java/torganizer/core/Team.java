@@ -1,6 +1,6 @@
 package torganizer.core;
 
-public class Team {
+public class Team implements IToEntity {
 	private final String name;
 
 	public Team(final String name) {
@@ -11,12 +11,28 @@ public class Team {
 		return name;
 	}
 
-	public void addPlayer(final Player playerA) {
-		playerA.setTeam(this);
+	public void addPlayer(final Player newPlayer) {
+		newPlayer.setTeam(this);
 	}
 
 	@Override
 	public String toString() {
 		return "[" + name + "]";
+	}
+
+	public boolean equalsOrInTeam(final IToEntity other) {
+		if (super.equals(other)) {
+			return true;
+		} else {
+			if (other instanceof Player) {
+				if (((Player) other).getTeam().equals(this)) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
 	}
 }

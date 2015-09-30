@@ -1,6 +1,6 @@
 package torganizer.core;
 
-public class Player {
+public class Player implements IToEntity {
 	private String name;
 	private boolean isAdmin;
 	private Team team;
@@ -32,5 +32,21 @@ public class Player {
 
 	public void setTeam(final Team team) {
 		this.team = team;
+	}
+
+	public boolean equalsOrInTeam(final IToEntity other) {
+		if (super.equals(other)) {
+			return true;
+		} else {
+			if (other instanceof Team) {
+				if (getTeam().equals(other)) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
 	}
 }

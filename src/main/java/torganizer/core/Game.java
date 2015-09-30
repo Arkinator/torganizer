@@ -3,35 +3,16 @@ package torganizer.core;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game {
-	private Player playerA;
-	private Player playerB;
+public class Game extends AbstractMatch<Player> implements IGenericMatch<Player> {
 	private final List<SubmittedGameResult> submittedGameResults;
 
 	public Game(final Player playerA, final Player playerB) {
+		super(playerA, playerB);
 		submittedGameResults = new ArrayList<SubmittedGameResult>();
-		this.playerA = playerA;
-		this.playerB = playerB;
 	}
 
 	public Game() {
 		submittedGameResults = new ArrayList<SubmittedGameResult>();
-	}
-
-	public Player getPlayerB() {
-		return playerB;
-	}
-
-	public void setPlayerB(final Player playerB) {
-		this.playerB = playerB;
-	}
-
-	public Player getPlayerA() {
-		return playerA;
-	}
-
-	public void setPlayerA(final Player playerA) {
-		this.playerA = playerA;
 	}
 
 	public Player getWinner() {
@@ -59,7 +40,7 @@ public class Game {
 	}
 
 	public void submitPlayerResult(final Player submitter, final Player winner) {
-		if (!submitter.equals(playerA) && !submitter.equals(playerB) && !submitter.isAdmin()) {
+		if (!submitter.equals(getSideA()) && !submitter.equals(getSideB()) && !submitter.isAdmin()) {
 			throw new SubmitterIsNotPlayerException("The player " + submitter + " is not a player in this match!");
 		}
 		for (final SubmittedGameResult existingResult : submittedGameResults) {
@@ -87,6 +68,15 @@ public class Game {
 
 		public SubmitterIsNotPlayerException(final String string) {
 			super(string);
+		}
+	}
+
+	public Team getWinningTeam() {
+		final Player winningPlayer = getWinner();
+		if (winningPlayer == null) {
+			return null;
+		} else {
+			return winningPlayer.getTeam();
 		}
 	}
 }

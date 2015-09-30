@@ -6,7 +6,9 @@ import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import torganizer.core.Match;
+import torganizer.core.IGenericMatch;
+import torganizer.core.IllegalSetNumberSpecifiedException;
+import torganizer.core.CtlMatch;
 import torganizer.core.Player;
 import torganizer.core.Team;
 
@@ -44,39 +46,39 @@ public class MatchTest {
 
 	@Test
 	public void setUp3v3Match() {
-		final Match match = new Match(3, teamA, teamB);
+		final CtlMatch match = new CtlMatch(3, teamA, teamB);
 		assertEquals(3, match.getNumberOfSets());
 	}
 
-	@Test(expected = Match.IllegalSetNumberSpecifiedException.class)
+	@Test(expected = IllegalSetNumberSpecifiedException.class)
 	public void setNonExistentSet() {
-		final Match match = new Match(3, teamA, teamB);
+		final CtlMatch match = new CtlMatch(3, teamA, teamB);
 		match.setPlayer(1, 3, playerB_3);
 	}
 
-	@Test(expected = Match.IllegalTeamNumberSpecifiedException.class)
+	@Test(expected = CtlMatch.IllegalTeamNumberSpecifiedException.class)
 	public void setNonExistentTeam() {
-		final Match match = new Match(3, teamA, teamB);
+		final CtlMatch match = new CtlMatch(3, teamA, teamB);
 		match.setPlayer(2, 1, playerB_3);
 	}
 
 	@Test
 	public void addPlayersToMatch_3v3() {
-		final Match match = construct3v3Match();
+		final CtlMatch match = construct3v3Match();
 
-		assertEquals(playerA_1, match.getSet(0).getPlayerA());
-		assertEquals(playerB_1, match.getSet(0).getPlayerB());
+		assertEquals(playerA_1, match.getSet(0).getSideA());
+		assertEquals(playerB_1, match.getSet(0).getSideB());
 
-		assertEquals(playerA_2, match.getSet(1).getPlayerA());
-		assertEquals(playerB_2, match.getSet(1).getPlayerB());
+		assertEquals(playerA_2, match.getSet(1).getSideA());
+		assertEquals(playerB_2, match.getSet(1).getSideB());
 
-		assertEquals(playerA_3, match.getSet(2).getPlayerA());
-		assertEquals(playerB_3, match.getSet(2).getPlayerB());
+		assertEquals(playerA_3, match.getSet(2).getSideA());
+		assertEquals(playerB_3, match.getSet(2).getSideB());
 	}
 
 	@Test
 	public void testEmptyWinnerOnNewMatch() {
-		final Match match = new Match(3, teamA, teamB);
+		final IGenericMatch match = new CtlMatch(3, teamA, teamB);
 		assertNull(match.getWinner());
 	}
 
@@ -85,7 +87,7 @@ public class MatchTest {
 		final Player admin = new Player("playerC");
 		admin.setAdmin(true);
 
-		final Match match = construct3v3Match();
+		final CtlMatch match = construct3v3Match();
 		match.getSet(0).submitPlayerResult(admin, playerA_1);
 		match.getSet(1).submitPlayerResult(admin, playerA_2);
 		match.getSet(2).submitPlayerResult(admin, playerA_3);
@@ -98,7 +100,7 @@ public class MatchTest {
 		final Player admin = new Player("playerC");
 		admin.setAdmin(true);
 
-		final Match match = construct3v3Match();
+		final CtlMatch match = construct3v3Match();
 		match.getSet(0).submitPlayerResult(admin, playerA_1);
 		match.getSet(1).submitPlayerResult(admin, playerA_2);
 		match.getSet(2).submitPlayerResult(admin, playerA_3);
@@ -111,7 +113,7 @@ public class MatchTest {
 		final Player admin = new Player("playerC");
 		admin.setAdmin(true);
 
-		final Match match = construct3v3Match();
+		final CtlMatch match = construct3v3Match();
 		match.getSet(0).submitPlayerResult(admin, playerB_1);
 		match.getSet(1).submitPlayerResult(admin, playerA_2);
 		match.getSet(2).submitPlayerResult(admin, playerA_3);
@@ -119,8 +121,8 @@ public class MatchTest {
 		assertEquals(teamA, match.getWinner());
 	}
 
-	protected Match construct3v3Match() {
-		final Match match = new Match(3, teamA, teamB);
+	protected CtlMatch construct3v3Match() {
+		final CtlMatch match = new CtlMatch(3, teamA, teamB);
 		match.setPlayer(0, 0, playerA_1);
 		match.setPlayer(0, 1, playerA_2);
 		match.setPlayer(0, 2, playerA_3);
