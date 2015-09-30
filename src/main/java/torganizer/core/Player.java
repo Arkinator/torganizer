@@ -34,6 +34,15 @@ public class Player implements IToEntity {
 		this.team = team;
 	}
 
+	@Override
+	public String toString() {
+		if (team == null) {
+			return name;
+		} else {
+			return "[" + team + "]" + name;
+		}
+	}
+
 	public boolean equalsOrInTeam(final IToEntity other) {
 		if (super.equals(other)) {
 			return true;

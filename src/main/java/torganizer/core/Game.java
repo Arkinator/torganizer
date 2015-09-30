@@ -70,13 +70,4 @@ public class Game extends AbstractMatch<Player> implements IGenericMatch<Player>
 			super(string);
 		}
 	}
-
-	public Team getWinningTeam() {
-		final Player winningPlayer = getWinner();
-		if (winningPlayer == null) {
-			return null;
-		} else {
-			return winningPlayer.getTeam();
-		}
-	}
 }
