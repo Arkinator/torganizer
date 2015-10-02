@@ -1,4 +1,6 @@
-package torganizer.core;
+package torganizer.core.matches;
+
+import torganizer.core.entities.Player;
 
 public class BestOfMatchSinglePlayer extends AbstractMatchSeries<Player, Game> {
 	private final int numberOfSets;

@@ -6,11 +6,11 @@ import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import torganizer.core.IGenericMatch;
-import torganizer.core.IllegalSetNumberSpecifiedException;
-import torganizer.core.CtlMatch;
-import torganizer.core.Player;
-import torganizer.core.Team;
+import torganizer.core.entities.Player;
+import torganizer.core.entities.Team;
+import torganizer.core.matches.CtlMatch;
+import torganizer.core.matches.IGenericMatch;
+import torganizer.core.matches.IllegalSetNumberSpecifiedException;
 
 public class MatchTest {
 	private static Player playerA_1;

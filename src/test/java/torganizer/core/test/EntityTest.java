@@ -4,8 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import torganizer.core.Player;
-import torganizer.core.Team;
+import torganizer.core.entities.Player;
+import torganizer.core.entities.Team;
 
 public class EntityTest {
 	@Test

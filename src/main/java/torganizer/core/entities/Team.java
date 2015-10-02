@@ -1,4 +1,4 @@
-package torganizer.core;
+package torganizer.core.entities;
 
 public class Team implements IToEntity {
 	private final String name;

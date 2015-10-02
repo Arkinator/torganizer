@@ -5,8 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import torganizer.core.Player;
-import torganizer.core.Team;
+import torganizer.core.entities.Player;
+import torganizer.core.entities.Team;
 
 public class TeamTest {
 	private static Player playerA;

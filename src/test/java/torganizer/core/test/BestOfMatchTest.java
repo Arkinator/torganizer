@@ -5,8 +5,8 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import torganizer.core.BestOfMatchSinglePlayer;
-import torganizer.core.Player;
+import torganizer.core.entities.Player;
+import torganizer.core.matches.BestOfMatchSinglePlayer;
 
 public class BestOfMatchTest {
 	@Test

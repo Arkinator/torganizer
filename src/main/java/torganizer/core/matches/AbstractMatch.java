@@ -1,4 +1,6 @@
-package torganizer.core;
+package torganizer.core.matches;
+
+import torganizer.core.entities.IToEntity;
 
 public abstract class AbstractMatch<TYPE extends IToEntity> implements IGenericMatch<TYPE> {
 	private TYPE sideA;

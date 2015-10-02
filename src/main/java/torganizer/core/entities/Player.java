@@ -1,4 +1,4 @@
-package torganizer.core;
+package torganizer.core.entities;
 
 public class Player implements IToEntity {
 	private String name;

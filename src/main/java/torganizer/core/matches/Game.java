@@ -1,7 +1,9 @@
-package torganizer.core;
+package torganizer.core.matches;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import torganizer.core.entities.Player;
 
 public class Game extends AbstractMatch<Player> implements IGenericMatch<Player> {
 	private final List<SubmittedGameResult> submittedGameResults;

@@ -1,4 +1,4 @@
-package torganizer.core;
+package torganizer.core.matches;
 
 public class IllegalSetNumberSpecifiedException extends RuntimeException {
 	private static final long serialVersionUID = -5876494929525138426L;

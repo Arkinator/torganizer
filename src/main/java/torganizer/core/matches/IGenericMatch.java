@@ -1,4 +1,6 @@
-package torganizer.core;
+package torganizer.core.matches;
+
+import torganizer.core.entities.IToEntity;
 
 public interface IGenericMatch<TYPE extends IToEntity> {
 

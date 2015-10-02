@@ -1,7 +1,9 @@
-package torganizer.core;
+package torganizer.core.matches;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import torganizer.core.entities.IToEntity;
 
 public abstract class AbstractMatchSeries<BELIGERENT extends IToEntity, SET extends IGenericMatch<?>> extends AbstractMatch<BELIGERENT> {
 	private final List<SET> sets;

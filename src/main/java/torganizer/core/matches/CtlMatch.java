@@ -1,4 +1,7 @@
-package torganizer.core;
+package torganizer.core.matches;
+
+import torganizer.core.entities.Player;
+import torganizer.core.entities.Team;
 
 public class CtlMatch extends AbstractMatchSeries<Team, Game> {
 	public CtlMatch(final int numberOfSets, final Team sideA, final Team sideB) {

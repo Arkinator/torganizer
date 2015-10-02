@@ -6,8 +6,8 @@ import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import torganizer.core.Game;
-import torganizer.core.Player;
+import torganizer.core.entities.Player;
+import torganizer.core.matches.Game;
 
 public class GameTest {
 	private static Player playerA;

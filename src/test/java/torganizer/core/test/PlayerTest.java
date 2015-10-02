@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import torganizer.core.Player;
+import torganizer.core.entities.Player;
 
 public class PlayerTest {
 	@Test
