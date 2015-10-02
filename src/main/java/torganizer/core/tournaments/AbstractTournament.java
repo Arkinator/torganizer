@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import torganizer.core.entities.IToEntity;
-import torganizer.core.matches.AbstractMatch;
+import torganizer.core.matches.IGenericMatch;
 
 public abstract class AbstractTournament<TYPE extends IToEntity> implements ITournament<TYPE> {
 	private final List<TYPE> participantList;
@@ -14,7 +14,7 @@ public abstract class AbstractTournament<TYPE extends IToEntity> implements ITou
 		this.participantList.addAll(participantList);
 	}
 
-	public abstract List<AbstractMatch<TYPE>> getMatchesForRound(int round);
+	public abstract List<IGenericMatch<TYPE>> getMatchesForRound(int round);
 
 	public abstract int getCurrentRound();
 

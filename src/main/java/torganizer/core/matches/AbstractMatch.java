@@ -29,4 +29,9 @@ public abstract class AbstractMatch<TYPE extends IToEntity> implements IGenericM
 	public TYPE getSideB() {
 		return sideB;
 	}
+
+	@Override
+	public String toString() {
+		return sideA + " vs " + sideB;
+	}
 }

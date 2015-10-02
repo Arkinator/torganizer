@@ -7,18 +7,18 @@ import java.util.List;
 import org.apache.commons.math.util.MathUtils;
 
 import torganizer.core.entities.Player;
-import torganizer.core.matches.AbstractMatch;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
+import torganizer.core.matches.IGenericMatch;
 
 public class KoTournament extends AbstractTournament<Player> {
 
-	private final List<List<AbstractMatch<Player>>> rounds;
+	private final List<List<BestOfMatchSinglePlayer>> rounds;
 	private final int bestOfMatchLength;
 
 	public KoTournament(final int bestOfMatchLength, final List<Player> playerList) {
 		super(playerList);
 		this.bestOfMatchLength = bestOfMatchLength;
-		rounds = new ArrayList<List<AbstractMatch<Player>>>();
+		rounds = new ArrayList<List<BestOfMatchSinglePlayer>>();
 		fillRounds();
 	}
 
@@ -28,7 +28,7 @@ public class KoTournament extends AbstractTournament<Player> {
 		Collections.shuffle(playerList);
 		int playersLeftInTournament = getParticipants().size();
 		for (int roundNumber = 0; roundNumber < getNumberOfRounds(); roundNumber++) {
-			final List<AbstractMatch<Player>> roundMatches = new ArrayList<AbstractMatch<Player>>();
+			final List<BestOfMatchSinglePlayer> roundMatches = new ArrayList<BestOfMatchSinglePlayer>();
 			for (int matchNumber = 0; matchNumber < (playersLeftInTournament / 2); matchNumber++) {
 				if (playerList.size() > 0) {
 					roundMatches.add(new BestOfMatchSinglePlayer(bestOfMatchLength, playerList.remove(0), playerList.remove(0)));
@@ -46,13 +46,30 @@ public class KoTournament extends AbstractTournament<Player> {
 	}
 
 	@Override
-	public List<AbstractMatch<Player>> getMatchesForRound(final int round) {
-		return rounds.get(round);
+	public List<IGenericMatch<Player>> getMatchesForRound(final int round) {
+		final List<IGenericMatch<Player>> list = new ArrayList<IGenericMatch<Player>>();
+		list.addAll(rounds.get(round));
+		return list;
+	}
+
+	public List<BestOfMatchSinglePlayer> getAbstractMatchesForRound(final int round) {
+		final List<BestOfMatchSinglePlayer> list = new ArrayList<BestOfMatchSinglePlayer>();
+		list.addAll(rounds.get(round));
+		return list;
 	}
 
 	@Override
 	public int getCurrentRound() {
-		return 0;
+		int round = 0;
+		for (final List<BestOfMatchSinglePlayer> list : rounds) {
+			for (final BestOfMatchSinglePlayer match : list) {
+				if (match.getWinner() == null) {
+					return round;
+				}
+			}
+			round++;
+		}
+		return round - 1;
 	}
 
 	@Override
@@ -66,10 +83,22 @@ public class KoTournament extends AbstractTournament<Player> {
 
 	public List<Player> getPlayersForRound(final int roundNumber) {
 		final List<Player> playerList = new ArrayList<Player>();
-		for (final AbstractMatch<Player> match : getMatchesForRound(0)) {
+		for (final IGenericMatch<Player> match : getMatchesForRound(roundNumber)) {
 			playerList.add(match.getSideA());
 			playerList.add(match.getSideB());
 		}
 		return playerList;
+	}
+
+	@Override
+	public String toString() {
+		String result = "";
+		for (final List<BestOfMatchSinglePlayer> list : rounds) {
+			for (final BestOfMatchSinglePlayer match : list) {
+				result += match + "\t";
+			}
+			result += "\n";
+		}
+		return result;
 	}
 }

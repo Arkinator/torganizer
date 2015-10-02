@@ -5,7 +5,9 @@ import java.util.List;
 
 import torganizer.core.entities.IToEntity;
 
-public abstract class AbstractMatchSeries<BELIGERENT extends IToEntity, SET extends IGenericMatch<?>> extends AbstractMatch<BELIGERENT> {
+public abstract class AbstractMatchSeries<BELIGERENT extends IToEntity, SET extends IGenericMatch<?>> //
+		extends AbstractMatch<BELIGERENT> //
+		implements IGenericMatch<BELIGERENT> {
 	private final List<SET> sets;
 
 	public AbstractMatchSeries(final int numberOfSets, final BELIGERENT sideA, final BELIGERENT sideB) {
@@ -58,5 +60,10 @@ public abstract class AbstractMatchSeries<BELIGERENT extends IToEntity, SET exte
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "(" + getScore(getSideA()) + ":" + getScore(getSideB()) + ")";
 	}
 }

@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import torganizer.core.entities.Player;
+import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.tournaments.KoTournament;
 
 public class KoTournamentTest {
@@ -18,9 +19,12 @@ public class KoTournamentTest {
 	private final static int maxNumberPlayers = 8;
 	static List<Player> playerListFourPlayers;
 	static List<Player> playerListEightPlayers;
+	private static Player admin;
 
 	@BeforeClass
 	public static void initializeClass() {
+		admin = new Player("admin");
+		admin.setAdmin(true);
 		playerArray = new Player[maxNumberPlayers];
 		playerListFourPlayers = new ArrayList<Player>();
 		playerListEightPlayers = new ArrayList<Player>();
@@ -62,5 +66,24 @@ public class KoTournamentTest {
 
 		assertEquals(2, tournament.getMatchesForRound(1).size());
 		assertEquals(1, tournament.getMatchesForRound(2).size());
+	}
+
+	@Test
+	public void fourPlayerTourney_Semifinal() {
+		// construct tourney
+		final KoTournament tournament = new KoTournament(1, playerListFourPlayers);
+		System.out.println(tournament);
+		assertEquals(0, tournament.getCurrentRound());
+		// play semifinal
+		for (final BestOfMatchSinglePlayer match : tournament.getAbstractMatchesForRound(0)) {
+			match.getSet(0).submitPlayerResult(admin, match.getSideA());
+		}
+		// System.out.println("------------------------------");
+		// System.out.println(tournament);
+		// check the final
+		assertEquals(1, tournament.getCurrentRound());
+		assertEquals(2, tournament.getPlayersForRound(1).size());
+		assertThat(tournament.getPlayersForRound(1)).isSubsetOf(playerListEightPlayers);
+
 	}
 }
