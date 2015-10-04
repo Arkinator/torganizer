@@ -78,8 +78,8 @@ public class KoTournamentTest {
 		for (final BestOfMatchSinglePlayer match : tournament.getAbstractMatchesForRound(0)) {
 			match.getSet(0).submitPlayerResult(admin, match.getSideA());
 		}
-		// System.out.println("------------------------------");
-		// System.out.println(tournament);
+		System.out.println("------------------------------");
+		System.out.println(tournament);
 		// check the final
 		assertEquals(1, tournament.getCurrentRound());
 		assertEquals(2, tournament.getPlayersForRound(1).size());

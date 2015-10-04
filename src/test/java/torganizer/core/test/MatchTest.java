@@ -78,7 +78,7 @@ public class MatchTest {
 
 	@Test
 	public void testEmptyWinnerOnNewMatch() {
-		final GenericMatch match = new CtlMatch(3, teamA, teamB);
+		final GenericMatch<Team> match = new CtlMatch(3, teamA, teamB);
 		assertNull(match.getWinner());
 	}
 
@@ -109,7 +109,7 @@ public class MatchTest {
 	}
 
 	@Test
-	public void testWinnerOnSplitMatch() {
+	public void testWinnerOnTightMatch() {
 		final Player admin = new Player("playerC");
 		admin.setAdmin(true);
 

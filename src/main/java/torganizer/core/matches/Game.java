@@ -18,22 +18,6 @@ public class Game extends AbstractMatch<Player> {
 		submittedGameResults = new ArrayList<SubmittedGameResult>();
 	}
 
-	@Override
-	public Player getWinner() {
-		final Player winner = getAdminVoteIfPresent();
-		if (winner != null) {
-			return winner;
-		}
-		if (submittedGameResults.size() != 2) {
-			return null;
-		}
-		if (submittedGameResults.get(0).getWinner().equals(submittedGameResults.get(1).getWinner())) {
-			return submittedGameResults.get(0).getWinner();
-		} else {
-			return null;
-		}
-	}
-
 	protected Player getAdminVoteIfPresent() {
 		for (final SubmittedGameResult submittedGameResult : submittedGameResults) {
 			if (submittedGameResult.getSubmitter().isAdmin()) {
@@ -53,6 +37,24 @@ public class Game extends AbstractMatch<Player> {
 			}
 		}
 		submittedGameResults.add(new SubmittedGameResult(submitter, winner));
+
+		refresh();
+	}
+
+	@Override
+	public Player calculateWinner() {
+		final Player winner = getAdminVoteIfPresent();
+		if (winner != null) {
+			return winner;
+		}
+		if (submittedGameResults.size() != 2) {
+			return null;
+		}
+		if (submittedGameResults.get(0).getWinner().equals(submittedGameResults.get(1).getWinner())) {
+			return submittedGameResults.get(0).getWinner();
+		} else {
+			return null;
+		}
 	}
 
 	public List<SubmittedGameResult> getSubmittedResults() {

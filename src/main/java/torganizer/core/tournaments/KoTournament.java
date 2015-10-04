@@ -6,14 +6,15 @@ import java.util.List;
 
 import org.apache.commons.math.util.MathUtils;
 
+import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.matches.GenericMatch;
 
 public class KoTournament extends AbstractTournament<Player> {
-
 	private final List<List<BestOfMatchSinglePlayer>> rounds;
 	private final int bestOfMatchLength;
+	private int currentRound;
 
 	public KoTournament(final int bestOfMatchLength, final List<Player> playerList) {
 		super(playerList);
@@ -31,14 +32,20 @@ public class KoTournament extends AbstractTournament<Player> {
 			final List<BestOfMatchSinglePlayer> roundMatches = new ArrayList<BestOfMatchSinglePlayer>();
 			for (int matchNumber = 0; matchNumber < (playersLeftInTournament / 2); matchNumber++) {
 				if (playerList.size() > 0) {
-					roundMatches.add(new BestOfMatchSinglePlayer(bestOfMatchLength, playerList.remove(0), playerList.remove(0)));
+					roundMatches.add(createNewMatch(playerList.remove(0), playerList.remove(0)));
 				} else {
-					roundMatches.add(new BestOfMatchSinglePlayer(bestOfMatchLength, null, null));
+					roundMatches.add(createNewMatch(null, null));
 				}
 			}
 			playersLeftInTournament /= 2;
 			rounds.add(roundMatches);
 		}
+	}
+
+	private BestOfMatchSinglePlayer createNewMatch(final Player playerA, final Player playerB) {
+		final BestOfMatchSinglePlayer match = new BestOfMatchSinglePlayer(bestOfMatchLength, playerA, playerB);
+		match.addCallbackObject(this);
+		return match;
 	}
 
 	public Player getWinner() {
@@ -60,16 +67,7 @@ public class KoTournament extends AbstractTournament<Player> {
 
 	@Override
 	public int getCurrentRound() {
-		int round = 0;
-		for (final List<BestOfMatchSinglePlayer> list : rounds) {
-			for (final BestOfMatchSinglePlayer match : list) {
-				if (match.getWinner() == null) {
-					return round;
-				}
-			}
-			round++;
-		}
-		return round - 1;
+		return currentRound;
 	}
 
 	@Override
@@ -100,5 +98,26 @@ public class KoTournament extends AbstractTournament<Player> {
 			result += "\n";
 		}
 		return result;
+	}
+
+	public void callback(final IToEntity sender) {
+		final int newRound = calculateActiveRound();
+		if (newRound != currentRound) {
+			currentRound = newRound;
+			fireCallback();
+		}
+	}
+
+	private int calculateActiveRound() {
+		int round = 0;
+		for (final List<BestOfMatchSinglePlayer> list : rounds) {
+			for (final BestOfMatchSinglePlayer match : list) {
+				if (match.getWinner() == null) {
+					return round;
+				}
+			}
+			round++;
+		}
+		return round - 1;
 	}
 }

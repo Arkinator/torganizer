@@ -12,7 +12,9 @@ public abstract class AbstractMatchSeries<BELIGERENT extends IToParticipant, SET
 		super(sideA, sideB);
 		sets = new ArrayList<SET>();
 		for (int i = 0; i < numberOfSets; i++) {
-			sets.add(constructNewSet());
+			final SET set = constructNewSet();
+			set.addCallbackObject(this);
+			sets.add(set);
 		}
 	}
 
@@ -36,7 +38,7 @@ public abstract class AbstractMatchSeries<BELIGERENT extends IToParticipant, SET
 	}
 
 	@Override
-	public BELIGERENT getWinner() {
+	public BELIGERENT calculateWinner() {
 		final int scoreSideA = getScore(getSideA());
 		final int scoreSideB = getScore(getSideB());
 		if (scoreSideA == scoreSideB) {

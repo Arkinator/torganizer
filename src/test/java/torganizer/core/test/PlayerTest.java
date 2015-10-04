@@ -10,11 +10,6 @@ import torganizer.core.entities.Player;
 
 public class PlayerTest {
 	@Test
-	public void testNewPlayerCreation() {
-		final Player newPlayer = new Player(null);
-	}
-
-	@Test
 	public void testPlayerName() {
 		final String playerName = "Barcode";
 		final Player newPlayer = new Player(playerName);

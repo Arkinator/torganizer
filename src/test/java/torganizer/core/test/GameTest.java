@@ -2,6 +2,8 @@ package torganizer.core.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -92,8 +94,10 @@ public class GameTest {
 		final Game game = new Game(playerA, playerB);
 
 		game.submitPlayerResult(admin, playerA);
+		assertEquals(playerA, game.getWinner());
 		game.submitPlayerResult(playerA, playerB);
-		game.submitPlayerResult(playerB, playerB);
+		assertEquals(playerA, game.getWinner());
+		game.submitPlayerResult(playerB, playerA);
 		assertEquals(playerA, game.getWinner());
 	}
 
@@ -105,7 +109,9 @@ public class GameTest {
 		final Game game = new Game(playerA, playerB);
 
 		game.submitPlayerResult(playerA, playerB);
-		game.submitPlayerResult(playerB, playerB);
+		assertEquals(null, game.getWinner());
+		game.submitPlayerResult(playerB, playerA);
+		assertEquals(null, game.getWinner());
 		game.submitPlayerResult(admin, playerA);
 		assertEquals(playerA, game.getWinner());
 	}
@@ -115,12 +121,15 @@ public class GameTest {
 		final Player admin = new Player("playerC");
 		admin.setAdmin(true);
 		final Game game = new Game(playerA, playerB);
-
 		final IToEntity mockTarget = Mockito.mock(IToEntity.class);
 		game.addCallbackObject(mockTarget);
 
+		game.submitPlayerResult(playerA, playerB);
+
+		verify(mockTarget, times(0)).callback(game);
+
 		game.submitPlayerResult(admin, playerA);
 
-		Mockito.verify(mockTarget).callback(null);
+		verify(mockTarget, times(1)).callback(game);
 	}
 }

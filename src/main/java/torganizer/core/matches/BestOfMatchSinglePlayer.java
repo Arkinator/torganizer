@@ -1,6 +1,5 @@
 package torganizer.core.matches;
 
-import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.Player;
 
 public class BestOfMatchSinglePlayer extends AbstractMatchSeries<Player, Game> {
@@ -16,20 +15,9 @@ public class BestOfMatchSinglePlayer extends AbstractMatchSeries<Player, Game> {
 
 	@Override
 	public Game constructNewSet() {
-		return new Game(getSideA(), getSideB());
-	}
-
-	@Override
-	public Player getWinner() {
-		final int scoreSideA = getScore(getSideA());
-		final int scoreSideB = getScore(getSideB());
-		if (scoreSideA > (numberOfSets / 2.)) {
-			return getSideA();
-		}
-		if (scoreSideB > (numberOfSets / 2.)) {
-			return getSideB();
-		}
-		return null;
+		final Game game = new Game(getSideA(), getSideB());
+		game.addCallbackObject(this);
+		return game;
 	}
 
 	public class UnsupportedFormatException extends RuntimeException {
@@ -40,8 +28,16 @@ public class BestOfMatchSinglePlayer extends AbstractMatchSeries<Player, Game> {
 		}
 	}
 
-	public void callback(final IToEntity sender) {
-		// TODO Auto-generated method stub
-
+	@Override
+	public Player calculateWinner() {
+		final int scoreSideA = getScore(getSideA());
+		final int scoreSideB = getScore(getSideB());
+		if (scoreSideA > (numberOfSets / 2.)) {
+			return getSideA();
+		}
+		if (scoreSideB > (numberOfSets / 2.)) {
+			return getSideB();
+		}
+		return null;
 	}
 }

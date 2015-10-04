@@ -1,6 +1,5 @@
 package torganizer.core.matches;
 
-import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.Player;
 import torganizer.core.entities.Team;
 
@@ -31,10 +30,5 @@ public class CtlMatch extends AbstractMatchSeries<Team, Game> {
 	@Override
 	public Game constructNewSet() {
 		return new Game();
-	}
-
-	public void callback(final IToEntity sender) {
-		// TODO Auto-generated method stub
-
 	}
 }

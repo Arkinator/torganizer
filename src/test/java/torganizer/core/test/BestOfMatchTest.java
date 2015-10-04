@@ -10,13 +10,6 @@ import torganizer.core.matches.BestOfMatchSinglePlayer;
 
 public class BestOfMatchTest {
 	@Test
-	public void simpleSetTest() {
-		final Player playerA = new Player("playerA");
-		final Player playerB = new Player("playerB");
-		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA, playerB);
-	}
-
-	@Test
 	public void testOneRoundPlayed() {
 		final Player playerA = new Player("playerA");
 		final Player playerB = new Player("playerB");
@@ -42,6 +35,6 @@ public class BestOfMatchTest {
 	public void createBestOf4Failure() {
 		final Player playerA = new Player("playerA");
 		final Player playerB = new Player("playerB");
-		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(4, playerA, playerB);
+		new BestOfMatchSinglePlayer(4, playerA, playerB);
 	}
 }
