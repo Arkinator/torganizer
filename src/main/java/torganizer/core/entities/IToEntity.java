@@ -2,12 +2,10 @@ package torganizer.core.entities;
 
 public interface IToEntity {
 	/**
-	 * Returns true either if
-	 * - both entities are equal or
-	 * - one entity is a team and the other a member of said team
+	 * Notification: The sender has changed. Reaction to a callback placed on
+	 * the sender
 	 *
-	 * @param other
-	 * @return
+	 * @param sender
 	 */
-	boolean equalsOrInTeam(IToEntity other);
+	void callback(IToEntity sender);
 }

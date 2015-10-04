@@ -3,11 +3,9 @@ package torganizer.core.matches;
 import java.util.ArrayList;
 import java.util.List;
 
-import torganizer.core.entities.IToEntity;
+import torganizer.core.entities.IToParticipant;
 
-public abstract class AbstractMatchSeries<BELIGERENT extends IToEntity, SET extends IGenericMatch<?>> //
-		extends AbstractMatch<BELIGERENT> //
-		implements IGenericMatch<BELIGERENT> {
+public abstract class AbstractMatchSeries<BELIGERENT extends IToParticipant, SET extends GenericMatch<?>> extends AbstractMatch<BELIGERENT> {
 	private final List<SET> sets;
 
 	public AbstractMatchSeries(final int numberOfSets, final BELIGERENT sideA, final BELIGERENT sideB) {
@@ -37,6 +35,7 @@ public abstract class AbstractMatchSeries<BELIGERENT extends IToEntity, SET exte
 		return sets.get(setNumber);
 	}
 
+	@Override
 	public BELIGERENT getWinner() {
 		final int scoreSideA = getScore(getSideA());
 		final int scoreSideB = getScore(getSideB());

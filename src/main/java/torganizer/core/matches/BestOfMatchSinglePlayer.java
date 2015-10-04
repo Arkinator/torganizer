@@ -1,5 +1,6 @@
 package torganizer.core.matches;
 
+import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.Player;
 
 public class BestOfMatchSinglePlayer extends AbstractMatchSeries<Player, Game> {
@@ -37,5 +38,10 @@ public class BestOfMatchSinglePlayer extends AbstractMatchSeries<Player, Game> {
 		public UnsupportedFormatException(final String string) {
 			super(string);
 		}
+	}
+
+	public void callback(final IToEntity sender) {
+		// TODO Auto-generated method stub
+
 	}
 }

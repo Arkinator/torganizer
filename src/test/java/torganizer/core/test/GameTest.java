@@ -5,7 +5,9 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.Player;
 import torganizer.core.matches.Game;
 
@@ -106,5 +108,19 @@ public class GameTest {
 		game.submitPlayerResult(playerB, playerB);
 		game.submitPlayerResult(admin, playerA);
 		assertEquals(playerA, game.getWinner());
+	}
+
+	@Test
+	public void testGameCallback() {
+		final Player admin = new Player("playerC");
+		admin.setAdmin(true);
+		final Game game = new Game(playerA, playerB);
+
+		final IToEntity mockTarget = Mockito.mock(IToEntity.class);
+		game.addCallbackObject(mockTarget);
+
+		game.submitPlayerResult(admin, playerA);
+
+		Mockito.verify(mockTarget).callback(null);
 	}
 }

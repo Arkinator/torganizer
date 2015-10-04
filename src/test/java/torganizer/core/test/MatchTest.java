@@ -9,7 +9,7 @@ import org.junit.Test;
 import torganizer.core.entities.Player;
 import torganizer.core.entities.Team;
 import torganizer.core.matches.CtlMatch;
-import torganizer.core.matches.IGenericMatch;
+import torganizer.core.matches.GenericMatch;
 import torganizer.core.matches.IllegalSetNumberSpecifiedException;
 
 public class MatchTest {
@@ -78,7 +78,7 @@ public class MatchTest {
 
 	@Test
 	public void testEmptyWinnerOnNewMatch() {
-		final IGenericMatch match = new CtlMatch(3, teamA, teamB);
+		final GenericMatch match = new CtlMatch(3, teamA, teamB);
 		assertNull(match.getWinner());
 	}
 

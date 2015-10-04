@@ -8,7 +8,7 @@ import org.apache.commons.math.util.MathUtils;
 
 import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
-import torganizer.core.matches.IGenericMatch;
+import torganizer.core.matches.GenericMatch;
 
 public class KoTournament extends AbstractTournament<Player> {
 
@@ -46,8 +46,8 @@ public class KoTournament extends AbstractTournament<Player> {
 	}
 
 	@Override
-	public List<IGenericMatch<Player>> getMatchesForRound(final int round) {
-		final List<IGenericMatch<Player>> list = new ArrayList<IGenericMatch<Player>>();
+	public List<GenericMatch<Player>> getMatchesForRound(final int round) {
+		final List<GenericMatch<Player>> list = new ArrayList<GenericMatch<Player>>();
 		list.addAll(rounds.get(round));
 		return list;
 	}
@@ -83,7 +83,7 @@ public class KoTournament extends AbstractTournament<Player> {
 
 	public List<Player> getPlayersForRound(final int roundNumber) {
 		final List<Player> playerList = new ArrayList<Player>();
-		for (final IGenericMatch<Player> match : getMatchesForRound(roundNumber)) {
+		for (final GenericMatch<Player> match : getMatchesForRound(roundNumber)) {
 			playerList.add(match.getSideA());
 			playerList.add(match.getSideB());
 		}

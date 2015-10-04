@@ -1,6 +1,6 @@
 package torganizer.core.entities;
 
-public class Team implements IToEntity {
+public class Team implements IToParticipant {
 	private final String name;
 
 	public Team(final String name) {
@@ -20,7 +20,7 @@ public class Team implements IToEntity {
 		return "[" + name + "]";
 	}
 
-	public boolean equalsOrInTeam(final IToEntity other) {
+	public boolean equalsOrInTeam(final IToParticipant other) {
 		if (super.equals(other)) {
 			return true;
 		} else {

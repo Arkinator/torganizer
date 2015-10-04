@@ -3,9 +3,10 @@ package torganizer.core.matches;
 import java.util.ArrayList;
 import java.util.List;
 
+import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.Player;
 
-public class Game extends AbstractMatch<Player> implements IGenericMatch<Player> {
+public class Game extends AbstractMatch<Player> {
 	private final List<SubmittedGameResult> submittedGameResults;
 
 	public Game(final Player playerA, final Player playerB) {
@@ -17,6 +18,7 @@ public class Game extends AbstractMatch<Player> implements IGenericMatch<Player>
 		submittedGameResults = new ArrayList<SubmittedGameResult>();
 	}
 
+	@Override
 	public Player getWinner() {
 		final Player winner = getAdminVoteIfPresent();
 		if (winner != null) {
@@ -71,5 +73,10 @@ public class Game extends AbstractMatch<Player> implements IGenericMatch<Player>
 		public SubmitterIsNotPlayerException(final String string) {
 			super(string);
 		}
+	}
+
+	public void callback(final IToEntity sender) {
+		// TODO Auto-generated method stub
+
 	}
 }
