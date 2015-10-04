@@ -1,7 +1,9 @@
 package torganizer.core.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -131,5 +133,25 @@ public class GameTest {
 		game.submitPlayerResult(admin, playerA);
 
 		verify(mockTarget, times(1)).callback(game);
+	}
+
+	@Test
+	public void testGamesEquals() {
+		final Game game1 = new Game(playerA, playerB);
+		final Game game2 = new Game(playerA, playerB);
+		assertFalse(game1.equals(game2));
+		assertFalse(game2.equals(game1));
+		assertTrue(game1.equals(game1));
+		assertTrue(game2.equals(game2));
+	}
+
+	@Test
+	public void testGamesHashCode() {
+		final Game game1 = new Game(playerA, playerB);
+		final Game game2 = new Game(playerA, playerB);
+		assertTrue(game1.hashCode() != game2.hashCode());
+		assertTrue(game2.hashCode() != game1.hashCode());
+		assertTrue(game2.hashCode() == game2.hashCode());
+		assertTrue(game1.hashCode() == game1.hashCode());
 	}
 }

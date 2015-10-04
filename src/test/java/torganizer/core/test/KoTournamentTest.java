@@ -2,7 +2,9 @@ package torganizer.core.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,12 +80,45 @@ public class KoTournamentTest {
 		for (final BestOfMatchSinglePlayer match : tournament.getAbstractMatchesForRound(0)) {
 			match.getSet(0).submitPlayerResult(admin, match.getSideA());
 		}
-		System.out.println("------------------------------");
-		System.out.println(tournament);
-		// check the final
 		assertEquals(1, tournament.getCurrentRound());
 		assertEquals(2, tournament.getPlayersForRound(1).size());
 		assertThat(tournament.getPlayersForRound(1)).isSubsetOf(playerListEightPlayers);
+	}
 
+	@Test
+	public void fourPlayerTourney_FinalWinner() {
+		// construct tourney
+		final KoTournament tournament = new KoTournament(1, playerListFourPlayers);
+		System.out.println(tournament);
+		assertEquals(0, tournament.getCurrentRound());
+		assertFalse(playerListEightPlayers.contains(tournament.getWinner()));
+		// play semifinal
+		for (final BestOfMatchSinglePlayer match : tournament.getAbstractMatchesForRound(0)) {
+			match.getSet(0).submitPlayerResult(admin, match.getSideA());
+		}
+		// play final
+		for (final BestOfMatchSinglePlayer match : tournament.getAbstractMatchesForRound(1)) {
+			match.getSet(0).submitPlayerResult(admin, match.getSideA());
+		}
+		assertEquals(2, tournament.getCurrentRound());
+		assertTrue(playerListEightPlayers.contains(tournament.getWinner()));
+	}
+
+	@Test
+	public void testNextRoundNumberCalculations_EightPlayers() {
+		final KoTournament tournament = new KoTournament(1, playerListEightPlayers);
+		assertEquals(4, tournament.calculateAdvancingMatchNumber(0));
+		assertEquals(4, tournament.calculateAdvancingMatchNumber(1));
+		assertEquals(5, tournament.calculateAdvancingMatchNumber(2));
+		assertEquals(5, tournament.calculateAdvancingMatchNumber(3));
+		assertEquals(6, tournament.calculateAdvancingMatchNumber(4));
+		assertEquals(6, tournament.calculateAdvancingMatchNumber(5));
+	}
+
+	@Test
+	public void testNextRoundNumberCalculations_FourPlayers() {
+		final KoTournament tournament = new KoTournament(1, playerListFourPlayers);
+		assertEquals(2, tournament.calculateAdvancingMatchNumber(0));
+		assertEquals(2, tournament.calculateAdvancingMatchNumber(1));
 	}
 }
