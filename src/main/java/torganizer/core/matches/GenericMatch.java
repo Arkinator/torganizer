@@ -1,10 +1,10 @@
 package torganizer.core.matches;
 
-import torganizer.core.entities.AbstractCallbackObject;
+import torganizer.core.entities.AbstractToEntity;
 import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.IToParticipant;
 
-public abstract class GenericMatch<TYPE extends IToParticipant> extends AbstractCallbackObject implements IToEntity {
+public abstract class GenericMatch<TYPE extends IToParticipant> extends AbstractToEntity implements IToEntity {
 	public GenericMatch() {
 
 	}

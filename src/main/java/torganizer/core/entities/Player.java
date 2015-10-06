@@ -1,6 +1,6 @@
 package torganizer.core.entities;
 
-public class Player implements IToParticipant {
+public class Player extends AbstractToEntity implements IToParticipant {
 	private String name;
 	private boolean isAdmin;
 	private Team team;
@@ -57,5 +57,10 @@ public class Player implements IToParticipant {
 				return false;
 			}
 		}
+	}
+
+	public void callback(final IToEntity sender) {
+		// TODO Auto-generated method stub
+
 	}
 }

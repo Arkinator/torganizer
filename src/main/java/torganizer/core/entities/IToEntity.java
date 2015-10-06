@@ -8,4 +8,6 @@ public interface IToEntity {
 	 * @param sender
 	 */
 	void callback(IToEntity sender);
+
+	long getUid();
 }

@@ -3,12 +3,12 @@ package torganizer.core.tournaments;
 import java.util.ArrayList;
 import java.util.List;
 
-import torganizer.core.entities.AbstractCallbackObject;
+import torganizer.core.entities.AbstractToEntity;
 import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.IToParticipant;
 import torganizer.core.matches.GenericMatch;
 
-public abstract class AbstractTournament<TYPE extends IToParticipant> extends AbstractCallbackObject implements ITournament<TYPE>, IToEntity {
+public abstract class AbstractTournament<TYPE extends IToParticipant> extends AbstractToEntity implements ITournament<TYPE>, IToEntity {
 	private final List<TYPE> participantList;
 
 	public AbstractTournament(final List<TYPE> participantList) {
