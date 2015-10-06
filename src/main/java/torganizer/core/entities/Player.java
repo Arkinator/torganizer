@@ -4,6 +4,8 @@ public class Player extends AbstractToEntity implements IToParticipant {
 	private String name;
 	private boolean isAdmin;
 	private Team team;
+	private byte[] passwordHash;
+	private String passwordSalt;
 
 	public Player(final String name) {
 		this.setName(name);
@@ -43,6 +45,7 @@ public class Player extends AbstractToEntity implements IToParticipant {
 		}
 	}
 
+	@Override
 	public boolean equalsOrInTeam(final IToParticipant other) {
 		if (super.equals(other)) {
 			return true;
@@ -59,8 +62,25 @@ public class Player extends AbstractToEntity implements IToParticipant {
 		}
 	}
 
+	@Override
 	public void callback(final IToEntity sender) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setPasswordHash(final byte[] passwordHash) {
+		this.passwordHash = passwordHash;
+	}
+
+	public byte[] getPasswordHash() {
+		return this.passwordHash;
+	}
+
+	public void setPasswordSalt(final String passwordSalt) {
+		this.passwordSalt = passwordSalt;
+	}
+
+	public String getPasswordSalt() {
+		return this.passwordSalt;
 	}
 }
