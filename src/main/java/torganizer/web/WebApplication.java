@@ -10,7 +10,7 @@ public class WebApplication extends Application {
 	private final Set<Class<?>> empty = new HashSet<Class<?>>();
 
 	public WebApplication() {
-		this.singletons.add(new RestInterface());
+		this.singletons.add(new UserRestInterface());
 	}
 
 	@Override

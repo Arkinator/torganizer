@@ -1,5 +1,7 @@
 package torganizer.core.entities;
 
+import torganizer.web.data.UserInformation;
+
 public class Player extends AbstractToEntity implements IToParticipant {
 	private String name;
 	private boolean isAdmin;
@@ -82,5 +84,11 @@ public class Player extends AbstractToEntity implements IToParticipant {
 
 	public String getPasswordSalt() {
 		return this.passwordSalt;
+	}
+
+	public UserInformation extractUserInformation() {
+		final UserInformation userInfo = new UserInformation();
+		userInfo.username = getName();
+		return userInfo;
 	}
 }

@@ -1,5 +1,6 @@
 package torganizer.web;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,25 +17,13 @@ import torganizer.core.entities.Player;
 import torganizer.core.persistance.DataSource;
 import torganizer.web.data.UserInformation;
 
-@Path("rest")
-public class RestInterface implements IRestInterface {
-	private static final String attributeName = "blub";
-	private static final String saltAttributeName = "salt";
+@Path("user")
+public class UserRestInterface implements IUserRestInterface {
+	private static final String SALT = "salt";
+	private static final String LOGGED_IN_PLAYER = "userInformation";
 
 	@Context
 	private HttpServletRequest request;
-
-	@Override
-	@GET
-	@Path("/{param}")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String getMsg(@PathParam("param") final String name) {
-		String msg = ": good " + name;
-		msg += "\n" + attributeName + " = " + request.getSession().getAttribute(attributeName);
-		request.getSession().setAttribute(attributeName, name);
-
-		return msg;
-	}
 
 	@GET
 	@Path("/getLoginSalt/{param}")
@@ -45,7 +34,7 @@ public class RestInterface implements IRestInterface {
 		final Player player = DataSource.getUserByName(username);
 		if (player == null) {
 			final Long salt = new Random().nextLong();
-			request.getSession().setAttribute(saltAttributeName, salt);
+			request.getSession().setAttribute(SALT, salt.toString());
 			return salt.toString();
 		} else {
 			return player.getPasswordSalt();
@@ -57,9 +46,14 @@ public class RestInterface implements IRestInterface {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Override
-	public UserInformation doLogin(final String username, final byte[] passwordHashWithSalt) {
-		// TODO Auto-generated method stub
-		return null;
+	public UserInformation doLogin(final UserInformation userInfo) {
+		final Player player = DataSource.getUserByName(userInfo.username);
+		if (player != null) {
+			if (Arrays.equals(userInfo.passwordHash, player.getPasswordHash())) {
+				request.getSession().setAttribute(LOGGED_IN_PLAYER, player);
+			}
+		}
+		return ((Player) (request.getSession().getAttribute(LOGGED_IN_PLAYER))).extractUserInformation();
 	}
 
 	@GET
@@ -68,7 +62,7 @@ public class RestInterface implements IRestInterface {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Override
 	public UserInformation doLogout() {
-		// TODO Auto-generated method stub
+		request.getSession().setAttribute(LOGGED_IN_PLAYER, null);
 		return null;
 	}
 
@@ -79,7 +73,21 @@ public class RestInterface implements IRestInterface {
 	public void createUser(final UserInformation newUserInformation) {
 		final Player player = new Player(newUserInformation.username);
 		player.setPasswordHash(newUserInformation.passwordHash);
-		player.setPasswordSalt(newUserInformation.passwordSalt);
+		player.setPasswordSalt((String) request.getSession().getAttribute(SALT));
 		DataSource.persistEntity(player);
+	}
+
+	@GET
+	@Path("/getUserInfo/")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Override
+	public UserInformation getUserInfo() {
+		final Player player = (Player) request.getSession().getAttribute(LOGGED_IN_PLAYER);
+		if (player == null) {
+			return null;
+		} else {
+			return player.extractUserInformation();
+		}
 	}
 }
