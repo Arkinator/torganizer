@@ -74,7 +74,6 @@ public class KoTournamentTest {
 	public void fourPlayerTourney_Semifinal() {
 		// construct tourney
 		final KoTournament tournament = new KoTournament(1, playerListFourPlayers);
-		System.out.println(tournament);
 		assertEquals(0, tournament.getCurrentRound());
 		// play semifinal
 		for (final BestOfMatchSinglePlayer match : tournament.getAbstractMatchesForRound(0)) {
@@ -89,7 +88,6 @@ public class KoTournamentTest {
 	public void fourPlayerTourney_FinalWinner() {
 		// construct tourney
 		final KoTournament tournament = new KoTournament(1, playerListFourPlayers);
-		System.out.println(tournament);
 		assertEquals(0, tournament.getCurrentRound());
 		assertFalse(playerListEightPlayers.contains(tournament.getWinner()));
 		// play semifinal
