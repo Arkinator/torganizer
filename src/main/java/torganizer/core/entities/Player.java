@@ -8,6 +8,7 @@ public class Player extends AbstractToEntity implements IToParticipant {
 	private Team team;
 	private byte[] passwordHash;
 	private String passwordSalt;
+	private int gmtOffset;
 
 	public Player(final String name) {
 		this.setName(name);
@@ -90,5 +91,13 @@ public class Player extends AbstractToEntity implements IToParticipant {
 		final UserInformation userInfo = new UserInformation();
 		userInfo.username = getName();
 		return userInfo;
+	}
+
+	public void setTimezoneOffset(final int gmtOffset) {
+		this.gmtOffset = gmtOffset;
+	}
+
+	public int getTimezoneOffset() {
+		return gmtOffset;
 	}
 }

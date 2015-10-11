@@ -20,7 +20,7 @@ import torganizer.web.data.UserInformation;
 @Path("user")
 public class UserRestInterface implements IUserRestInterface {
 	private static final String SALT = "salt";
-	private static final String LOGGED_IN_PLAYER = "userInformation";
+	private static final String LOGGED_IN_PLAYER = "user";
 
 	@Context
 	private HttpServletRequest request;

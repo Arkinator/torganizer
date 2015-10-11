@@ -4,9 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+
 import org.junit.Test;
 
 import torganizer.core.entities.Player;
+import torganizer.utils.TOrganizerDateUtils;
 
 public class PlayerTest {
 	@Test
@@ -23,5 +28,22 @@ public class PlayerTest {
 		assertFalse(newPlayer.isAdmin());
 		newPlayer.setAdmin(true);
 		assertTrue(newPlayer.isAdmin());
+	}
+
+	@Test
+	public void testPlayerTimezoneConversion() {
+		final Player playerA = new Player("kfldsö");
+		final Player playerB = new Player("fgrmaplvrsd");
+		playerA.setTimezoneOffset(2);
+		playerB.setTimezoneOffset(-2);
+		final LocalDateTime time = TOrganizerDateUtils.now();
+		final OffsetDateTime playerATime = time.atOffset(ZoneOffset.ofHours(playerA.getTimezoneOffset()));
+		final OffsetDateTime playerBTime = time.atOffset(ZoneOffset.ofHours(playerB.getTimezoneOffset()));
+		System.out.println(playerATime);
+		System.out.println(playerBTime.plusHours(4));
+		System.out.println(playerATime.toLocalDateTime());
+		System.out.println(playerBTime.plusHours(4).toLocalDateTime());
+		assertFalse(playerATime.isEqual(playerBTime));
+		assertTrue(playerATime.isEqual(playerBTime.plusHours(4)));
 	}
 }

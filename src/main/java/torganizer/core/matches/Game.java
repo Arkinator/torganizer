@@ -1,5 +1,6 @@
 package torganizer.core.matches;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,9 @@ import torganizer.core.entities.Player;
 
 public class Game extends AbstractMatch<Player> {
 	private final List<SubmittedGameResult> submittedGameResults;
+	private LocalDateTime earliestTime;
+	private LocalDateTime latestTime;
+	private LocalDateTime playTime;
 
 	public Game(final Player playerA, final Player playerB) {
 		super(playerA, playerB);
@@ -77,8 +81,41 @@ public class Game extends AbstractMatch<Player> {
 		}
 	}
 
+	@Override
 	public void callback(final IToEntity sender) {
-		// TODO Auto-generated method stub
+	}
 
+	public void setEarliestTime(final LocalDateTime time) {
+		this.earliestTime = time;
+	}
+
+	public void setLatestTime(final LocalDateTime time) {
+		this.latestTime = time;
+	}
+
+	public LocalDateTime getEarliestTime() {
+		return earliestTime;
+	}
+
+	public LocalDateTime getLatestTime() {
+		return latestTime;
+	}
+
+	public void setPlayTime(final LocalDateTime playTime) {
+		if (playTime.isBefore(earliestTime)) {
+			throw new InvalidPlayTimeException("The time " + playTime + " is before the earliest acceptable time of " + earliestTime);
+		}
+		if (playTime.isAfter(latestTime)) {
+			throw new InvalidPlayTimeException("The time " + playTime + " is after the latest acceptable time of " + latestTime);
+		}
+		this.playTime = playTime;
+	}
+
+	public class InvalidPlayTimeException extends RuntimeException {
+		private static final long serialVersionUID = 7458638426213805978L;
+
+		public InvalidPlayTimeException(final String string) {
+			super(string);
+		}
 	}
 }

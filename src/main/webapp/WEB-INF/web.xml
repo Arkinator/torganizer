@@ -18,8 +18,15 @@
 		</init-param>
 	</servlet>
 
+	<servlet>
+		<display-name>RenderingFront</display-name>
+		<servlet-name>RenderingFront</servlet-name>
+		<servlet-class>torganizer.web.frontend.RenderingFront</servlet-class>
+        <load-on-startup>1</load-on-startup>
+	</servlet>
+
 	<servlet-mapping>
-		<servlet-name>MyRestService</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<servlet-name>RenderingFront</servlet-name>
+		<url-pattern>/index.html</url-pattern>
 	</servlet-mapping>
 </web-app>

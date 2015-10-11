@@ -14,6 +14,8 @@ import org.mockito.Mockito;
 import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.Player;
 import torganizer.core.matches.Game;
+import torganizer.core.matches.Game.InvalidPlayTimeException;
+import torganizer.utils.TOrganizerDateUtils;
 
 public class GameTest {
 	private static Player playerA;
@@ -153,5 +155,29 @@ public class GameTest {
 		assertTrue(game2.hashCode() != game1.hashCode());
 		assertTrue(game2.hashCode() == game2.hashCode());
 		assertTrue(game1.hashCode() == game1.hashCode());
+	}
+
+	@Test
+	public void verifyGameStartAndEndTime() {
+		final Game game = new Game(playerA, playerB);
+		game.setLatestTime(TOrganizerDateUtils.inNumberOfDays(7));
+		game.setEarliestTime(TOrganizerDateUtils.now());
+		assertTrue(game.getEarliestTime().isBefore(game.getLatestTime()));
+	}
+
+	@Test(expected = InvalidPlayTimeException.class)
+	public void tryInvalidGameTimeAppointment() {
+		final Game game = new Game(playerA, playerB);
+		game.setLatestTime(TOrganizerDateUtils.inNumberOfDays(7));
+		game.setEarliestTime(TOrganizerDateUtils.now());
+		game.setPlayTime(TOrganizerDateUtils.inNumberOfDays(8));
+	}
+
+	@Test
+	public void validGameTimeAppointment() {
+		final Game game = new Game(playerA, playerB);
+		game.setLatestTime(TOrganizerDateUtils.inNumberOfDays(7));
+		game.setEarliestTime(TOrganizerDateUtils.now());
+		game.setPlayTime(TOrganizerDateUtils.inNumberOfDays(2));
 	}
 }
