@@ -7,14 +7,17 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDateTime;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.Player;
+import torganizer.core.matches.AbstractMatch;
 import torganizer.core.matches.Game;
-import torganizer.core.matches.Game.InvalidPlayTimeException;
+import torganizer.core.matches.TimeSlot;
 import torganizer.utils.TOrganizerDateUtils;
 
 public class GameTest {
@@ -159,25 +162,89 @@ public class GameTest {
 
 	@Test
 	public void verifyGameStartAndEndTime() {
-		final Game game = new Game(playerA, playerB);
-		game.setLatestTime(TOrganizerDateUtils.inNumberOfDays(7));
-		game.setEarliestTime(TOrganizerDateUtils.now());
+		final Game game = createGameWithOneWeekTimeSlot();
 		assertTrue(game.getEarliestTime().isBefore(game.getLatestTime()));
 	}
 
-	@Test(expected = InvalidPlayTimeException.class)
+	@Test(expected = AbstractMatch.InvalidPlayTimeException.class)
 	public void tryInvalidGameTimeAppointment() {
-		final Game game = new Game(playerA, playerB);
-		game.setLatestTime(TOrganizerDateUtils.inNumberOfDays(7));
-		game.setEarliestTime(TOrganizerDateUtils.now());
+		final Game game = createGameWithOneWeekTimeSlot();
 		game.setPlayTime(TOrganizerDateUtils.inNumberOfDays(8));
 	}
 
 	@Test
 	public void validGameTimeAppointment() {
+		final Game game = createGameWithOneWeekTimeSlot();
+		game.setPlayTime(TOrganizerDateUtils.inNumberOfDays(2));
+		assertTrue(TOrganizerDateUtils.approximatelyEqual(TOrganizerDateUtils.inNumberOfDays(2), game.getPlayTime()));
+	}
+
+	@Test
+	public void queryTimeSlotsTest() {
+		final TimeSlot timeSlot = new TimeSlot(TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
+		assertTrue(timeSlot.isPointInSlot(TOrganizerDateUtils.inNumberOfDays(2)));
+		assertFalse(timeSlot.isPointInSlot(TOrganizerDateUtils.inNumberOfDays(4)));
+	}
+
+	@Test
+	public void matchTimeSlotsTest_GoodCase() {
+		final TimeSlot timeSlotA = new TimeSlot(TOrganizerDateUtils.inNumberOfDays(0), TOrganizerDateUtils.inNumberOfDays(3));
+		final TimeSlot timeSlotB = new TimeSlot(TOrganizerDateUtils.inNumberOfDays(2), TOrganizerDateUtils.inNumberOfDays(4));
+		final LocalDateTime match = timeSlotA.getTimeMatchingWithSlot(timeSlotB);
+		assertTrue(timeSlotA.isPointInSlot(match));
+		assertTrue(timeSlotB.isPointInSlot(match));
+		assertTrue(TOrganizerDateUtils.approximatelyEqual(TOrganizerDateUtils.inNumberOfDays(2), match));
+	}
+
+	@Test
+	public void matchTimeSlotsTest_NoMatchingTimes() {
+		final TimeSlot timeSlotA = new TimeSlot(TOrganizerDateUtils.inNumberOfDays(0), TOrganizerDateUtils.inNumberOfDays(1));
+		final TimeSlot timeSlotB = new TimeSlot(TOrganizerDateUtils.inNumberOfDays(3), TOrganizerDateUtils.inNumberOfDays(4));
+		final LocalDateTime match = timeSlotA.getTimeMatchingWithSlot(timeSlotB);
+		assertNull(match);
+	}
+
+	@Test(expected = AbstractMatch.UnrecognizedParticipantException.class)
+	public void submitTimeslotAsNonParticipant() {
+		createGameWithOneWeekTimeSlot().submitTimeSlot(new Player("fkdop"), null, null);
+	}
+
+	@Test
+	public void setPlayTimeInAccordanceWithSetTimeslots() {
+		final Game game = createGameWithOneWeekTimeSlot();
+		game.submitTimeSlot(playerA, TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
+		game.submitPlayTimeProposition(playerB, TOrganizerDateUtils.inNumberOfDays(2));
+		assertTrue(TOrganizerDateUtils.approximatelyEqual(TOrganizerDateUtils.inNumberOfDays(2), game.getPlayTime()));
+	}
+
+	@Test
+	public void setPlayTimeInAccordanceWithSetTimeslots_otherPlayer() {
+		final Game game = createGameWithOneWeekTimeSlot();
+		game.submitTimeSlot(playerB, TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
+		game.submitPlayTimeProposition(playerA, TOrganizerDateUtils.inNumberOfDays(2));
+		assertTrue(TOrganizerDateUtils.approximatelyEqual(TOrganizerDateUtils.inNumberOfDays(2), game.getPlayTime()));
+	}
+
+	@Test
+	public void setPlayTimeViolatingTimeslots() {
+		final Game game = createGameWithOneWeekTimeSlot();
+		game.submitTimeSlot(playerA, TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
+		game.submitPlayTimeProposition(playerB, TOrganizerDateUtils.inNumberOfDays(4));
+		assertNull(game.getPlayTime());
+	}
+
+	@Test
+	public void setMatchingTimeslotsAndCheckResultingPlayTime() {
+		final Game game = createGameWithOneWeekTimeSlot();
+		game.submitTimeSlot(playerA, TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
+		game.submitTimeSlot(playerB, TOrganizerDateUtils.inNumberOfDays(2), TOrganizerDateUtils.inNumberOfDays(4));
+		assertTrue(TOrganizerDateUtils.approximatelyEqual(TOrganizerDateUtils.inNumberOfDays(2), game.getPlayTime()));
+	}
+
+	private Game createGameWithOneWeekTimeSlot() {
 		final Game game = new Game(playerA, playerB);
 		game.setLatestTime(TOrganizerDateUtils.inNumberOfDays(7));
 		game.setEarliestTime(TOrganizerDateUtils.now());
-		game.setPlayTime(TOrganizerDateUtils.inNumberOfDays(2));
+		return game;
 	}
 }

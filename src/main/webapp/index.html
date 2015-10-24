@@ -9,51 +9,53 @@
 <style></style>
 </head>
 <body>
-	<nav class="top-bar fixed">
-		<ul class="title-area">
+	<div class="sticky">
+		<nav class="top-bar">
+			<ul class="title-area">
 
-			<li class="name">
-				<h1>
-					<a href="#">TOrganizer</a>
-				</h1>
-			</li>
-			<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-		</ul>
-
-		<section class="top-bar-section">
-
-			<ul class="left">
-				<li class="divider"></li>
-				<li class="has-dropdown"><a class="active"
-					href="tournaments.html">Tournaments</a>
-					<ul class="dropdown">
-						<li><a href="#" class="">List Tournaments</a></li>
-					</ul></li>
-
-				<li class="divider"></li>
-				<li class="has-dropdown"><a href="teams.html">Teams</a>
-					<ul class="dropdown">
-						<li><a href="#">List Teams</a></li>
-						<li><a href="#">Show current Team Info</a></li>
-						<li><a href="#">Dropdown Option</a></li>
-					</ul></li>
-
-				<li class="divider"></li>
-				<li class="has-dropdown"><a href="#">Players</a>
-					<ul class="dropdown">
-						<li><a href="#">List Players</a></li>
-						<li><a href="#">Show current player</a></li>
-					</ul></li>
+				<li class="name">
+					<h1>
+						<a>TOrganizer</a>
+					</h1>
+				</li>
+				<li class="toggle-topbar menu-icon"><a href="#"><span>Schmenu</span></a></li>
 			</ul>
 
-			<ul class="right">
-				<li th:if="${user == null}"><a href="login.html">Login</a></li>
-				<li th:if="${user != null}"><a href="user.html"
-					th:text="${user.name}">USERNAME</a></li>
-			</ul>
-		</section>
-	</nav>
+			<section class="top-bar-section">
 
+				<ul class="left">
+					<li class="divider"></li>
+					<li class="has-dropdown"><a class="active"
+						href="tournaments.html">Tournaments</a>
+						<ul class="dropdown">
+							<li><a href="#" class="">List Tournaments</a></li>
+						</ul></li>
+
+					<li class="divider"></li>
+					<li class="has-dropdown"><a href="teams.html">Teams</a>
+						<ul class="dropdown">
+							<li><a href="#">List Teams</a></li>
+							<li><a href="#">Show current Team Info</a></li>
+							<li><a href="#">Dropdown Option</a></li>
+						</ul></li>
+
+					<li class="divider"></li>
+					<li class="has-dropdown"><a href="#">Players</a>
+						<ul class="dropdown">
+							<li><a href="#">List Players</a></li>
+							<li><a href="#">Show current player</a></li>
+						</ul></li>
+				</ul>
+
+				<ul class="right">
+					<li th:if="${user == null}"><a href="login.html">Login</a></li>
+					<li th:if="${user != null}"><a href="user.html"
+						th:text="${user.name}">USERNAME</a></li>
+				</ul>
+			</section>
+		</nav>
+	</div>
+	
 	<div class="row">
 		<div class="large-12 columns">
 			<h1>Welcome to Foundation</h1>
