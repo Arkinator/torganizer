@@ -34,16 +34,12 @@ public class PlayerTest {
 	public void testPlayerTimezoneConversion() {
 		final Player playerA = new Player("kfldsö");
 		final Player playerB = new Player("fgrmaplvrsd");
-		playerA.setTimezoneOffset(2);
-		playerB.setTimezoneOffset(-2);
+		playerA.setTimezoneOffset(-2);
+		playerB.setTimezoneOffset(2);
 		final LocalDateTime time = TOrganizerDateUtils.now();
 		final OffsetDateTime playerATime = time.atOffset(ZoneOffset.ofHours(playerA.getTimezoneOffset()));
 		final OffsetDateTime playerBTime = time.atOffset(ZoneOffset.ofHours(playerB.getTimezoneOffset()));
-		System.out.println(playerATime);
-		System.out.println(playerBTime.plusHours(4));
-		System.out.println(playerATime.toLocalDateTime());
-		System.out.println(playerBTime.plusHours(4).toLocalDateTime());
 		assertFalse(playerATime.isEqual(playerBTime));
-		assertTrue(playerATime.isEqual(playerBTime.plusHours(4)));
+		assertTrue(TOrganizerDateUtils.approximatelyEqual(playerATime, playerBTime.plusHours(4)));
 	}
 }

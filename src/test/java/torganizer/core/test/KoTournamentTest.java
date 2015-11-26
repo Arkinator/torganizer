@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
+import torganizer.core.tournaments.BasicRoundBasedTournament;
 import torganizer.core.tournaments.KoTournament;
 
 public class KoTournamentTest {
@@ -43,7 +44,7 @@ public class KoTournamentTest {
 
 	@Test
 	public void construct4PlayerKoTournament() {
-		final KoTournament tournament = new KoTournament(1, playerListFourPlayers);
+		final BasicRoundBasedTournament tournament = new KoTournament(1, playerListFourPlayers);
 		assertNull(tournament.getWinner());
 	}
 

@@ -13,24 +13,17 @@ import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.matches.GenericMatch;
 
-public class KoTournament extends AbstractTournament<Player> {
-	private final List<List<BestOfMatchSinglePlayer>> rounds;
-	private final int bestOfMatchLength;
-	private int currentRound;
-	private final Map<BestOfMatchSinglePlayer, Integer> matchNumbers;
-	private final Map<Integer, BestOfMatchSinglePlayer> matchesNumbered;
+public class KoTournament extends BasicRoundBasedTournament {
+	private Map<BestOfMatchSinglePlayer, Integer> matchNumbers;
+	private Map<Integer, BestOfMatchSinglePlayer> matchesNumbered;
 	private Player winner = null;
 
 	public KoTournament(final int bestOfMatchLength, final List<Player> playerList) {
-		super(playerList);
-		this.bestOfMatchLength = bestOfMatchLength;
-		rounds = new ArrayList<List<BestOfMatchSinglePlayer>>();
-		matchNumbers = new HashMap<BestOfMatchSinglePlayer, Integer>();
-		matchesNumbered = new HashMap<Integer, BestOfMatchSinglePlayer>();
-		fillRounds();
+		super(bestOfMatchLength, playerList);
 	}
 
-	private void fillRounds() {
+	@Override
+	protected void fillRounds() {
 		final List<Player> playerList = new ArrayList<Player>();
 		playerList.addAll(getParticipants());
 		Collections.shuffle(playerList);
@@ -49,34 +42,31 @@ public class KoTournament extends AbstractTournament<Player> {
 		}
 	}
 
-	private BestOfMatchSinglePlayer createNewMatch(final Player playerA, final Player playerB) {
-		final BestOfMatchSinglePlayer match = new BestOfMatchSinglePlayer(bestOfMatchLength, playerA, playerB);
-		match.addCallbackObject(this);
+	@Override
+	protected BestOfMatchSinglePlayer createNewMatch(final Player playerA, final Player playerB) {
+		if (matchNumbers == null) {
+			initializeInternalDictionaries();
+		}
+		final BestOfMatchSinglePlayer match = super.createNewMatch(playerA, playerB);
 		matchNumbers.put(match, matchNumbers.size());
 		matchesNumbered.put(matchesNumbered.size(), match);
 		return match;
 	}
 
-	public Player getWinner() {
-		return winner;
+	private void initializeInternalDictionaries() {
+		matchNumbers = new HashMap<BestOfMatchSinglePlayer, Integer>();
+		matchesNumbered = new HashMap<Integer, BestOfMatchSinglePlayer>();
 	}
 
 	@Override
-	public List<GenericMatch<Player>> getMatchesForRound(final int round) {
-		final List<GenericMatch<Player>> list = new ArrayList<GenericMatch<Player>>();
-		list.addAll(rounds.get(round));
-		return list;
+	public Player getWinner() {
+		return winner;
 	}
 
 	public List<BestOfMatchSinglePlayer> getAbstractMatchesForRound(final int round) {
 		final List<BestOfMatchSinglePlayer> list = new ArrayList<BestOfMatchSinglePlayer>();
 		list.addAll(rounds.get(round));
 		return list;
-	}
-
-	@Override
-	public int getCurrentRound() {
-		return currentRound;
 	}
 
 	@Override
@@ -109,12 +99,9 @@ public class KoTournament extends AbstractTournament<Player> {
 		return result;
 	}
 
+	@Override
 	public void callback(final IToEntity sender) {
-		final int newRound = calculateActiveRound();
-		if (newRound != currentRound) {
-			currentRound = newRound;
-			fireCallback();
-		}
+		super.callback(sender);
 		if (calculateAdvancingPlayers_didAnythingChange(sender)) {
 			fireCallback();
 		}
@@ -145,7 +132,8 @@ public class KoTournament extends AbstractTournament<Player> {
 		return false;
 	}
 
-	private int calculateActiveRound() {
+	@Override
+	protected int calculateActiveRound() {
 		int round = 0;
 		for (final List<BestOfMatchSinglePlayer> list : rounds) {
 			for (final BestOfMatchSinglePlayer match : list) {
