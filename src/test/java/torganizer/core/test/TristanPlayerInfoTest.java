@@ -18,8 +18,7 @@ public class TristanPlayerInfoTest {
 		final Player playerB = new Player("fsdafdsa");
 		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA);
 		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB);
-		playerAInfo.adjustElo(playerBInfo, 1.);
-		playerBInfo.adjustElo(playerAInfo, 0.);
+		playerAInfo.adjustElo(10);
 		assertTrue(playerAInfo.getElo() > playerBInfo.getElo());
 	}
 
