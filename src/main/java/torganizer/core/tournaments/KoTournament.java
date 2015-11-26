@@ -20,6 +20,7 @@ public class KoTournament extends BasicRoundBasedTournament {
 
 	public KoTournament(final int bestOfMatchLength, final List<Player> playerList) {
 		super(bestOfMatchLength, playerList);
+		fillRounds();
 	}
 
 	@Override

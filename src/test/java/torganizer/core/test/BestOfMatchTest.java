@@ -37,4 +37,11 @@ public class BestOfMatchTest {
 		final Player playerB = new Player("playerB");
 		new BestOfMatchSinglePlayer(4, playerA, playerB);
 	}
+
+	@Test
+	public void testForOneSideBeingNull_byeShouldHappen() {
+		final Player playerA = new Player("playerA");
+		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA, null);
+		assertEquals(playerA, set.getWinner());
+	}
 }

@@ -63,6 +63,17 @@ public abstract class AbstractMatchSeries<BELIGERENT extends IToParticipant, SET
 		return result;
 	}
 
+	/**
+	 * 1.0 means sideA won 100% of the sets
+	 *
+	 * @return
+	 */
+	public double getFinalScore() {
+		final int scoreA = getScore(getSideA());
+		final int scoreB = getScore(getSideB());
+		return scoreA / (scoreA + scoreB);
+	}
+
 	@Override
 	public String toString() {
 		return super.toString() + "(" + getScore(getSideA()) + ":" + getScore(getSideB()) + ")";

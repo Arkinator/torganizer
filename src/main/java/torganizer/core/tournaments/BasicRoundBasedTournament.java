@@ -17,7 +17,6 @@ public abstract class BasicRoundBasedTournament extends AbstractTournament<Playe
 		super(participantList);
 		this.bestOfMatchLength = bestOfMatchLength;
 		rounds = new ArrayList<List<BestOfMatchSinglePlayer>>();
-		fillRounds();
 	}
 
 	protected abstract void fillRounds();
@@ -36,6 +35,12 @@ public abstract class BasicRoundBasedTournament extends AbstractTournament<Playe
 	@Override
 	public List<GenericMatch<Player>> getMatchesForRound(final int round) {
 		final List<GenericMatch<Player>> list = new ArrayList<GenericMatch<Player>>();
+		list.addAll(rounds.get(round));
+		return list;
+	}
+
+	public List<BestOfMatchSinglePlayer> getBestOfMatchForRound(final int round) {
+		final List<BestOfMatchSinglePlayer> list = new ArrayList<BestOfMatchSinglePlayer>();
 		list.addAll(rounds.get(round));
 		return list;
 	}

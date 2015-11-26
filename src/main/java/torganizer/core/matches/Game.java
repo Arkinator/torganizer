@@ -12,6 +12,7 @@ public class Game extends AbstractMatch<Player> {
 	public Game(final Player playerA, final Player playerB) {
 		super(playerA, playerB);
 		submittedGameResults = new ArrayList<SubmittedGameResult>();
+		refresh();
 	}
 
 	public Game() {
@@ -43,6 +44,15 @@ public class Game extends AbstractMatch<Player> {
 
 	@Override
 	public Player calculateWinner() {
+		if (submittedGameResults == null) {
+			return null;
+		}
+		if ((getSideA() == null) && (getSideB() != null)) {
+			return getSideB();
+		}
+		if ((getSideB() == null) && (getSideA() != null)) {
+			return getSideA();
+		}
 		final Player winner = getAdminVoteIfPresent();
 		if (winner != null) {
 			return winner;

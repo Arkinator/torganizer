@@ -158,4 +158,8 @@ public abstract class AbstractMatch<TYPE extends IToParticipant> extends Generic
 			super(string);
 		}
 	}
+
+	public boolean isBye() {
+		return (getSideA() == null) || (getSideB() == null);
+	}
 }

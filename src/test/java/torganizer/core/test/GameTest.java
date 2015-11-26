@@ -247,4 +247,10 @@ public class GameTest {
 		game.setEarliestTime(TOrganizerDateUtils.now());
 		return game;
 	}
+
+	@Test
+	public void testByeSet_WithOnePlayerBeingNull() {
+		final Game game = new Game(playerA, null);
+		assertEquals(playerA, game.getWinner());
+	}
 }

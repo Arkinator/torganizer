@@ -11,6 +11,7 @@ public class BestOfMatchSinglePlayer extends AbstractMatchSeries<Player, Game> {
 			throw new UnsupportedFormatException("Could not create a Best-Of-Series with " + numberOfSets + " games. Only odd numbers are supported");
 		}
 		this.numberOfSets = numberOfSets;
+		refresh();
 	}
 
 	@Override

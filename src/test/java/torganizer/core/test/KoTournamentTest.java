@@ -98,6 +98,7 @@ public class KoTournamentTest {
 		// play final
 		for (final BestOfMatchSinglePlayer match : tournament.getAbstractMatchesForRound(1)) {
 			match.getSet(0).submitPlayerResult(admin, match.getSideA());
+			assertEquals(match.getSideA(), match.getSet(0).getWinner());
 		}
 		assertEquals(2, tournament.getCurrentRound());
 		assertTrue(playerListEightPlayers.contains(tournament.getWinner()));
