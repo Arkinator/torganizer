@@ -14,7 +14,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import torganizer.core.entities.Player;
-import torganizer.core.persistance.DataSource;
 import torganizer.web.data.UserInformation;
 
 @Path("user")
@@ -31,7 +30,7 @@ public class UserRestInterface implements IUserRestInterface {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Override
 	public String getLoginSalt(@PathParam("param") final String username) {
-		final Player player = DataSource.getUserByName(username);
+		final Player player = null;// DataSource.getUserByName(username);
 		if (player == null) {
 			final Long salt = new Random().nextLong();
 			request.getSession().setAttribute(SALT, salt.toString());
@@ -47,7 +46,7 @@ public class UserRestInterface implements IUserRestInterface {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Override
 	public UserInformation doLogin(final UserInformation userInfo) {
-		final Player player = DataSource.getUserByName(userInfo.username);
+		final Player player = null;// DataSource.getUserByName(userInfo.username);
 		if (player != null) {
 			if (Arrays.equals(userInfo.passwordHash, player.getPasswordHash())) {
 				request.getSession().setAttribute(LOGGED_IN_PLAYER, player);
@@ -74,7 +73,7 @@ public class UserRestInterface implements IUserRestInterface {
 		final Player player = new Player(newUserInformation.username);
 		player.setPasswordHash(newUserInformation.passwordHash);
 		player.setPasswordSalt((String) request.getSession().getAttribute(SALT));
-		DataSource.persistEntity(player);
+		// DataSource.persistEntity(player);
 	}
 
 	@GET

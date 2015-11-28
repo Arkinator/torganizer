@@ -12,6 +12,10 @@ public abstract class AbstractToEntity implements IToEntity {
 		uid = ctr++;
 	}
 
+	public AbstractToEntity(final long id) {
+		uid = id;
+	}
+
 	public void addCallbackObject(final IToEntity target) {
 		callbackList.add(target);
 	}
@@ -22,6 +26,7 @@ public abstract class AbstractToEntity implements IToEntity {
 		}
 	}
 
+	@Override
 	public long getUid() {
 		return uid;
 	}

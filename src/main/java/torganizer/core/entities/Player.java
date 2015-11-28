@@ -15,6 +15,12 @@ public class Player extends AbstractToEntity implements IToParticipant {
 		this.isAdmin = false;
 	}
 
+	public Player(final String name, final Long id) {
+		super(id);
+		this.setName(name);
+		this.isAdmin = false;
+	}
+
 	public String getName() {
 		return name;
 	}

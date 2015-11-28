@@ -3,5 +3,5 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="datasourceBean" class="torganizer.core.persistance.MemoryDataSource" />
+	<bean id="datasourceBean" class="torganizer.core.persistance.MemoryDataSource" />	
 </beans>
