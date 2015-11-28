@@ -5,15 +5,20 @@ import java.util.List;
 
 import torganizer.core.entities.Player;
 import torganizer.core.persistance.interfaces.PlayerDao;
+import torganizer.core.persistance.orm.EntityOrm;
 import torganizer.core.persistance.orm.OrmFactory;
 import torganizer.core.persistance.orm.PlayerOrm;
 
 public class PlayerObjectService {
 	private PlayerDao playerDao;
+	private EntityObjectService entityObjectService;
 
 	public void addPlayer(final Player player) {
-		final PlayerOrm entity = OrmFactory.getPlayerOrm(player);
-		playerDao.persist(entity);
+		entityObjectService.createEntity(player);
+		final EntityOrm entityOrm = entityObjectService.getEntityDao().getById(player.getUid());
+		final PlayerOrm playerOrm = OrmFactory.getPlayerOrm(player, entityOrm);
+		final long id = playerDao.persist(playerOrm);
+		player.setUid(id);
 	}
 
 	public List<Player> getAllPlayers() {
@@ -28,5 +33,13 @@ public class PlayerObjectService {
 
 	public void setPlayerDao(final PlayerDao playerDao) {
 		this.playerDao = playerDao;
+	}
+
+	public EntityObjectService getEntityObjectService() {
+		return entityObjectService;
+	}
+
+	public void setEntityObjectService(final EntityObjectService entityObjectService) {
+		this.entityObjectService = entityObjectService;
 	}
 }

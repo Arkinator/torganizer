@@ -2,20 +2,42 @@ package torganizer.core.persistance.orm;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 @Entity
-@Table(name = "stock", catalog = "torganizer", uniqueConstraints = { @UniqueConstraint(columnNames = "ID"), @UniqueConstraint(columnNames = "NAME") })
+@Table(name = "PLAYERS")
 public class PlayerOrm {
+	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "entity") )
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = "generator")
 	@Column(name = "ID", unique = true, nullable = false)
-	public Long id;
+	private Long id;
 
-	@Column(name = "NAME", unique = true, nullable = false)
-	public String name;
+	@OneToOne(fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumn
+	private EntityOrm entity;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(final Long id) {
+		this.id = id;
+	}
+
+	public EntityOrm getEntity() {
+		return entity;
+	}
+
+	public void setEntity(final EntityOrm entity) {
+		this.entity = entity;
+	}
 }

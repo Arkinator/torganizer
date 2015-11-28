@@ -33,26 +33,36 @@
 	<bean id="playerObjectService"
 		class="torganizer.core.persistance.objectservice.PlayerObjectService">
 		<property name="playerDao" ref="playerDao" />
+		<property name="entityObjectService" ref="entityObjectService" />
 	</bean>
 
 	<bean id="playerDao" class="torganizer.core.persistance.dao.PlayerDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
+	<bean id="entityObjectService"
+		class="torganizer.core.persistance.objectservice.EntityObjectService">
+		<property name="entityDao" ref="entityDao" />
+	</bean>
+
+	<bean id="entityDao" class="torganizer.core.persistance.dao.EntityDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="packagesToScan" value="net.twasink.hsqldbtest" />
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
-				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
 				<prop key="hibernate.connection.url">jdbc:hsqldb:file:data.hsql</prop>
 			</props>
 		</property>
 		<property name="annotatedClasses">
 			<list>
 				<value>torganizer.core.persistance.orm.PlayerOrm</value>
+				<value>torganizer.core.persistance.orm.EntityOrm</value>
 			</list>
 		</property>
 	</bean>

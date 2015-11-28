@@ -6,7 +6,7 @@ import torganizer.core.persistance.orm.PlayerOrm;
 
 public interface PlayerDao {
 
-	void persist(PlayerOrm entity);
+	Long persist(PlayerOrm entity);
 
 	PlayerOrm getById(long id);
 

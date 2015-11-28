@@ -22,9 +22,9 @@ public class DataSourceTest {
 	public void playerPersistanceTest() {
 		final String playerName = "jsdklpiorevmre";
 		Player p = new Player(playerName);
-		final long playerId = p.getUid();
 
 		playerObjectService.addPlayer(p);
+		final long playerId = p.getUid();
 		p = null;
 		assertNull(p);
 

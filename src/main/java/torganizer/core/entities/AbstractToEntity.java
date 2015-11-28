@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractToEntity implements IToEntity {
-	private final List<IToEntity> callbackList = new ArrayList<IToEntity>();
-	private final long uid;
-	private static long ctr = 0;
+	private List<IToEntity> callbackList = new ArrayList<IToEntity>();
+	private long uid;
 
 	public AbstractToEntity() {
-		uid = ctr++;
 	}
 
-	public AbstractToEntity(final long id) {
-		uid = id;
+	public AbstractToEntity(final Long id) {
+		this.uid = id;
 	}
 
 	public void addCallbackObject(final IToEntity target) {
@@ -56,4 +54,18 @@ public abstract class AbstractToEntity implements IToEntity {
 		}
 		return true;
 	}
+
+	public List<IToEntity> getCallbackList() {
+		return callbackList;
+	}
+
+	public void setCallbackList(final List<IToEntity> callbackList) {
+		this.callbackList = callbackList;
+	}
+
+	public void setUid(final long uid) {
+		this.uid = uid;
+	}
+
+	public abstract String getName();
 }
