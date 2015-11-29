@@ -16,12 +16,14 @@ public abstract class AbstractMatch<TYPE extends IToParticipant> extends Generic
 	private LocalDateTime earliestTime;
 	private LocalDateTime latestTime;
 	private LocalDateTime playTime;
+	private String name;
 
 	public AbstractMatch(final TYPE sideA, final TYPE sideB) {
 		this.sideA = sideA;
 		this.sideB = sideB;
 		this.timeSlotsSideA = new ArrayList<TimeSlot>();
 		this.timeSlotsSideB = new ArrayList<TimeSlot>();
+		this.name = "Match" + getUid();
 	}
 
 	public AbstractMatch() {
@@ -54,7 +56,7 @@ public abstract class AbstractMatch<TYPE extends IToParticipant> extends Generic
 
 	@Override
 	public String toString() {
-		return sideA + " vs " + sideB;
+		return sideA + " vs " + sideB + "(" + getName() + ")";
 	}
 
 	@Override
@@ -161,5 +163,10 @@ public abstract class AbstractMatch<TYPE extends IToParticipant> extends Generic
 
 	public boolean isBye() {
 		return (getSideA() == null) || (getSideB() == null);
+	}
+
+	@Override
+	public String getName() {
+		return this.name;
 	}
 }

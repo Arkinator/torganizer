@@ -14,13 +14,14 @@ public class OrmFactory {
 	}
 
 	public static Player getPlayerBo(final PlayerOrm orm) {
-		final Player result = new Player(orm.getEntity().getName(), orm.getEntity().getId());
+		final Player result = new Player(orm.getEntity().getName(), orm.getEntity().getUuid());
 		return result;
 	}
 
 	public static EntityOrm getEntityOrm(final AbstractToEntity entity) {
 		final EntityOrm result = new EntityOrm();
 		result.setName(entity.getName());
+		result.setUuid(entity.getUid());
 		return result;
 	}
 }

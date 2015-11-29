@@ -1,10 +1,12 @@
 package torganizer.core.persistance.dao;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Example;
 import org.springframework.transaction.annotation.Transactional;
 
 import torganizer.core.persistance.interfaces.EntityDao;
@@ -29,8 +31,15 @@ public class EntityDaoImpl implements EntityDao {
 	}
 
 	@Override
-	public EntityOrm getById(final long id) {
-		return (EntityOrm) getSession().get(EntityOrm.class, id);
+	public EntityOrm getById(final UUID uuid) {
+		final EntityOrm example = new EntityOrm();
+		example.setUuid(uuid);
+		final List<EntityOrm> results = getSession().createCriteria(EntityOrm.class).add(Example.create(example)).list();
+		if (results.size() < 1) {
+			return null;
+		} else {
+			return results.get(0);
+		}
 	}
 
 	@Override

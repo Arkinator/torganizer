@@ -144,6 +144,8 @@ public class GameTest {
 	public void testGamesEquals() {
 		final Game game1 = new Game(playerA, playerB);
 		final Game game2 = new Game(playerA, playerB);
+		System.out.println(game1);
+		System.out.println(game2);
 		assertFalse(game1.equals(game2));
 		assertFalse(game2.equals(game1));
 		assertTrue(game1.equals(game1));

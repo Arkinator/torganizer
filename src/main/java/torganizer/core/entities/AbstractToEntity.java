@@ -2,15 +2,17 @@ package torganizer.core.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class AbstractToEntity implements IToEntity {
 	private List<IToEntity> callbackList = new ArrayList<IToEntity>();
-	private long uid;
+	private UUID uid;
 
-	public AbstractToEntity() {
+	protected AbstractToEntity() {
+		this.uid = UUID.randomUUID();
 	}
 
-	public AbstractToEntity(final Long id) {
+	protected AbstractToEntity(final UUID id) {
 		this.uid = id;
 	}
 
@@ -25,7 +27,7 @@ public abstract class AbstractToEntity implements IToEntity {
 	}
 
 	@Override
-	public long getUid() {
+	public UUID getUid() {
 		return uid;
 	}
 
@@ -33,7 +35,7 @@ public abstract class AbstractToEntity implements IToEntity {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + (int) (uid ^ (uid >>> 32));
+		result = (prime * result) + ((uid == null) ? 0 : uid.hashCode());
 		return result;
 	}
 
@@ -49,7 +51,11 @@ public abstract class AbstractToEntity implements IToEntity {
 			return false;
 		}
 		final AbstractToEntity other = (AbstractToEntity) obj;
-		if (uid != other.uid) {
+		if (uid == null) {
+			if (other.uid != null) {
+				return false;
+			}
+		} else if (!uid.equals(other.uid)) {
 			return false;
 		}
 		return true;
@@ -63,7 +69,7 @@ public abstract class AbstractToEntity implements IToEntity {
 		this.callbackList = callbackList;
 	}
 
-	public void setUid(final long uid) {
+	public void setUid(final UUID uid) {
 		this.uid = uid;
 	}
 

@@ -10,8 +10,7 @@ public class EntityObjectService {
 
 	public void createEntity(final AbstractToEntity entity) {
 		final EntityOrm entityOrm = OrmFactory.getEntityOrm(entity);
-		final Long id = entityDao.persist(entityOrm);
-		entity.setUid(id);
+		entityDao.persist(entityOrm);
 	}
 
 	public EntityDao getEntityDao() {

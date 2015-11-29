@@ -1,5 +1,7 @@
 package torganizer.core.persistance.orm;
 
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "ENTITIES", uniqueConstraints = { @UniqueConstraint(columnNames = "ID"), @UniqueConstraint(columnNames = "NAME") })
+@Table(name = "ENTITIES", uniqueConstraints = { @UniqueConstraint(columnNames = "ID"), @UniqueConstraint(columnNames = "NAME"), @UniqueConstraint(columnNames = "UUID") })
 public class EntityOrm {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +23,9 @@ public class EntityOrm {
 
 	@Column(name = "NAME", unique = true, nullable = false)
 	private String name;
+
+	@Column(name = "UUID", unique = true, nullable = false)
+	private UUID uuid;
 
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "entity", cascade = CascadeType.ALL)
 	private PlayerOrm player;
@@ -47,5 +52,13 @@ public class EntityOrm {
 
 	public void setPlayer(final PlayerOrm player) {
 		this.player = player;
+	}
+
+	public UUID getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(final UUID uuid) {
+		this.uuid = uuid;
 	}
 }

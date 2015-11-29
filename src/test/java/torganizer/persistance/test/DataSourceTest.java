@@ -1,7 +1,9 @@
-package torganizer.core.test;
+package torganizer.persistance.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +26,7 @@ public class DataSourceTest {
 		Player p = new Player(playerName);
 
 		playerObjectService.addPlayer(p);
-		final long playerId = p.getUid();
+		final UUID playerId = p.getUid();
 		p = null;
 		assertNull(p);
 

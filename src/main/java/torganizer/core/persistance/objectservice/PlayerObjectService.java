@@ -17,8 +17,7 @@ public class PlayerObjectService {
 		entityObjectService.createEntity(player);
 		final EntityOrm entityOrm = entityObjectService.getEntityDao().getById(player.getUid());
 		final PlayerOrm playerOrm = OrmFactory.getPlayerOrm(player, entityOrm);
-		final long id = playerDao.persist(playerOrm);
-		player.setUid(id);
+		playerDao.persist(playerOrm);
 	}
 
 	public List<Player> getAllPlayers() {

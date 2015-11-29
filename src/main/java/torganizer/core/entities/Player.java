@@ -1,5 +1,7 @@
 package torganizer.core.entities;
 
+import java.util.UUID;
+
 import torganizer.web.data.UserInformation;
 
 public class Player extends AbstractToEntity implements IToParticipant {
@@ -15,12 +17,13 @@ public class Player extends AbstractToEntity implements IToParticipant {
 		this.isAdmin = false;
 	}
 
-	public Player(final String name, final Long id) {
+	public Player(final String name, final UUID id) {
 		super(id);
 		this.setName(name);
 		this.isAdmin = false;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
