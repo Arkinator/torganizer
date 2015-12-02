@@ -1,5 +1,7 @@
 package torganizer.core.persistance.orm;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,8 +15,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 @Entity
-@Table(name = "PLAYERS")
-public class PlayerOrm {
+@Table(name = "MATCHES")
+public class MatchOrm {
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "entity") )
 	@Id
 	@GeneratedValue(generator = "generator")
@@ -25,8 +27,14 @@ public class PlayerOrm {
 	@PrimaryKeyJoinColumn
 	private EntityOrm entity;
 
-	@Column(name = "ADMIN")
-	private Boolean admin;
+	@Column(name = "SIDEA")
+	private UUID sideAId;
+
+	@Column(name = "SIDEB")
+	private UUID sideBId;
+
+	@Column(name = "WINNER")
+	private UUID winner;
 
 	public Long getId() {
 		return id;
@@ -44,11 +52,27 @@ public class PlayerOrm {
 		this.entity = entity;
 	}
 
-	public Boolean getAdmin() {
-		return admin;
+	public UUID getSideAId() {
+		return sideAId;
 	}
 
-	public void setAdmin(final Boolean admin) {
-		this.admin = admin;
+	public void setSideAId(final UUID sideAId) {
+		this.sideAId = sideAId;
+	}
+
+	public UUID getSideBId() {
+		return sideBId;
+	}
+
+	public void setSideBId(final UUID sideBId) {
+		this.sideBId = sideBId;
+	}
+
+	public UUID getWinner() {
+		return winner;
+	}
+
+	public void setWinner(final UUID winner) {
+		this.winner = winner;
 	}
 }

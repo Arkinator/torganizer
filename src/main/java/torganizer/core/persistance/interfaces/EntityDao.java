@@ -11,4 +11,10 @@ public interface EntityDao {
 	EntityOrm getById(UUID id);
 
 	List<EntityOrm> getAllEntities();
+
+	EntityOrm getByName(String name);
+
+	EntityOrm findByExample(EntityOrm example);
+
+	void update(EntityOrm entityOrm);
 }

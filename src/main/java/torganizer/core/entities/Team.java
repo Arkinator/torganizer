@@ -3,7 +3,7 @@ package torganizer.core.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Team implements IToParticipant {
+public class Team extends AbstractToEntity implements IToParticipant {
 	private final String name;
 	private Player owner;
 	private final List<Player> lieutenants;
@@ -13,6 +13,7 @@ public class Team implements IToParticipant {
 		this.lieutenants = new ArrayList<Player>();
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -61,5 +62,10 @@ public class Team implements IToParticipant {
 
 	public void addLieutenant(final Player player) {
 		lieutenants.add(player);
+	}
+
+	@Override
+	public void callback(final IToEntity sender) {
+
 	}
 }

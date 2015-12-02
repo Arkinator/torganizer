@@ -29,25 +29,13 @@
 			</list>
 		</property>
 	</bean>
-
-	<bean id="playerObjectService"
-		class="torganizer.core.persistance.objectservice.PlayerObjectService">
-		<property name="playerDao" ref="playerDao" />
-		<property name="entityObjectService" ref="entityObjectService" />
-	</bean>
-
-	<bean id="playerDao" class="torganizer.core.persistance.dao.PlayerDaoImpl">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
-	<bean id="entityObjectService"
-		class="torganizer.core.persistance.objectservice.EntityObjectService">
-		<property name="entityDao" ref="entityDao" />
-	</bean>
-
-	<bean id="entityDao" class="torganizer.core.persistance.dao.EntityDaoImpl">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
+	<!-- <bean id="playerObjectService" class="torganizer.core.persistance.objectservice.PlayerObjectService"> 
+		</bean> <bean id="OrmFactory" class="torganizer.core.persistance.orm.OrmFactory"> 
+		</bean> <bean id="playerDao" class="torganizer.core.persistance.dao.PlayerDaoImpl"> 
+		</bean> <bean id="entityObjectService" class="torganizer.core.persistance.objectservice.EntityObjectService"> 
+		</bean> <bean id="entityDao" class="torganizer.core.persistance.dao.EntityDaoImpl"> 
+		</bean> <bean id="matchObjectService" class="torganizer.core.persistance.objectservice.MatchObjectService"> 
+		</bean> -->
 
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
@@ -63,6 +51,7 @@
 			<list>
 				<value>torganizer.core.persistance.orm.PlayerOrm</value>
 				<value>torganizer.core.persistance.orm.EntityOrm</value>
+				<value>torganizer.core.persistance.orm.MatchOrm</value>
 			</list>
 		</property>
 	</bean>
@@ -72,8 +61,7 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-	<context:component-scan
-		base-package="torganizer.web, torganizer.core, torganizer.core.persistance.orm" />
+	<context:component-scan base-package="torganizer.web, torganizer.core" />
 
 	<mvc:annotation-driven />
 	<jdbc:embedded-database id="dataSource" type="HSQL" />

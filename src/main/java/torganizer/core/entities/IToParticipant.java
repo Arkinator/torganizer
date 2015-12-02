@@ -1,6 +1,6 @@
 package torganizer.core.entities;
 
-public interface IToParticipant {
+public interface IToParticipant extends IToEntity {
 	/**
 	 * Returns true either if
 	 * - both entities are equal or

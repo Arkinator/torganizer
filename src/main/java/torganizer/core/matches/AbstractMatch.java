@@ -169,4 +169,8 @@ public abstract class AbstractMatch<TYPE extends IToParticipant> extends Generic
 	public String getName() {
 		return this.name;
 	}
+
+	public void setWinner(final TYPE winner) {
+		this.winner = winner;
+	}
 }

@@ -30,6 +30,9 @@ public class EntityOrm {
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "entity", cascade = CascadeType.ALL)
 	private PlayerOrm player;
 
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "entity", cascade = CascadeType.ALL)
+	private MatchOrm match;
+
 	public Long getId() {
 		return id;
 	}
@@ -60,5 +63,13 @@ public class EntityOrm {
 
 	public void setUuid(final UUID uuid) {
 		this.uuid = uuid;
+	}
+
+	public MatchOrm getMatch() {
+		return match;
+	}
+
+	public void setMatch(final MatchOrm match) {
+		this.match = match;
 	}
 }
