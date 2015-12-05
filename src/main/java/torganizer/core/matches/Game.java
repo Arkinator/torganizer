@@ -7,7 +7,7 @@ import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.Player;
 
 public class Game extends AbstractMatch<Player> {
-	private final List<SubmittedGameResult> submittedGameResults;
+	private List<SubmittedGameResult> submittedGameResults;
 
 	public Game(final Player playerA, final Player playerB) {
 		super(playerA, playerB);
@@ -89,5 +89,9 @@ public class Game extends AbstractMatch<Player> {
 
 	@Override
 	public void callback(final IToEntity sender) {
+	}
+
+	public void setSubmittedResults(final List<SubmittedGameResult> submittedGameResults) {
+		this.submittedGameResults = submittedGameResults;
 	}
 }

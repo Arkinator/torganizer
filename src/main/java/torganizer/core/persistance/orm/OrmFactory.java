@@ -5,8 +5,6 @@ import org.springframework.stereotype.Component;
 
 import torganizer.core.entities.AbstractToEntity;
 import torganizer.core.entities.Player;
-import torganizer.core.matches.AbstractMatch;
-import torganizer.core.matches.Game;
 import torganizer.core.persistance.interfaces.EntityDao;
 
 @Component(value = "ormFactory")
@@ -39,31 +37,5 @@ public class OrmFactory {
 		result.setName(entity.getName());
 		result.setUuid(entity.getUid());
 		return result;
-	}
-
-	public MatchOrm getMatchOrm(final AbstractMatch<?> match, final EntityOrm entityOrm) {
-		final MatchOrm result = new MatchOrm();
-		result.setEntity(entityOrm);
-		result.setSideAId(match.getSideA().getUid());
-		result.setSideBId(match.getSideB().getUid());
-		if (match.getWinner() != null) {
-			result.setWinner(match.getWinner().getUid());
-		}
-		entityOrm.setMatch(result);
-		result.setId(entityOrm.getId());
-		return result;
-	}
-
-	public Game getGameBo(final EntityOrm entity) {
-		final Game game = new Game();
-		final EntityOrm playerA = entityDao.getById(entity.getMatch().getSideAId());
-		game.setSideA(getPlayerBo(playerA));
-		final EntityOrm playerB = entityDao.getById(entity.getMatch().getSideBId());
-		game.setSideB(getPlayerBo(playerB));
-		final EntityOrm winner = entityDao.getById(entity.getMatch().getWinner());
-		if (winner != null) {
-			game.setWinner(getPlayerBo(winner));
-		}
-		return game;
 	}
 }

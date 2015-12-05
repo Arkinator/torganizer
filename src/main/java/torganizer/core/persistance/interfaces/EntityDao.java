@@ -6,7 +6,7 @@ import java.util.UUID;
 import torganizer.core.persistance.orm.EntityOrm;
 
 public interface EntityDao {
-	Long persist(EntityOrm entity);
+	EntityOrm persist(EntityOrm entity);
 
 	EntityOrm getById(UUID id);
 

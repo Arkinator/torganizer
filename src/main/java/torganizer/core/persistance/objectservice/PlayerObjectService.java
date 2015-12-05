@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import torganizer.core.entities.Player;
 import torganizer.core.persistance.interfaces.EntityDao;
@@ -15,6 +16,7 @@ import torganizer.core.persistance.orm.OrmFactory;
 import torganizer.core.persistance.orm.PlayerOrm;
 import torganizer.exceptions.IncompatibleTypeException;
 
+@Transactional
 @Component(value = "playerObjectService")
 public class PlayerObjectService {
 	private PlayerDao playerDao;
@@ -61,6 +63,9 @@ public class PlayerObjectService {
 
 	public Player getPlayerByName(final String playerName) {
 		final EntityOrm entityOrm = entityDao.getByName(playerName);
+		if (entityOrm == null) {
+			return null;
+		}
 		if (entityOrm.getPlayer() == null) {
 			throw new IncompatibleTypeException("Entity is not of type player and can not be accessed as such");
 		}
@@ -69,6 +74,9 @@ public class PlayerObjectService {
 
 	public Player getPlayerById(final UUID playerId) {
 		final EntityOrm entityOrm = entityDao.getById(playerId);
+		if (entityOrm == null) {
+			return null;
+		}
 		if (entityOrm.getPlayer() == null) {
 			throw new IncompatibleTypeException("Entity is not of type player and can not be accessed as such");
 		}
