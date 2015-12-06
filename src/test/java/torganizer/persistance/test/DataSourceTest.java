@@ -31,7 +31,7 @@ public class DataSourceTest {
 			admin.setAdmin(true);
 			globalObjectService.addPlayer(admin);
 		} else {
-			admin = playerObjectService.getPlayerByName(adminName);
+			admin = globalObjectService.getPlayerByName(adminName);
 		}
 	}
 
@@ -42,46 +42,42 @@ public class DataSourceTest {
 		p.setAdmin(true);
 		final Player bBack = p;
 
-		playerObjectService.addPlayer(p);
+		globalObjectService.addPlayer(p);
 		final UUID playerId = p.getUid();
 		p = null;
 
-		p = playerObjectService.getPlayerByName(playerName);
+		p = globalObjectService.getPlayerByName(playerName);
 		assertEquals(playerName, p.getName());
 		assertEquals(playerId, p.getUid());
 		assertTrue(p.isAdmin());
 		assertEquals(bBack, p);
 
-		p = playerObjectService.getPlayerById(playerId);
+		p = globalObjectService.getPlayerById(playerId);
 		assertEquals(playerName, p.getName());
 		assertEquals(playerId, p.getUid());
 		assertTrue(p.isAdmin());
 		assertEquals(bBack, p);
 
-		for (final Player player : playerObjectService.getAllPlayers()) {
-			System.out.println(player);
-		}
+		// for (final Player player : globalObjectService.getAllPlayers()) {
+		// System.out.println(player);
+		// }
 	}
 
 	@Test
 	public void gamePersistanceTest() {
 		final Player p1 = new Player("player1");
 		final Player p2 = new Player("player2");
-		playerObjectService.addPlayer(p1);
-		playerObjectService.addPlayer(p2);
 
-		Game game = new Game(p1, p2);
-		game.submitPlayerResult(admin, p1);
-		matchObjectService.addGame(game);
+		Game game = new Game(p1.getUid(), p2.getUid(), "");
+		game.submitResultAdmin(p1.getUid());
+		globalObjectService.addGame(game);
 		final UUID gameId = game.getUid();
 		game = null;
 
-		game = (Game) matchObjectService.getMatchById(gameId);
-		assertEquals(p1, game.getSideA());
-		assertEquals(p2, game.getSideB());
-		assertEquals(p1, game.getWinner());
-		assertEquals(1, game.getSubmittedResults().size());
-		assertEquals(admin, game.getSubmittedResults().get(0).getSubmitter());
-		assertEquals(p1, game.getSubmittedResults().get(0).getWinner());
+		game = globalObjectService.getMatchById(gameId);
+		assertEquals(p1.getUid(), game.getSideA());
+		assertEquals(p2.getUid(), game.getSideB());
+		assertEquals(p1.getUid(), game.getWinner());
+		assertEquals(p1.getUid(), game.getAdminSubmittedWinner());
 	}
 }

@@ -1,6 +1,5 @@
 package torganizer.core.persistance.orm;
 
-import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -8,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -43,8 +41,14 @@ public class MatchOrm {
 	@Column(name = "TYPE")
 	private MatchType type;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "match")
-	private List<SubmittedResultOrm> submittedResults;
+	@Column(name = "SIDEA_WINNER")
+	private UUID sideASubmittedWinner;
+
+	@Column(name = "SIDEB_WINNER")
+	private UUID sideBSubmittedWinner;
+
+	@Column(name = "ADMIN_WINNER")
+	private UUID adminSubmittedWinner;
 
 	public Long getId() {
 		return id;
@@ -94,11 +98,27 @@ public class MatchOrm {
 		this.type = type;
 	}
 
-	public List<SubmittedResultOrm> getSubmittedResults() {
-		return submittedResults;
+	public UUID getSideASubmittedWinner() {
+		return sideASubmittedWinner;
 	}
 
-	public void setSubmittedResults(final List<SubmittedResultOrm> submittedResults) {
-		this.submittedResults = submittedResults;
+	public void setSideASubmittedWinner(final UUID sideASubmittedWinner) {
+		this.sideASubmittedWinner = sideASubmittedWinner;
+	}
+
+	public UUID getSideBSubmittedWinner() {
+		return sideBSubmittedWinner;
+	}
+
+	public void setSideBSubmittedWinner(final UUID sideBSubmittedWinner) {
+		this.sideBSubmittedWinner = sideBSubmittedWinner;
+	}
+
+	public UUID getAdminSubmittedWinner() {
+		return adminSubmittedWinner;
+	}
+
+	public void setAdminSubmittedWinner(final UUID adminSubmittedWinner) {
+		this.adminSubmittedWinner = adminSubmittedWinner;
 	}
 }

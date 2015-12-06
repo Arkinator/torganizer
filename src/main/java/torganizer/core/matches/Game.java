@@ -17,6 +17,9 @@ public class Game extends AbstractMatch {
 
 	public Game(final MatchOrm orm) {
 		super(orm);
+		this.adminSubmittedResult = orm.getAdminSubmittedWinner();
+		this.sideASubmittedResult = orm.getSideASubmittedWinner();
+		this.sideBSubmittedResult = orm.getSideBSubmittedWinner();
 	}
 
 	public Game(final String name) {
@@ -66,5 +69,17 @@ public class Game extends AbstractMatch {
 
 	@Override
 	public void callback(final IToEntity sender) {
+	}
+
+	public UUID getSideASubmittedWinner() {
+		return sideASubmittedResult;
+	}
+
+	public UUID getSideBSubmittedWinner() {
+		return sideBSubmittedResult;
+	}
+
+	public UUID getAdminSubmittedWinner() {
+		return adminSubmittedResult;
 	}
 }

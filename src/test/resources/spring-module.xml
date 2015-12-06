@@ -52,7 +52,6 @@
 				<value>torganizer.core.persistance.orm.PlayerOrm</value>
 				<value>torganizer.core.persistance.orm.EntityOrm</value>
 				<value>torganizer.core.persistance.orm.MatchOrm</value>
-				<value>torganizer.core.persistance.orm.SubmittedResultOrm</value>
 			</list>
 		</property>
 	</bean>
