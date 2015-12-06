@@ -1,14 +1,15 @@
 package torganizer.core.matches;
 
-import torganizer.core.entities.Player;
-import torganizer.core.entities.Team;
+import java.util.UUID;
 
-public class CtlMatch extends AbstractMatchSeries<Team, Game> {
-	public CtlMatch(final int numberOfSets, final Team sideA, final Team sideB) {
-		super(numberOfSets, sideA, sideB);
+import torganizer.utils.GlobalUtilities;
+
+public class CtlMatch extends AbstractMatchSeries<Game> {
+	public CtlMatch(final int numberOfSets, final UUID sideA, final UUID sideB, final String name) {
+		super(numberOfSets, sideA, sideB, name);
 	}
 
-	public void setPlayer(final int team, final int setNumber, final Player player) {
+	public void setPlayer(final int team, final int setNumber, final UUID player) {
 		final Game set = getSet(setNumber);
 		if (team == 0) {
 			set.setSideA(player);
@@ -29,6 +30,6 @@ public class CtlMatch extends AbstractMatchSeries<Team, Game> {
 
 	@Override
 	public Game constructNewSet() {
-		return new Game();
+		return new Game(GlobalUtilities.createNewSetName(this));
 	}
 }

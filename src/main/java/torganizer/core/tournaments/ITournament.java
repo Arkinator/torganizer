@@ -1,5 +1,7 @@
 package torganizer.core.tournaments;
 
-public interface ITournament<TYPE> {
-	public TYPE getWinner();
+import java.util.UUID;
+
+public interface ITournament {
+	public UUID getWinner();
 }

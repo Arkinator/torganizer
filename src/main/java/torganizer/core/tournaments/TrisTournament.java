@@ -1,16 +1,13 @@
 package torganizer.core.tournaments;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import torganizer.core.entities.IToEntity;
-import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.utils.EloCalculation;
 import torganizer.utils.TristanPlayerInfo;
@@ -25,10 +22,10 @@ public class TrisTournament extends BasicRoundBasedTournament {
 	public static final double eloSpeedupFactor = 7.;
 	private final int numberOfRounds;
 	private final List<TristanPlayerInfo> standings;
-	private final Map<Player, TristanPlayerInfo> infoMap;
+	private final Map<UUID, TristanPlayerInfo> infoMap;
 
-	public TrisTournament(final int numberOfRounds, final int bestOfSeriesLength, final List<Player> playerList) {
-		super(bestOfSeriesLength, playerList);
+	public TrisTournament(final int numberOfRounds, final int bestOfSeriesLength, final List<UUID> playerList, final String name) {
+		super(bestOfSeriesLength, playerList, name);
 		this.numberOfRounds = numberOfRounds;
 		standings = new ArrayList<TristanPlayerInfo>();
 		playerList.forEach(player -> standings.add(new TristanPlayerInfo(player)));
@@ -38,7 +35,7 @@ public class TrisTournament extends BasicRoundBasedTournament {
 	}
 
 	@Override
-	public Player getWinner() {
+	public UUID getWinner() {
 		return null;
 	}
 
@@ -88,7 +85,7 @@ public class TrisTournament extends BasicRoundBasedTournament {
 	}
 
 	private List<BestOfMatchSinglePlayer> createMatchesForRoundAccordingToStanding() {
-		final List<Player> playerList = new ArrayList<Player>();
+		final List<UUID> playerList = new ArrayList<UUID>();
 		if (standings == null) {
 			playerList.addAll(this.getParticipants());
 			Collections.shuffle(playerList);
@@ -103,18 +100,18 @@ public class TrisTournament extends BasicRoundBasedTournament {
 			standings.forEach(info -> playerList.add(info.getPlayer()));
 			final List<BestOfMatchSinglePlayer> matchesForRound = new ArrayList<BestOfMatchSinglePlayer>();
 			for (int i = 0; i < calculateMatchesPerRound(); i++) {
-				final Player player = playerList.remove(0);
+				final UUID player = playerList.remove(0);
 				matchesForRound.add(createNewMatch(player, seekOpponentForPlayer(player, playerList)));
 			}
 			return matchesForRound;
 		}
 	}
 
-	private Player seekOpponentForPlayer(final Player player, final List<Player> playerList) {
-		Player bestMatch = null;
+	private UUID seekOpponentForPlayer(final UUID player, final List<UUID> playerList) {
+		UUID bestMatch = null;
 		int distance = -1;
 		final TristanPlayerInfo playerInfo = infoMap.get(player);
-		for (final Player possibleOpponent : playerList) {
+		for (final UUID possibleOpponent : playerList) {
 			if (!playerInfo.hasPlayerFacedOpponentBefore(possibleOpponent)) {
 				playerList.remove(possibleOpponent);
 				return possibleOpponent;
@@ -147,7 +144,7 @@ public class TrisTournament extends BasicRoundBasedTournament {
 		}
 	}
 
-	public void setInitialEloValue(final Player player, final double initialEloValue) {
+	public void setInitialEloValue(final UUID player, final double initialEloValue) {
 		infoMap.get(player).setElo(initialEloValue);
 	}
 
@@ -187,39 +184,42 @@ public class TrisTournament extends BasicRoundBasedTournament {
 		return standings;
 	}
 
-	public String printStanding() {
-		final StringBuilder result = new StringBuilder();
-		int place = 1;
-		for (final TristanPlayerInfo info : standings) {
-			result.append(place++);
-			result.append(".\t");
-			result.append(info.getPlayer().getName());
-			result.append(" (");
-			result.append(info.getElo());
-			result.append(")\n");
-		}
-		return result.toString();
-	}
-
-	public String printMatchesForRound(final int i) {
-		final StringBuilder result = new StringBuilder();
-		final DecimalFormat df = new DecimalFormat("#.00");
-		df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
-		for (final BestOfMatchSinglePlayer match : rounds.get(i)) {
-			result.append(match.getSideA().getName());
-			result.append(" vs ");
-			result.append(match.getSideB().getName());
-			result.append(" ");
-			result.append(match.getScore(match.getSideA()));
-			result.append("-");
-			result.append(match.getScore(match.getSideB()));
-			result.append(" (");
-			final EloCalculation elo = new EloCalculation(infoMap.get(match.getSideA()).getPreviousElo(), infoMap.get(match.getSideB()).getPreviousElo());
-			elo.setFactualResult(match.getFinalScore());
-			final double deltaElo = elo.getPlayerBAdjustment() * TrisTournament.eloSpeedupFactor;
-			result.append(df.format(deltaElo));
-			result.append(")\n");
-		}
-		return result.toString();
-	}
+	// public String printStanding() {
+	// final StringBuilder result = new StringBuilder();
+	// int place = 1;
+	// for (final TristanPlayerInfo info : standings) {
+	// result.append(place++);
+	// result.append(".\t");
+	// result.append(getGlobalObjectService().getPlayerById(info.getPlayer()).getName());
+	// result.append(" (");
+	// result.append(info.getElo());
+	// result.append(")\n");
+	// }
+	// return result.toString();
+	// }
+	//
+	// public String printMatchesForRound(final int i) {
+	// final StringBuilder result = new StringBuilder();
+	// final DecimalFormat df = new DecimalFormat("#.00");
+	// df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+	// for (final BestOfMatchSinglePlayer match : rounds.get(i)) {
+	// result.append(getGlobalObjectService().getPlayerById(match.getSideA()).getName());
+	// result.append(" vs ");
+	// result.append(getGlobalObjectService().getPlayerById(match.getSideB()).getName());
+	// result.append(" ");
+	// result.append(match.getScore(match.getSideA()));
+	// result.append("-");
+	// result.append(match.getScore(match.getSideB()));
+	// result.append(" (");
+	// final EloCalculation elo = new
+	// EloCalculation(infoMap.get(match.getSideA()).getPreviousElo(),
+	// infoMap.get(match.getSideB()).getPreviousElo());
+	// elo.setFactualResult(match.getFinalScore());
+	// final double deltaElo = elo.getPlayerBAdjustment() *
+	// TrisTournament.eloSpeedupFactor;
+	// result.append(df.format(deltaElo));
+	// result.append(")\n");
+	// }
+	// return result.toString();
+	// }
 }

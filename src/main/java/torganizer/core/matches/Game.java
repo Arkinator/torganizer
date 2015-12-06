@@ -1,51 +1,50 @@
 package torganizer.core.matches;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 import torganizer.core.entities.IToEntity;
-import torganizer.core.entities.Player;
+import torganizer.core.persistance.orm.MatchOrm;
 
-public class Game extends AbstractMatch<Player> {
-	private List<SubmittedGameResult> submittedGameResults;
+public class Game extends AbstractMatch {
+	private UUID sideASubmittedResult;
+	private UUID sideBSubmittedResult;
+	private UUID adminSubmittedResult;
 
-	public Game(final Player playerA, final Player playerB) {
-		super(playerA, playerB);
-		submittedGameResults = new ArrayList<SubmittedGameResult>();
+	public Game(final UUID playerA, final UUID playerB, final String name) {
+		super(playerA, playerB, name);
 		refresh();
 	}
 
-	public Game() {
-		submittedGameResults = new ArrayList<SubmittedGameResult>();
+	public Game(final MatchOrm orm) {
+		super(orm);
 	}
 
-	protected Player getAdminVoteIfPresent() {
-		for (final SubmittedGameResult submittedGameResult : submittedGameResults) {
-			if (submittedGameResult.getSubmitter().isAdmin()) {
-				return submittedGameResult.getWinner();
-			}
-		}
-		return null;
+	public Game(final String name) {
+		super(name);
 	}
 
-	public void submitPlayerResult(final Player submitter, final Player winner) {
-		if (!submitter.equals(getSideA()) && !submitter.equals(getSideB()) && !submitter.isAdmin()) {
-			throw new SubmitterIsNotPlayerException("The player " + submitter + " is not a player in this match!");
-		}
-		for (final SubmittedGameResult existingResult : submittedGameResults) {
-			if (existingResult.getSubmitter().equals(submitter)) {
-				throw new GameResultSubmittedAlreadyException("The player " + submitter + " did already submit a result!");
-			}
-		}
-		submittedGameResults.add(new SubmittedGameResult(submitter, winner));
+	public void submitResultSideA(final UUID winner) {
+		sideASubmittedResult = winner;
+
+		refresh();
+	}
+
+	public void submitResultSideB(final UUID winner) {
+		sideBSubmittedResult = winner;
+
+		refresh();
+	}
+
+	public void submitResultAdmin(final UUID winner) {
+		adminSubmittedResult = winner;
 
 		refresh();
 	}
 
 	@Override
-	public Player calculateWinner() {
-		if (submittedGameResults == null) {
-			return null;
+	public UUID calculateWinner() {
+		if (adminSubmittedResult != null) {
+			return adminSubmittedResult;
 		}
 		if ((getSideA() == null) && (getSideB() != null)) {
 			return getSideB();
@@ -53,45 +52,19 @@ public class Game extends AbstractMatch<Player> {
 		if ((getSideB() == null) && (getSideA() != null)) {
 			return getSideA();
 		}
-		final Player winner = getAdminVoteIfPresent();
-		if (winner != null) {
-			return winner;
+		if (sideBSubmittedResult == null) {
+			return sideASubmittedResult;
 		}
-		if (submittedGameResults.size() != 2) {
-			return null;
+		if (sideASubmittedResult == null) {
+			return sideBSubmittedResult;
 		}
-		if (submittedGameResults.get(0).getWinner().equals(submittedGameResults.get(1).getWinner())) {
-			return submittedGameResults.get(0).getWinner();
-		} else {
-			return null;
+		if (sideASubmittedResult == sideBSubmittedResult) {
+			return sideBSubmittedResult;
 		}
-	}
-
-	public List<SubmittedGameResult> getSubmittedResults() {
-		return submittedGameResults;
-	}
-
-	public static class GameResultSubmittedAlreadyException extends RuntimeException {
-		private static final long serialVersionUID = 2795439708511522527L;
-
-		public GameResultSubmittedAlreadyException(final String string) {
-			super(string);
-		}
-	}
-
-	public static class SubmitterIsNotPlayerException extends RuntimeException {
-		private static final long serialVersionUID = -3010646733741702377L;
-
-		public SubmitterIsNotPlayerException(final String string) {
-			super(string);
-		}
+		return null;
 	}
 
 	@Override
 	public void callback(final IToEntity sender) {
-	}
-
-	public void setSubmittedResults(final List<SubmittedGameResult> submittedGameResults) {
-		this.submittedGameResults = submittedGameResults;
 	}
 }

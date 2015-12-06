@@ -2,17 +2,17 @@ package torganizer.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
-import torganizer.core.entities.Player;
 import torganizer.core.tournaments.TrisTournament;
 
 public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
-	private final Player player;
+	private final UUID player;
 	private double elo;
 	private double previousElo;
-	private final Map<Player, Integer> roundOfLastEncounter;
+	private final Map<UUID, Integer> roundOfLastEncounter;
 
-	public TristanPlayerInfo(final Player player) {
+	public TristanPlayerInfo(final UUID player) {
 		this.player = player;
 		this.elo = EloCalculation.defaultEloValue;
 		this.roundOfLastEncounter = new HashMap<>();
@@ -31,7 +31,7 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 		this.elo = elo;
 	}
 
-	public Player getPlayer() {
+	public UUID getPlayer() {
 		return player;
 	}
 
@@ -45,15 +45,15 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 		return "[player=" + player + ", elo=" + elo + "]";
 	}
 
-	public void addEncounter(final Player opponent, final Integer round) {
+	public void addEncounter(final UUID opponent, final Integer round) {
 		roundOfLastEncounter.put(opponent, round);
 	}
 
-	public Integer getRoundOfLastEncounter(final Player opponent) {
+	public Integer getRoundOfLastEncounter(final UUID opponent) {
 		return roundOfLastEncounter.get(opponent);
 	}
 
-	public boolean hasPlayerFacedOpponentBefore(final Player opponent) {
+	public boolean hasPlayerFacedOpponentBefore(final UUID opponent) {
 		return getRoundOfLastEncounter(opponent) != null;
 	}
 

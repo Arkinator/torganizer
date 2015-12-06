@@ -8,6 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,52 +33,34 @@ public class GameTest {
 
 	@Test
 	public void getResultForUnplayedGame() {
-		final Game game = new Game(playerA, playerB);
+		final Game game = new Game(playerA.getUid(), playerB.getUid(), "");
 		assertNull(game.getWinner());
 	}
 
 	@Test
 	public void onlyOnePlayerSubmitsResult() {
-		final Game game = new Game(playerA, playerB);
-		assertEquals(0, game.getSubmittedResults().size());
+		final Game game = new Game(playerA.getUid(), playerB.getUid(), "");
 		assertNull(game.getWinner());
 
-		game.submitPlayerResult(playerA, playerA);
+		game.submitResultSideA(playerA.getUid());
 
-		assertEquals(1, game.getSubmittedResults().size());
-		assertNull(game.getWinner());
-	}
-
-	@Test(expected = Game.SubmitterIsNotPlayerException.class)
-	public void impartialPlayerSubmitsResult() {
-		final Player playerC = new Player("playerC");
-
-		final Game game = new Game(playerA, playerB);
-		game.submitPlayerResult(playerC, playerA);
+		assertEquals(playerA.getUid(), game.getWinner());
 	}
 
 	@Test
 	public void bothPlayersSubmitSameResult() {
-		final Game game = new Game(playerA, playerB);
-		game.submitPlayerResult(playerA, playerA);
-		game.submitPlayerResult(playerB, playerA);
+		final Game game = new Game(playerA.getUid(), playerB.getUid(), "");
+		game.submitResultSideA(playerA.getUid());
+		game.submitResultSideB(playerA.getUid());
 
-		assertEquals(2, game.getSubmittedResults().size());
-		assertEquals(playerA, game.getWinner());
-	}
-
-	@Test(expected = Game.GameResultSubmittedAlreadyException.class)
-	public void onePlayerSubmitTwoResults() {
-		final Game game = new Game(playerA, playerB);
-		game.submitPlayerResult(playerA, playerA);
-		game.submitPlayerResult(playerA, playerA);
+		assertEquals(playerA.getUid(), game.getWinner());
 	}
 
 	@Test
 	public void playerSubmitDifferingResults() {
-		final Game game = new Game(playerA, playerB);
-		game.submitPlayerResult(playerA, playerA);
-		game.submitPlayerResult(playerB, playerB);
+		final Game game = new Game(playerA.getUid(), playerB.getUid(), "");
+		game.submitResultSideA(playerA.getUid());
+		game.submitResultSideB(playerB.getUid());
 
 		assertNull(game.getWinner());
 	}
@@ -87,10 +70,10 @@ public class GameTest {
 		final Player admin = new Player("playerC");
 		admin.setAdmin(true);
 
-		final Game game = new Game(playerA, playerB);
+		final Game game = new Game(playerA.getUid(), playerB.getUid(), "");
 
-		game.submitPlayerResult(admin, playerA);
-		assertEquals(playerA, game.getWinner());
+		game.submitResultAdmin(playerA.getUid());
+		assertEquals(playerA.getUid(), game.getWinner());
 	}
 
 	@Test
@@ -98,14 +81,14 @@ public class GameTest {
 		final Player admin = new Player("playerC");
 		admin.setAdmin(true);
 
-		final Game game = new Game(playerA, playerB);
+		final Game game = new Game(playerA.getUid(), playerB.getUid(), "");
 
-		game.submitPlayerResult(admin, playerA);
-		assertEquals(playerA, game.getWinner());
-		game.submitPlayerResult(playerA, playerB);
-		assertEquals(playerA, game.getWinner());
-		game.submitPlayerResult(playerB, playerA);
-		assertEquals(playerA, game.getWinner());
+		game.submitResultAdmin(playerA.getUid());
+		assertEquals(playerA.getUid(), game.getWinner());
+		game.submitResultSideB(playerB.getUid());
+		assertEquals(playerA.getUid(), game.getWinner());
+		game.submitResultSideA(playerA.getUid());
+		assertEquals(playerA.getUid(), game.getWinner());
 	}
 
 	@Test
@@ -113,39 +96,37 @@ public class GameTest {
 		final Player admin = new Player("playerC");
 		admin.setAdmin(true);
 
-		final Game game = new Game(playerA, playerB);
+		final Game game = new Game(playerA.getUid(), playerB.getUid(), "");
 
-		game.submitPlayerResult(playerA, playerB);
+		game.submitResultSideA(playerB.getUid());
+		assertEquals(playerB.getUid(), game.getWinner());
+		game.submitResultSideB(playerA.getUid());
 		assertEquals(null, game.getWinner());
-		game.submitPlayerResult(playerB, playerA);
-		assertEquals(null, game.getWinner());
-		game.submitPlayerResult(admin, playerA);
-		assertEquals(playerA, game.getWinner());
+		game.submitResultAdmin(playerA.getUid());
+		assertEquals(playerA.getUid(), game.getWinner());
 	}
 
 	@Test
 	public void testGameCallback() {
 		final Player admin = new Player("playerC");
 		admin.setAdmin(true);
-		final Game game = new Game(playerA, playerB);
+		final Game game = new Game(playerA.getUid(), playerB.getUid(), "");
 		final IToEntity mockTarget = Mockito.mock(IToEntity.class);
 		game.addCallbackObject(mockTarget);
 
-		game.submitPlayerResult(playerA, playerB);
-
-		verify(mockTarget, times(0)).callback(game);
-
-		game.submitPlayerResult(admin, playerA);
+		game.submitResultSideA(playerB.getUid());
 
 		verify(mockTarget, times(1)).callback(game);
+
+		game.submitResultAdmin(playerA.getUid());
+
+		verify(mockTarget, times(2)).callback(game);
 	}
 
 	@Test
 	public void testGamesEquals() {
-		final Game game1 = new Game(playerA, playerB);
-		final Game game2 = new Game(playerA, playerB);
-		System.out.println(game1);
-		System.out.println(game2);
+		final Game game1 = new Game(playerA.getUid(), playerB.getUid(), "");
+		final Game game2 = new Game(playerA.getUid(), playerB.getUid(), "");
 		assertFalse(game1.equals(game2));
 		assertFalse(game2.equals(game1));
 		assertTrue(game1.equals(game1));
@@ -154,8 +135,8 @@ public class GameTest {
 
 	@Test
 	public void testGamesHashCode() {
-		final Game game1 = new Game(playerA, playerB);
-		final Game game2 = new Game(playerA, playerB);
+		final Game game1 = new Game(playerA.getUid(), playerB.getUid(), "");
+		final Game game2 = new Game(playerA.getUid(), playerB.getUid(), "");
 		assertTrue(game1.hashCode() != game2.hashCode());
 		assertTrue(game2.hashCode() != game1.hashCode());
 		assertTrue(game2.hashCode() == game2.hashCode());
@@ -208,43 +189,43 @@ public class GameTest {
 
 	@Test(expected = AbstractMatch.UnrecognizedParticipantException.class)
 	public void submitTimeslotAsNonParticipant() {
-		createGameWithOneWeekTimeSlot().submitTimeSlot(new Player("fkdop"), null, null);
+		createGameWithOneWeekTimeSlot().submitTimeSlot(UUID.randomUUID(), null, null);
 	}
 
 	@Test
 	public void setPlayTimeInAccordanceWithSetTimeslots() {
 		final Game game = createGameWithOneWeekTimeSlot();
-		game.submitTimeSlot(playerA, TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
-		game.submitPlayTimeProposition(playerB, TOrganizerDateUtils.inNumberOfDays(2));
+		game.submitTimeSlot(playerA.getUid(), TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
+		game.submitPlayTimeProposition(playerB.getUid(), TOrganizerDateUtils.inNumberOfDays(2));
 		assertTrue(TOrganizerDateUtils.approximatelyEqual(TOrganizerDateUtils.inNumberOfDays(2), game.getPlayTime()));
 	}
 
 	@Test
 	public void setPlayTimeInAccordanceWithSetTimeslots_otherPlayer() {
 		final Game game = createGameWithOneWeekTimeSlot();
-		game.submitTimeSlot(playerB, TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
-		game.submitPlayTimeProposition(playerA, TOrganizerDateUtils.inNumberOfDays(2));
+		game.submitTimeSlot(playerB.getUid(), TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
+		game.submitPlayTimeProposition(playerA.getUid(), TOrganizerDateUtils.inNumberOfDays(2));
 		assertTrue(TOrganizerDateUtils.approximatelyEqual(TOrganizerDateUtils.inNumberOfDays(2), game.getPlayTime()));
 	}
 
 	@Test
 	public void setPlayTimeViolatingTimeslots() {
 		final Game game = createGameWithOneWeekTimeSlot();
-		game.submitTimeSlot(playerA, TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
-		game.submitPlayTimeProposition(playerB, TOrganizerDateUtils.inNumberOfDays(4));
+		game.submitTimeSlot(playerA.getUid(), TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
+		game.submitPlayTimeProposition(playerB.getUid(), TOrganizerDateUtils.inNumberOfDays(4));
 		assertNull(game.getPlayTime());
 	}
 
 	@Test
 	public void setMatchingTimeslotsAndCheckResultingPlayTime() {
 		final Game game = createGameWithOneWeekTimeSlot();
-		game.submitTimeSlot(playerA, TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
-		game.submitTimeSlot(playerB, TOrganizerDateUtils.inNumberOfDays(2), TOrganizerDateUtils.inNumberOfDays(4));
+		game.submitTimeSlot(playerA.getUid(), TOrganizerDateUtils.inNumberOfDays(1), TOrganizerDateUtils.inNumberOfDays(3));
+		game.submitTimeSlot(playerB.getUid(), TOrganizerDateUtils.inNumberOfDays(2), TOrganizerDateUtils.inNumberOfDays(4));
 		assertTrue(TOrganizerDateUtils.approximatelyEqual(TOrganizerDateUtils.inNumberOfDays(2), game.getPlayTime()));
 	}
 
 	private Game createGameWithOneWeekTimeSlot() {
-		final Game game = new Game(playerA, playerB);
+		final Game game = new Game(playerA.getUid(), playerB.getUid(), "");
 		game.setLatestTime(TOrganizerDateUtils.inNumberOfDays(7));
 		game.setEarliestTime(TOrganizerDateUtils.now());
 		return game;
@@ -252,7 +233,7 @@ public class GameTest {
 
 	@Test
 	public void testByeSet_WithOnePlayerBeingNull() {
-		final Game game = new Game(playerA, null);
-		assertEquals(playerA, game.getWinner());
+		final Game game = new Game(playerA.getUid(), null, "");
+		assertEquals(playerA.getUid(), game.getWinner());
 	}
 }

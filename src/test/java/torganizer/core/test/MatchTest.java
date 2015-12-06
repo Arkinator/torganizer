@@ -46,39 +46,39 @@ public class MatchTest {
 
 	@Test
 	public void setUp3v3Match() {
-		final CtlMatch match = new CtlMatch(3, teamA, teamB);
+		final CtlMatch match = new CtlMatch(3, teamA.getUid(), teamB.getUid(), "test");
 		assertEquals(3, match.getNumberOfSets());
 	}
 
 	@Test(expected = IllegalSetNumberSpecifiedException.class)
 	public void setNonExistentSet() {
-		final CtlMatch match = new CtlMatch(3, teamA, teamB);
-		match.setPlayer(1, 3, playerB_3);
+		final CtlMatch match = new CtlMatch(3, teamA.getUid(), teamB.getUid(), "test");
+		match.setPlayer(1, 3, playerB_3.getUid());
 	}
 
 	@Test(expected = CtlMatch.IllegalTeamNumberSpecifiedException.class)
 	public void setNonExistentTeam() {
-		final CtlMatch match = new CtlMatch(3, teamA, teamB);
-		match.setPlayer(2, 1, playerB_3);
+		final CtlMatch match = new CtlMatch(3, teamA.getUid(), teamB.getUid(), "test");
+		match.setPlayer(2, 1, playerB_3.getUid());
 	}
 
 	@Test
 	public void addPlayersToMatch_3v3() {
 		final CtlMatch match = construct3v3Match();
 
-		assertEquals(playerA_1, match.getSet(0).getSideA());
-		assertEquals(playerB_1, match.getSet(0).getSideB());
+		assertEquals(playerA_1.getUid(), match.getSet(0).getSideA());
+		assertEquals(playerB_1.getUid(), match.getSet(0).getSideB());
 
-		assertEquals(playerA_2, match.getSet(1).getSideA());
-		assertEquals(playerB_2, match.getSet(1).getSideB());
+		assertEquals(playerA_2.getUid(), match.getSet(1).getSideA());
+		assertEquals(playerB_2.getUid(), match.getSet(1).getSideB());
 
-		assertEquals(playerA_3, match.getSet(2).getSideA());
-		assertEquals(playerB_3, match.getSet(2).getSideB());
+		assertEquals(playerA_3.getUid(), match.getSet(2).getSideA());
+		assertEquals(playerB_3.getUid(), match.getSet(2).getSideB());
 	}
 
 	@Test
 	public void testEmptyWinnerOnNewMatch() {
-		final GenericMatch<Team> match = new CtlMatch(3, teamA, teamB);
+		final GenericMatch match = new CtlMatch(3, teamA.getUid(), teamB.getUid(), "test");
 		assertNull(match.getWinner());
 	}
 
@@ -88,11 +88,11 @@ public class MatchTest {
 		admin.setAdmin(true);
 
 		final CtlMatch match = construct3v3Match();
-		match.getSet(0).submitPlayerResult(admin, playerA_1);
-		match.getSet(1).submitPlayerResult(admin, playerA_2);
-		match.getSet(2).submitPlayerResult(admin, playerA_3);
+		match.getSet(0).submitResultAdmin(playerA_1.getUid());
+		match.getSet(1).submitResultAdmin(playerA_2.getUid());
+		match.getSet(2).submitResultAdmin(playerA_3.getUid());
 
-		assertEquals(teamA, match.getWinner());
+		assertEquals(teamA.getUid(), match.getWinner());
 	}
 
 	@Test
@@ -101,11 +101,11 @@ public class MatchTest {
 		admin.setAdmin(true);
 
 		final CtlMatch match = construct3v3Match();
-		match.getSet(0).submitPlayerResult(admin, playerA_1);
-		match.getSet(1).submitPlayerResult(admin, playerA_2);
-		match.getSet(2).submitPlayerResult(admin, playerA_3);
+		match.getSet(0).submitResultAdmin(playerA_1.getUid());
+		match.getSet(1).submitResultAdmin(playerA_2.getUid());
+		match.getSet(2).submitResultAdmin(playerA_3.getUid());
 
-		assertEquals(3, match.getScore(teamA));
+		assertEquals(3, match.getScoreSideA());
 	}
 
 	@Test
@@ -114,22 +114,22 @@ public class MatchTest {
 		admin.setAdmin(true);
 
 		final CtlMatch match = construct3v3Match();
-		match.getSet(0).submitPlayerResult(admin, playerB_1);
-		match.getSet(1).submitPlayerResult(admin, playerA_2);
-		match.getSet(2).submitPlayerResult(admin, playerA_3);
+		match.getSet(0).submitResultAdmin(playerB_1.getUid());
+		match.getSet(1).submitResultAdmin(playerA_2.getUid());
+		match.getSet(2).submitResultAdmin(playerA_3.getUid());
 
-		assertEquals(teamA, match.getWinner());
+		assertEquals(teamA.getUid(), match.getWinner());
 	}
 
 	protected CtlMatch construct3v3Match() {
-		final CtlMatch match = new CtlMatch(3, teamA, teamB);
-		match.setPlayer(0, 0, playerA_1);
-		match.setPlayer(0, 1, playerA_2);
-		match.setPlayer(0, 2, playerA_3);
+		final CtlMatch match = new CtlMatch(3, teamA.getUid(), teamB.getUid(), "test");
+		match.setPlayer(0, 0, playerA_1.getUid());
+		match.setPlayer(0, 1, playerA_2.getUid());
+		match.setPlayer(0, 2, playerA_3.getUid());
 
-		match.setPlayer(1, 0, playerB_1);
-		match.setPlayer(1, 1, playerB_2);
-		match.setPlayer(1, 2, playerB_3);
+		match.setPlayer(1, 0, playerB_1.getUid());
+		match.setPlayer(1, 1, playerB_2.getUid());
+		match.setPlayer(1, 2, playerB_3.getUid());
 		return match;
 	}
 }

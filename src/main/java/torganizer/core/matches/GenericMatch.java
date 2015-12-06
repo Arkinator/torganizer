@@ -1,21 +1,32 @@
 package torganizer.core.matches;
 
+import java.util.UUID;
+
 import torganizer.core.entities.AbstractToEntity;
 import torganizer.core.entities.IToEntity;
-import torganizer.core.entities.IToParticipant;
+import torganizer.core.persistance.orm.EntityOrm;
 
-public abstract class GenericMatch<TYPE extends IToParticipant> extends AbstractToEntity implements IToEntity {
-	public GenericMatch() {
+public abstract class GenericMatch extends AbstractToEntity implements IToEntity {
 
+	public GenericMatch(final String name) {
+		super(name);
 	}
 
-	public abstract TYPE getWinner();
+	public GenericMatch(final EntityOrm entity) {
+		super(entity);
+	}
 
-	public abstract void setSideA(TYPE sideA);
+	public GenericMatch(final UUID uid) {
+		super(uid, "Match" + uid);
+	}
 
-	public abstract TYPE getSideA();
+	public abstract UUID getWinner();
 
-	public abstract void setSideB(TYPE sideB);
+	public abstract void setSideA(UUID sideA);
 
-	public abstract TYPE getSideB();
+	public abstract UUID getSideA();
+
+	public abstract void setSideB(UUID sideB);
+
+	public abstract UUID getSideB();
 }

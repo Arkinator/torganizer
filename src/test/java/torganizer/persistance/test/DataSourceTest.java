@@ -14,25 +14,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import torganizer.core.entities.Player;
 import torganizer.core.matches.Game;
-import torganizer.core.persistance.objectservice.MatchObjectService;
-import torganizer.core.persistance.objectservice.PlayerObjectService;
+import torganizer.core.persistance.objectservice.GlobalObjectService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/spring-module.xml" })
 public class DataSourceTest {
 	@Autowired
-	private PlayerObjectService playerObjectService;
-	@Autowired
-	private MatchObjectService matchObjectService;
+	private GlobalObjectService globalObjectService;
 	private Player admin;
 	private final static String adminName = "admin";
 
 	@Before
 	public void initDb() {
-		if (playerObjectService.getPlayerByName(adminName) == null) {
+		if (globalObjectService.getPlayerByName(adminName) == null) {
 			admin = new Player(adminName);
 			admin.setAdmin(true);
-			playerObjectService.addPlayer(admin);
+			globalObjectService.addPlayer(admin);
 		} else {
 			admin = playerObjectService.getPlayerByName(adminName);
 		}

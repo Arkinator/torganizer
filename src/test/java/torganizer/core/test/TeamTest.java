@@ -33,7 +33,7 @@ public class TeamTest {
 		final Team team = new Team("teamName");
 		team.addPlayer(playerA);
 		team.addPlayer(playerB);
-		assertEquals(team, playerA.getTeam());
+		assertEquals(team.getUid(), playerA.getTeamUid());
 	}
 
 	@Test
@@ -41,8 +41,8 @@ public class TeamTest {
 		final String teamName = "fjkdslajfwepioc";
 		final Team team = new Team(teamName);
 		assertNull(team.getOwner());
-		team.setOwner(playerA);
-		assertEquals(playerA, team.getOwner());
+		team.setOwner(playerA.getUid());
+		assertEquals(playerA.getUid(), team.getOwner());
 	}
 
 	@Test
@@ -50,9 +50,9 @@ public class TeamTest {
 		final String teamName = "fjkdslajfwepioc";
 		final Team team = new Team(teamName);
 		assertEquals(0, team.getLieutenants().size());
-		assertFalse(team.isLieutenant(playerA));
-		team.addLieutenant(playerA);
+		assertFalse(team.isLieutenant(playerA.getUid()));
+		team.addLieutenant(playerA.getUid());
 		assertEquals(1, team.getLieutenants().size());
-		assertTrue(team.isLieutenant(playerA));
+		assertTrue(team.isLieutenant(playerA.getUid()));
 	}
 }

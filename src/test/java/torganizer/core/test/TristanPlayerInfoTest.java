@@ -16,8 +16,8 @@ public class TristanPlayerInfoTest {
 	public void calculateEloTest() {
 		final Player playerA = new Player("kfldösa");
 		final Player playerB = new Player("fsdafdsa");
-		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA);
-		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB);
+		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA.getUid());
+		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB.getUid());
 		playerAInfo.adjustElo(10);
 		assertTrue(playerAInfo.getElo() > playerBInfo.getElo());
 	}
@@ -26,8 +26,8 @@ public class TristanPlayerInfoTest {
 	public void testSorting() {
 		final Player playerA = new Player("kfldösa");
 		final Player playerB = new Player("fsdafdsa");
-		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA);
-		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB);
+		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA.getUid());
+		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB.getUid());
 		playerAInfo.setElo(1000.);
 		playerBInfo.setElo(500.);
 		assertTrue(playerAInfo.compareTo(playerBInfo) > 0);
@@ -37,8 +37,8 @@ public class TristanPlayerInfoTest {
 	public void testSortingInList() {
 		final Player playerA = new Player("kfldösa");
 		final Player playerB = new Player("fsdafdsa");
-		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA);
-		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB);
+		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA.getUid());
+		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB.getUid());
 		playerAInfo.setElo(1000.);
 		playerBInfo.setElo(500.);
 		final List<TristanPlayerInfo> list = new ArrayList<>();

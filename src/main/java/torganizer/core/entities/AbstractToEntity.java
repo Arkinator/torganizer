@@ -4,16 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import torganizer.core.persistance.orm.EntityOrm;
+
 public abstract class AbstractToEntity implements IToEntity {
 	private List<IToEntity> callbackList = new ArrayList<IToEntity>();
-	private UUID uid;
+	private final UUID uid;
+	private final String name;
 
-	protected AbstractToEntity() {
+	private EntityOrm orm;
+
+	protected AbstractToEntity(final String name) {
 		this.uid = UUID.randomUUID();
+		this.name = name;
 	}
 
-	protected AbstractToEntity(final UUID id) {
-		this.uid = id;
+	protected AbstractToEntity(final EntityOrm orm) {
+		this.orm = orm;
+		this.name = orm.getName();
+		this.uid = orm.getUuid();
+	}
+
+	public AbstractToEntity(final UUID uid, final String name) {
+		this.uid = uid;
+		this.name = name;
 	}
 
 	public void addCallbackObject(final IToEntity target) {
@@ -69,9 +82,7 @@ public abstract class AbstractToEntity implements IToEntity {
 		this.callbackList = callbackList;
 	}
 
-	public void setUid(final UUID uid) {
-		this.uid = uid;
+	public final String getName() {
+		return name;
 	}
-
-	public abstract String getName();
 }

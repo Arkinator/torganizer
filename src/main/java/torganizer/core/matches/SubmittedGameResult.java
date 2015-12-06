@@ -1,29 +1,29 @@
 package torganizer.core.matches;
 
-import torganizer.core.entities.Player;
+import java.util.UUID;
 
 public class SubmittedGameResult {
-	private Player submitter;
-	private Player winner;
+	private UUID submitter;
+	private UUID winner;
 
-	public SubmittedGameResult(Player submitter, Player winner) {
+	public SubmittedGameResult(final UUID submitter, final UUID winner) {
 		this.submitter = submitter;
 		this.winner = winner;
 	}
 
-	public Player getSubmitter() {
+	public UUID getSubmitter() {
 		return submitter;
 	}
 
-	public void setSubmitter(Player submitter) {
+	public void setSubmitter(final UUID submitter) {
 		this.submitter = submitter;
 	}
 
-	public Player getWinner() {
+	public UUID getWinner() {
 		return winner;
 	}
 
-	public void setWinner(Player winner) {
+	public void setWinner(final UUID winner) {
 		this.winner = winner;
 	}
 }

@@ -2,34 +2,27 @@ package torganizer.core.entities;
 
 import java.util.UUID;
 
+import torganizer.core.persistance.orm.PlayerOrm;
 import torganizer.web.data.UserInformation;
 
 public class Player extends AbstractToEntity implements IToParticipant {
-	private String name;
 	private boolean isAdmin;
-	private Team team;
+	private UUID teamUid;
 	private byte[] passwordHash;
 	private String passwordSalt;
 	private int gmtOffset;
 
+	private PlayerOrm orm;
+
 	public Player(final String name) {
-		this.setName(name);
+		super(name);
 		this.isAdmin = false;
 	}
 
-	public Player(final String name, final UUID id) {
-		super(id);
-		this.setName(name);
-		this.isAdmin = false;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	public void setName(final String name) {
-		this.name = name;
+	public Player(final PlayerOrm orm) {
+		super(orm.getEntity());
+		this.orm = orm;
+		this.isAdmin = orm.getAdmin();
 	}
 
 	public void setAdmin(final boolean isAdmin) {
@@ -40,20 +33,20 @@ public class Player extends AbstractToEntity implements IToParticipant {
 		return isAdmin;
 	}
 
-	public Team getTeam() {
-		return team;
+	public UUID getTeamUid() {
+		return teamUid;
 	}
 
-	public void setTeam(final Team team) {
-		this.team = team;
+	public void setTeamUid(final UUID teamUid) {
+		this.teamUid = teamUid;
 	}
 
 	@Override
 	public String toString() {
-		if (team == null) {
-			return name;
+		if (teamUid == null) {
+			return getName();
 		} else {
-			return "[" + team + "]" + name;
+			return "[" + teamUid + "]" + getName();
 		}
 	}
 
@@ -63,7 +56,7 @@ public class Player extends AbstractToEntity implements IToParticipant {
 			return true;
 		} else {
 			if (other instanceof Team) {
-				if (getTeam().equals(other)) {
+				if (teamUid.equals(other.getUid())) {
 					return true;
 				} else {
 					return false;

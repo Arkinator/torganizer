@@ -3,54 +3,67 @@ package torganizer.core.matches;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import torganizer.core.entities.IToEntity;
-import torganizer.core.entities.IToParticipant;
+import torganizer.core.persistance.orm.MatchOrm;
 
-public abstract class AbstractMatch<TYPE extends IToParticipant> extends GenericMatch<TYPE> {
-	private TYPE sideA;
-	private TYPE sideB;
+public abstract class AbstractMatch extends GenericMatch {
+	private UUID sideA;
+	private UUID sideB;
 	private List<TimeSlot> timeSlotsSideA;
 	private List<TimeSlot> timeSlotsSideB;
-	private TYPE winner = null;
+	private UUID winner = null;
 	private LocalDateTime earliestTime;
 	private LocalDateTime latestTime;
 	private LocalDateTime playTime;
-	private String name;
 
-	public AbstractMatch(final TYPE sideA, final TYPE sideB) {
+	private MatchOrm orm;
+
+	public AbstractMatch(final UUID sideA, final UUID sideB, final String name) {
+		super(name);
 		this.sideA = sideA;
 		this.sideB = sideB;
 		this.timeSlotsSideA = new ArrayList<TimeSlot>();
 		this.timeSlotsSideB = new ArrayList<TimeSlot>();
-		this.name = "Match" + getUid();
 	}
 
-	public AbstractMatch() {
+	public AbstractMatch(final String name) {
+		super(name);
+		this.timeSlotsSideA = new ArrayList<TimeSlot>();
+		this.timeSlotsSideB = new ArrayList<TimeSlot>();
+	}
+
+	public AbstractMatch(final MatchOrm orm) {
+		super(orm.getEntity());
+		this.sideA = orm.getSideAId();
+		this.sideB = orm.getSideBId();
+		this.winner = orm.getWinner();
+		this.orm = orm;
 	}
 
 	@Override
-	public TYPE getWinner() {
+	public UUID getWinner() {
 		return winner;
 	}
 
 	@Override
-	public void setSideA(final TYPE sideA) {
+	public void setSideA(final UUID sideA) {
 		this.sideA = sideA;
 	}
 
 	@Override
-	public TYPE getSideA() {
+	public UUID getSideA() {
 		return sideA;
 	}
 
 	@Override
-	public void setSideB(final TYPE sideB) {
+	public void setSideB(final UUID sideB) {
 		this.sideB = sideB;
 	}
 
 	@Override
-	public TYPE getSideB() {
+	public UUID getSideB() {
 		return sideB;
 	}
 
@@ -65,16 +78,16 @@ public abstract class AbstractMatch<TYPE extends IToParticipant> extends Generic
 	}
 
 	public void refresh() {
-		final TYPE newWinner = calculateWinner();
+		final UUID newWinner = calculateWinner();
 		if (newWinner != winner) {
 			winner = newWinner;
 			fireCallback();
 		}
 	}
 
-	public abstract TYPE calculateWinner();
+	public abstract UUID calculateWinner();
 
-	public void submitTimeSlot(final TYPE side, final LocalDateTime startTime, final LocalDateTime endTime) {
+	public void submitTimeSlot(final UUID side, final LocalDateTime startTime, final LocalDateTime endTime) {
 		final TimeSlot timeSlot = new TimeSlot(startTime, endTime);
 		if (side.equals(sideA)) {
 			timeSlotsSideA.add(timeSlot);
@@ -96,7 +109,7 @@ public abstract class AbstractMatch<TYPE extends IToParticipant> extends Generic
 		}
 	}
 
-	public void submitPlayTimeProposition(final TYPE submittingSide, final LocalDateTime proposition) {
+	public void submitPlayTimeProposition(final UUID submittingSide, final LocalDateTime proposition) {
 		if (submittingSide.equals(sideA)) {
 			checkPlayTimeProposition(timeSlotsSideB, proposition);
 		} else if (submittingSide.equals(sideB)) {
@@ -163,14 +176,5 @@ public abstract class AbstractMatch<TYPE extends IToParticipant> extends Generic
 
 	public boolean isBye() {
 		return (getSideA() == null) || (getSideB() == null);
-	}
-
-	@Override
-	public String getName() {
-		return this.name;
-	}
-
-	public void setWinner(final TYPE winner) {
-		this.winner = winner;
 	}
 }

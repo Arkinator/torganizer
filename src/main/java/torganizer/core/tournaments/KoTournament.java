@@ -5,27 +5,27 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.math.util.MathUtils;
 
 import torganizer.core.entities.IToEntity;
-import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.matches.GenericMatch;
 
 public class KoTournament extends BasicRoundBasedTournament {
 	private Map<BestOfMatchSinglePlayer, Integer> matchNumbers;
 	private Map<Integer, BestOfMatchSinglePlayer> matchesNumbered;
-	private Player winner = null;
+	private UUID winner = null;
 
-	public KoTournament(final int bestOfMatchLength, final List<Player> playerList) {
-		super(bestOfMatchLength, playerList);
+	public KoTournament(final int bestOfMatchLength, final List<UUID> playerList, final String name) {
+		super(bestOfMatchLength, playerList, name);
 		fillRounds();
 	}
 
 	@Override
 	protected void fillRounds() {
-		final List<Player> playerList = new ArrayList<Player>();
+		final List<UUID> playerList = new ArrayList<UUID>();
 		playerList.addAll(getParticipants());
 		Collections.shuffle(playerList);
 		int playersLeftInTournament = getParticipants().size();
@@ -44,7 +44,7 @@ public class KoTournament extends BasicRoundBasedTournament {
 	}
 
 	@Override
-	protected BestOfMatchSinglePlayer createNewMatch(final Player playerA, final Player playerB) {
+	protected BestOfMatchSinglePlayer createNewMatch(final UUID playerA, final UUID playerB) {
 		if (matchNumbers == null) {
 			initializeInternalDictionaries();
 		}
@@ -60,7 +60,7 @@ public class KoTournament extends BasicRoundBasedTournament {
 	}
 
 	@Override
-	public Player getWinner() {
+	public UUID getWinner() {
 		return winner;
 	}
 
@@ -79,9 +79,9 @@ public class KoTournament extends BasicRoundBasedTournament {
 		return getParticipants().size() - 1;
 	}
 
-	public List<Player> getPlayersForRound(final int roundNumber) {
-		final List<Player> playerList = new ArrayList<Player>();
-		for (final GenericMatch<Player> match : getMatchesForRound(roundNumber)) {
+	public List<UUID> getPlayersForRound(final int roundNumber) {
+		final List<UUID> playerList = new ArrayList<UUID>();
+		for (final GenericMatch match : getMatchesForRound(roundNumber)) {
 			playerList.add(match.getSideA());
 			playerList.add(match.getSideB());
 		}
@@ -110,7 +110,7 @@ public class KoTournament extends BasicRoundBasedTournament {
 
 	private boolean calculateAdvancingPlayers_didAnythingChange(final IToEntity sender) {
 		if (sender instanceof BestOfMatchSinglePlayer) {
-			final Player advancingPlayer = ((BestOfMatchSinglePlayer) sender).getWinner();
+			final UUID advancingPlayer = ((BestOfMatchSinglePlayer) sender).getWinner();
 			if (advancingPlayer != null) {
 				final Integer matchNumber = matchNumbers.get(sender);
 				if (matchNumber == null) {
