@@ -8,27 +8,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import torganizer.core.entities.AbstractToEntity;
 import torganizer.core.entities.Player;
+import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.matches.Game;
 import torganizer.core.persistance.interfaces.EntityDao;
 import torganizer.core.persistance.orm.EntityOrm;
-import torganizer.core.persistance.orm.OrmFactory;
 import torganizer.exceptions.NotYetImplementedException;
 
 @Transactional
 @Component(value = "globalObjectServiceImpl")
 public class GlobalObjectServiceImpl implements GlobalObjectService {
 	private final EntityDao entityDao;
-	private final OrmFactory ormFactory;
 
 	@Autowired(required = true)
-	public GlobalObjectServiceImpl(final EntityDao entityDao, final OrmFactory ormFactory) {
+	public GlobalObjectServiceImpl(final EntityDao entityDao) {
 		this.entityDao = entityDao;
-		this.ormFactory = ormFactory;
 	}
 
 	public void createEntity(final AbstractToEntity entity) {
-		final EntityOrm entityOrm = ormFactory.getEntityOrm(entity);
-		entityDao.persist(entityOrm);
+		entityDao.persist(entity.getEntityOrm());
 	}
 
 	@Override
@@ -52,20 +49,51 @@ public class GlobalObjectServiceImpl implements GlobalObjectService {
 
 	@Override
 	public void addPlayer(final Player player) {
-		entityDao.persist(ormFactory.getPlayerOrm(player).getEntity());
+		entityDao.persist(player.getEntityOrm());
 	}
 
 	@Override
 	public void addGame(final Game game) {
-		entityDao.persist(ormFactory.getGameOrm(game).getEntity());
+		entityDao.persist(game.getEntityOrm());
 	}
 
 	@Override
-	public Game getMatchById(final UUID gameId) {
+	public Game getGameById(final UUID gameId) {
 		final EntityOrm entity = entityDao.getById(gameId);
 		if (entity == null) {
 			return null;
 		}
 		return new Game(entity.getMatch());
+	}
+
+	@Override
+	public BestOfMatchSinglePlayer getBestOfMatchById(final UUID gameId) {
+		final EntityOrm entity = entityDao.getById(gameId);
+		if (entity == null) {
+			return null;
+		}
+		return new BestOfMatchSinglePlayer(entity.getMatch());
+	}
+
+	@Override
+	public void addMatch(final BestOfMatchSinglePlayer match) {
+		entityDao.persist(match.getEntityOrm());
+	}
+
+	@Override
+	public void updateEntity(final AbstractToEntity entity) {
+		if (entity.getEntityOrm() == null) {
+			throw new CanNotUpdatePojoException(
+					"The object you are trying to save is a pojo and has no attached DB-Object! Persist it first, or load it from the DB if it already is");
+		}
+		entityDao.update(entity.getEntityOrm());
+	}
+
+	public class CanNotUpdatePojoException extends RuntimeException {
+		private static final long serialVersionUID = 6645786466265975027L;
+
+		public CanNotUpdatePojoException(final String string) {
+			super(string);
+		}
 	}
 }

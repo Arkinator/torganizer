@@ -18,12 +18,11 @@ public abstract class AbstractMatch extends GenericMatch {
 	private LocalDateTime latestTime;
 	private LocalDateTime playTime;
 
-	private MatchOrm orm;
-
 	public AbstractMatch(final UUID sideA, final UUID sideB, final String name) {
 		super(name);
-		this.sideA = sideA;
-		this.sideB = sideB;
+		constructMatchOrm();
+		setSideA(sideA);
+		setSideB(sideB);
 		this.timeSlotsSideA = new ArrayList<TimeSlot>();
 		this.timeSlotsSideB = new ArrayList<TimeSlot>();
 	}
@@ -32,6 +31,7 @@ public abstract class AbstractMatch extends GenericMatch {
 		super(name);
 		this.timeSlotsSideA = new ArrayList<TimeSlot>();
 		this.timeSlotsSideB = new ArrayList<TimeSlot>();
+		constructMatchOrm();
 	}
 
 	public AbstractMatch(final MatchOrm orm) {
@@ -39,7 +39,12 @@ public abstract class AbstractMatch extends GenericMatch {
 		this.sideA = orm.getSideAId();
 		this.sideB = orm.getSideBId();
 		this.winner = orm.getWinner();
-		this.orm = orm;
+	}
+
+	protected void constructMatchOrm() {
+		final MatchOrm matchOrm = new MatchOrm();
+		getEntityOrm().setMatch(matchOrm);
+		matchOrm.setEntity(getEntityOrm());
 	}
 
 	@Override
@@ -50,6 +55,7 @@ public abstract class AbstractMatch extends GenericMatch {
 	@Override
 	public void setSideA(final UUID sideA) {
 		this.sideA = sideA;
+		getEntityOrm().getMatch().setSideAId(sideA);
 	}
 
 	@Override
@@ -60,6 +66,7 @@ public abstract class AbstractMatch extends GenericMatch {
 	@Override
 	public void setSideB(final UUID sideB) {
 		this.sideB = sideB;
+		getEntityOrm().getMatch().setSideBId(sideB);
 	}
 
 	@Override
@@ -81,6 +88,7 @@ public abstract class AbstractMatch extends GenericMatch {
 		final UUID newWinner = calculateWinner();
 		if (newWinner != winner) {
 			winner = newWinner;
+			getEntityOrm().getMatch().setWinner(winner);
 			fireCallback();
 		}
 	}

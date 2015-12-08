@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import torganizer.core.entities.IToEntity;
+import torganizer.core.persistance.orm.EntityOrm;
+import torganizer.core.persistance.orm.MatchOrm;
 
 public abstract class AbstractMatchSeries<SET extends GenericMatch> extends AbstractMatch {
 	private final List<SET> sets;
@@ -12,10 +14,27 @@ public abstract class AbstractMatchSeries<SET extends GenericMatch> extends Abst
 	public AbstractMatchSeries(final int numberOfSets, final UUID sideA, final UUID sideB, final String name) {
 		super(sideA, sideB, name);
 		sets = new ArrayList<SET>();
+		getEntityOrm().getMatch().setSets(new ArrayList<>());
 		for (int i = 0; i < numberOfSets; i++) {
 			final SET set = constructNewSet();
-			set.addCallbackObject(this);
+			addNewSet(set);
+		}
+		getEntityOrm().getMatch().setNumberOfSets(numberOfSets);
+	}
+
+	private void addNewSet(final SET set) {
+		set.addCallbackObject(this);
+		sets.add(set);
+		getEntityOrm().getMatch().getSets().add(set.getEntityOrm());
+	}
+
+	public AbstractMatchSeries(final MatchOrm match) {
+		super(match);
+		sets = new ArrayList<SET>();
+		for (final EntityOrm setOrm : match.getSets()) {
+			final SET set = (SET) MatchFactory.constructMatchFromOrm(setOrm);
 			sets.add(set);
+			set.addCallbackObject(this);
 		}
 	}
 
@@ -100,5 +119,9 @@ public abstract class AbstractMatchSeries<SET extends GenericMatch> extends Abst
 	@Override
 	public String toString() {
 		return super.toString() + "(" + getScoreSideA() + ":" + getScoreSideB() + ")";
+	}
+
+	protected List<GenericMatch> getSets() {
+		return (List<GenericMatch>) sets;
 	}
 }

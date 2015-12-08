@@ -1,12 +1,16 @@
 package torganizer.core.persistance.orm;
 
+import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -49,6 +53,13 @@ public class MatchOrm {
 
 	@Column(name = "ADMIN_WINNER")
 	private UUID adminSubmittedWinner;
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "ID", unique = true)
+	private List<EntityOrm> sets;
+
+	@Column(name = "NUMBER_OF_SETS")
+	private int numberOfSets;
 
 	public Long getId() {
 		return id;
@@ -120,5 +131,21 @@ public class MatchOrm {
 
 	public void setAdminSubmittedWinner(final UUID adminSubmittedWinner) {
 		this.adminSubmittedWinner = adminSubmittedWinner;
+	}
+
+	public List<EntityOrm> getSets() {
+		return sets;
+	}
+
+	public void setSets(final List<EntityOrm> sets) {
+		this.sets = sets;
+	}
+
+	public int getNumberOfSets() {
+		return numberOfSets;
+	}
+
+	public void setNumberOfSets(final int numberOfSets) {
+		this.numberOfSets = numberOfSets;
 	}
 }

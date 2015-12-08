@@ -11,11 +11,14 @@ public abstract class AbstractToEntity implements IToEntity {
 	private final UUID uid;
 	private final String name;
 
-	private EntityOrm orm;
+	private final EntityOrm orm;
 
 	protected AbstractToEntity(final String name) {
 		this.uid = UUID.randomUUID();
 		this.name = name;
+		this.orm = new EntityOrm();
+		this.orm.setName(getName());
+		this.orm.setUuid(getUid());
 	}
 
 	protected AbstractToEntity(final EntityOrm orm) {
@@ -27,6 +30,9 @@ public abstract class AbstractToEntity implements IToEntity {
 	public AbstractToEntity(final UUID uid, final String name) {
 		this.uid = uid;
 		this.name = name;
+		this.orm = new EntityOrm();
+		this.orm.setName(getName());
+		this.orm.setUuid(getUid());
 	}
 
 	public void addCallbackObject(final IToEntity target) {
@@ -84,5 +90,9 @@ public abstract class AbstractToEntity implements IToEntity {
 
 	public final String getName() {
 		return name;
+	}
+
+	public EntityOrm getEntityOrm() {
+		return orm;
 	}
 }

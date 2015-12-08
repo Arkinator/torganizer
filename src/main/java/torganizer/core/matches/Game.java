@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import torganizer.core.entities.IToEntity;
 import torganizer.core.persistance.orm.MatchOrm;
+import torganizer.core.types.MatchType;
 
 public class Game extends AbstractMatch {
 	private UUID sideASubmittedResult;
@@ -13,6 +14,7 @@ public class Game extends AbstractMatch {
 	public Game(final UUID playerA, final UUID playerB, final String name) {
 		super(playerA, playerB, name);
 		refresh();
+		getEntityOrm().getMatch().setType(MatchType.GAME);
 	}
 
 	public Game(final MatchOrm orm) {
@@ -28,18 +30,21 @@ public class Game extends AbstractMatch {
 
 	public void submitResultSideA(final UUID winner) {
 		sideASubmittedResult = winner;
+		getEntityOrm().getMatch().setSideASubmittedWinner(winner);
 
 		refresh();
 	}
 
 	public void submitResultSideB(final UUID winner) {
 		sideBSubmittedResult = winner;
+		getEntityOrm().getMatch().setSideBSubmittedWinner(winner);
 
 		refresh();
 	}
 
 	public void submitResultAdmin(final UUID winner) {
 		adminSubmittedResult = winner;
+		getEntityOrm().getMatch().setAdminSubmittedWinner(winner);
 
 		refresh();
 	}

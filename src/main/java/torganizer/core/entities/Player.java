@@ -12,21 +12,22 @@ public class Player extends AbstractToEntity implements IToParticipant {
 	private String passwordSalt;
 	private int gmtOffset;
 
-	private PlayerOrm orm;
-
 	public Player(final String name) {
 		super(name);
 		this.isAdmin = false;
+		getEntityOrm().setPlayer(new PlayerOrm());
+		getEntityOrm().getPlayer().setEntity(getEntityOrm());
+		getEntityOrm().getPlayer().setAdmin(false);
 	}
 
 	public Player(final PlayerOrm orm) {
 		super(orm.getEntity());
-		this.orm = orm;
 		this.isAdmin = orm.getAdmin();
 	}
 
 	public void setAdmin(final boolean isAdmin) {
 		this.isAdmin = isAdmin;
+		getEntityOrm().getPlayer().setAdmin(isAdmin);
 	}
 
 	public boolean isAdmin() {

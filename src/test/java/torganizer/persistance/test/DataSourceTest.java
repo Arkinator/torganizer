@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import torganizer.core.entities.Player;
+import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.matches.Game;
 import torganizer.core.persistance.objectservice.GlobalObjectService;
 
@@ -57,10 +59,6 @@ public class DataSourceTest {
 		assertEquals(playerId, p.getUid());
 		assertTrue(p.isAdmin());
 		assertEquals(bBack, p);
-
-		// for (final Player player : globalObjectService.getAllPlayers()) {
-		// System.out.println(player);
-		// }
 	}
 
 	@Test
@@ -74,10 +72,40 @@ public class DataSourceTest {
 		final UUID gameId = game.getUid();
 		game = null;
 
-		game = globalObjectService.getMatchById(gameId);
+		game = globalObjectService.getGameById(gameId);
 		assertEquals(p1.getUid(), game.getSideA());
 		assertEquals(p2.getUid(), game.getSideB());
 		assertEquals(p1.getUid(), game.getWinner());
 		assertEquals(p1.getUid(), game.getAdminSubmittedWinner());
+	}
+
+	@Test
+	public void singlePlayerMatchSeriesPersistanceTest() {
+		final Player p1 = new Player("player1");
+		final Player p2 = new Player("player2");
+
+		// create new match
+		BestOfMatchSinglePlayer match = new BestOfMatchSinglePlayer(3, p1.getUid(), p2.getUid(), RandomStringUtils.randomAlphabetic(20));
+		globalObjectService.addMatch(match);
+		final UUID matchId = match.getUid();
+		match = null;
+
+		// update match in db
+		match = globalObjectService.getBestOfMatchById(matchId);
+		match.getSet(0).submitResultAdmin(p1.getUid());
+		match.getSet(1).submitResultAdmin(p2.getUid());
+		match.getSet(2).submitResultAdmin(p1.getUid());
+		assertEquals(p1.getUid(), match.getWinner());
+		globalObjectService.updateEntity(match);
+
+		// check
+		match = globalObjectService.getBestOfMatchById(matchId);
+		assertEquals(p1.getUid(), match.getSideA());
+		assertEquals(p2.getUid(), match.getSideB());
+		assertEquals(p1.getUid(), match.getWinner());
+		assertEquals(3, match.getNumberOfSets());
+		assertEquals(p1.getUid(), match.getSet(0).getWinner());
+		assertEquals(p2.getUid(), match.getSet(1).getWinner());
+		assertEquals(p1.getUid(), match.getSet(2).getWinner());
 	}
 }
