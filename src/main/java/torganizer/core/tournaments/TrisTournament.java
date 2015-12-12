@@ -98,8 +98,6 @@ public class TrisTournament extends BasicRoundBasedTournament {
 				final UUID playerA = playerList.remove(0);
 				final UUID playerB = playerList.remove(0);
 				matchesForRound.add(createNewMatch(playerA, playerB));
-				infoMap.get(playerA).addEncounter(playerB, round);
-				infoMap.get(playerB).addEncounter(playerA, round);
 			}
 			return matchesForRound;
 		} else {
@@ -109,8 +107,6 @@ public class TrisTournament extends BasicRoundBasedTournament {
 				final UUID playerA = playerList.remove(0);
 				final UUID playerB = seekOpponentForPlayer(playerA, playerList);
 				matchesForRound.add(createNewMatch(playerA, playerB));
-				infoMap.get(playerA).addEncounter(playerB, round);
-				infoMap.get(playerB).addEncounter(playerA, round);
 			}
 			return matchesForRound;
 		}
@@ -179,6 +175,8 @@ public class TrisTournament extends BasicRoundBasedTournament {
 		if (sender.getWinner() != null) {
 			final TristanPlayerInfo infoA = infoMap.get(sender.getSideA());
 			final TristanPlayerInfo infoB = infoMap.get(sender.getSideB());
+			infoA.addEncounter(sender.getSideA(), getCurrentRound());
+			infoB.addEncounter(sender.getSideB(), getCurrentRound());
 
 			final EloCalculation elo = new EloCalculation(infoA.getElo(), infoB.getElo());
 			elo.setFactualResult(sender.getFinalScore());

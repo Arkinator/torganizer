@@ -222,10 +222,11 @@ public class TrisTournamentPrinter {
 		result.append("|-\n");
 		result.append("!width=10px|ELO A\n");
 		result.append("!width=20px|<!--Team A-->\n");
-		result.append("!width=200px|ID A\n");
+		result.append("!width=200px style=\"text-align: center;\"|ID A\n");
 		result.append("!width=25px class=\"unsortable\" |<!-- vs -->\n");
 		result.append("!width=200px|ID B\n");
 		result.append("!width=20px|<!--Team B-->\n");
+		result.append("!width=10px|ELO B\n");
 		result.append("!width=10px|Δ Elo\n");
 		result.append("|-\n");
 	}
