@@ -1,6 +1,8 @@
 package torganizer.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -9,16 +11,18 @@ import torganizer.core.tournaments.TrisTournament;
 public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 	private final UUID player;
 	private double elo;
-	private double previousElo;
+	private final List<Double> eloPerRound;
 	private final Map<UUID, Integer> roundOfLastEncounter;
 
 	public TristanPlayerInfo(final UUID player) {
 		this.player = player;
+		this.eloPerRound = new ArrayList<>();
 		this.elo = EloCalculation.defaultEloValue;
 		this.roundOfLastEncounter = new HashMap<>();
 	}
 
 	public void adjustElo(final double eloAdjustment) {
+		eloPerRound.add(this.elo);
 		this.elo += eloAdjustment * TrisTournament.eloSpeedupFactor;
 	}
 
@@ -27,7 +31,6 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 	}
 
 	public void setElo(final double elo) {
-		this.previousElo = elo;
 		this.elo = elo;
 	}
 
@@ -57,7 +60,10 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 		return getRoundOfLastEncounter(opponent) != null;
 	}
 
-	public double getPreviousElo() {
-		return previousElo;
+	public double getEloForRound(final int round) {
+		if (round >= eloPerRound.size()) {
+			return elo;
+		}
+		return eloPerRound.get(round);
 	}
 }

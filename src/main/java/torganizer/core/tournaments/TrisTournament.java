@@ -127,6 +127,7 @@ public class TrisTournament extends BasicRoundBasedTournament {
 				distance = newDistance;
 			}
 		}
+		System.out.println("Finding best match at " + distance + " distance");
 		playerList.remove(bestMatch);
 		return bestMatch;
 	}
@@ -175,8 +176,8 @@ public class TrisTournament extends BasicRoundBasedTournament {
 		if (sender.getWinner() != null) {
 			final TristanPlayerInfo infoA = infoMap.get(sender.getSideA());
 			final TristanPlayerInfo infoB = infoMap.get(sender.getSideB());
-			infoA.addEncounter(sender.getSideA(), getCurrentRound());
-			infoB.addEncounter(sender.getSideB(), getCurrentRound());
+			infoA.addEncounter(sender.getSideB(), getCurrentRound());
+			infoB.addEncounter(sender.getSideA(), getCurrentRound());
 
 			final EloCalculation elo = new EloCalculation(infoA.getElo(), infoB.getElo());
 			elo.setFactualResult(sender.getFinalScore());

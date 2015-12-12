@@ -34,16 +34,18 @@ public class EloTesting {
 	private TrisTournament tournament;
 
 	public static String[][] playerInfo = { //
+			{ "2050", "391", "Grandmaster", "P", "C6" }, //
 			{ "2000", "391", "Silver", "P", "AI" }, //
+			{ "1950", "365", "Gold", "T", "UR" }, //
 			{ "1900", "882", "Platinum", "Z", "AI" }, //
-			{ "1800", "1459", "Diamond", "T", "UR" }, //
-			{ "1700", "887", "Master", "T", "UR" }, //
-			{ "1600", "809", "Master", "T", "UR" }, //
-			{ "1500", "552", "Gold", "Z", "UR" }, //
 			{ "1850", "359", "Platinum", "P", "UR" }, //
-			{ "1650", "987", "Bronze", "P", "UR" }, //
+			{ "1800", "1459", "Diamond", "T", "FG" }, //
 			{ "1750", "365", "Gold", "T", "UR" }, //
-			{ "1950", "365", "Gold", "T", "UR" } };
+			{ "1700", "887", "Master", "T", "GR" }, //
+			{ "1650", "987", "Bronze", "P", "UR" }, //
+			{ "1600", "809", "Master", "T", "BG" }, //
+			{ "1550", "809", "Bronze", "T", "UR" }, //
+			{ "1500", "552", "Gold", "Z", "UR" } };
 	public static String[][] teamInfo = { { "Team Unrivaled", "UR", "team unrivaled", "UnrivaledMini.png" }, //
 			{ "All Inspiration", "AI", "all-inspiration", "All-Inspirationlogo_std.png" }, //
 			{ "Guns and Roaches", "GR", "guns and roaches", "GunsandRoachesMini.png" }, //
