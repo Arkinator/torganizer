@@ -31,6 +31,7 @@ public class Player extends AbstractToEntity implements IToParticipant {
 		this.battleNetCode = orm.getBattleNetCode();
 		this.race = orm.getRace();
 		this.league = orm.getLeague();
+		this.teamUid = orm.getTeam();
 	}
 
 	public void setAdmin(final boolean isAdmin) {
@@ -48,6 +49,7 @@ public class Player extends AbstractToEntity implements IToParticipant {
 
 	public void setTeamUid(final UUID teamUid) {
 		this.teamUid = teamUid;
+		getEntityOrm().getPlayer().setTeam(teamUid);
 	}
 
 	@Override

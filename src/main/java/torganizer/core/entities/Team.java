@@ -12,6 +12,7 @@ public class Team extends AbstractToEntity implements IToParticipant {
 	private final List<UUID> lieutenants;
 	private String shortName;
 	private String liquipediaFlagCode;
+	private String liquipediaName;
 
 	public Team(final String name) {
 		super(name);
@@ -25,6 +26,7 @@ public class Team extends AbstractToEntity implements IToParticipant {
 		this.lieutenants = new ArrayList<UUID>();
 		this.shortName = getEntityOrm().getTeam().getShortname();
 		this.liquipediaFlagCode = getEntityOrm().getTeam().getFlagcode();
+		this.liquipediaName = getEntityOrm().getTeam().getLiquipediaName();
 	}
 
 	public void addPlayer(final Player newPlayer) {
@@ -95,5 +97,14 @@ public class Team extends AbstractToEntity implements IToParticipant {
 	public void setLiquipediaFlagCode(final String liquipediaFlagCode) {
 		this.liquipediaFlagCode = liquipediaFlagCode;
 		getEntityOrm().getTeam().setFlagcode(liquipediaFlagCode);
+	}
+
+	public String getLiquipediaName() {
+		return liquipediaName;
+	}
+
+	public void setLiquipediaName(final String liquipediaName) {
+		this.liquipediaName = liquipediaName;
+		getEntityOrm().getTeam().setLiquipediaName(liquipediaName);
 	}
 }

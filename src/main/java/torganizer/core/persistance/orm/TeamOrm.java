@@ -36,6 +36,9 @@ public class TeamOrm {
 	@Column(name = "FLAGCODE")
 	private String flagcode;
 
+	@Column(name = "LIQUIPEDIANAME")
+	private String liquipediaName;
+
 	public Long getId() {
 		return id;
 	}
@@ -74,5 +77,13 @@ public class TeamOrm {
 
 	public void setFlagcode(final String flagcode) {
 		this.flagcode = flagcode;
+	}
+
+	public String getLiquipediaName() {
+		return liquipediaName;
+	}
+
+	public void setLiquipediaName(final String liquipediaName) {
+		this.liquipediaName = liquipediaName;
 	}
 }

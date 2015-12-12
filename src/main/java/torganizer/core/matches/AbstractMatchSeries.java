@@ -112,8 +112,8 @@ public abstract class AbstractMatchSeries<SET extends GenericMatch> extends Abst
 	 * @return
 	 */
 	public double getFinalScore() {
-		final int scoreA = getScoreSideA();
-		final int scoreB = getScoreSideB();
+		final double scoreA = getScoreSideA();
+		final double scoreB = getScoreSideB();
 		if ((scoreA + scoreB) == 0) {
 			return 0.5;
 		}

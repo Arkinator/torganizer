@@ -43,7 +43,7 @@
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
-				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
 				<prop key="hibernate.connection.url">jdbc:hsqldb:file:data.hsql;shutdown=true;hsqldb.write_delay=false;</prop>
 			</props>
 		</property>

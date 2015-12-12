@@ -1,5 +1,7 @@
 package torganizer.core.persistance.orm;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -39,6 +41,9 @@ public class PlayerOrm {
 
 	@Column(name = "LEAGUE")
 	private StarcraftLeague league;
+
+	@Column(name = "TEAM")
+	private UUID team;
 
 	public Long getId() {
 		return id;
@@ -86,5 +91,13 @@ public class PlayerOrm {
 
 	public void setLeague(final StarcraftLeague league) {
 		this.league = league;
+	}
+
+	public UUID getTeam() {
+		return team;
+	}
+
+	public void setTeam(final UUID team) {
+		this.team = team;
 	}
 }
