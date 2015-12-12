@@ -9,6 +9,7 @@ import torganizer.core.persistance.orm.EntityOrm;
 import torganizer.core.persistance.orm.MatchOrm;
 
 public abstract class AbstractMatchSeries<SET extends GenericMatch> extends AbstractMatch {
+
 	private final List<SET> sets;
 
 	public AbstractMatchSeries(final int numberOfSets, final UUID sideA, final UUID sideB, final String name) {
@@ -113,6 +114,9 @@ public abstract class AbstractMatchSeries<SET extends GenericMatch> extends Abst
 	public double getFinalScore() {
 		final int scoreA = getScoreSideA();
 		final int scoreB = getScoreSideB();
+		if ((scoreA + scoreB) == 0) {
+			return 0.5;
+		}
 		return scoreA / (scoreA + scoreB);
 	}
 
@@ -121,7 +125,44 @@ public abstract class AbstractMatchSeries<SET extends GenericMatch> extends Abst
 		return super.toString() + "(" + getScoreSideA() + ":" + getScoreSideB() + ")";
 	}
 
-	protected List<GenericMatch> getSets() {
+	public List<GenericMatch> getSets() {
 		return (List<GenericMatch>) sets;
+	}
+
+	@Override
+	public void submitResultAdmin(final UUID side, final int scoreSide, final int scoreOtherSide) {
+		UUID otherSide = null;
+		if (getSideA().equals(side)) {
+			otherSide = getSideB();
+		} else if (getSideB().equals(side)) {
+			otherSide = getSideA();
+		} else {
+			throw new UnknownSideSubmittedException("The side " + side + " is not an active part in this match series!");
+		}
+		for (int i = 0; i < scoreSide; i++) {
+			submitSetWinning(side, i);
+		}
+		for (int i = 0; i < scoreOtherSide; i++) {
+			submitSetWinning(otherSide, scoreSide + i);
+		}
+	}
+
+	private void submitSetWinning(final UUID side, final int targetSet) {
+		if (targetSet > sets.size()) {
+			throw new ResultTooLargeForTargetMatchSeriesException();
+		}
+		sets.get(targetSet).submitResultAdmin(side, 1, 0);
+	}
+
+	public static class UnknownSideSubmittedException extends RuntimeException {
+		private static final long serialVersionUID = -687586857028633340L;
+
+		public UnknownSideSubmittedException(final String string) {
+			super(string);
+		}
+	}
+
+	public static class ResultTooLargeForTargetMatchSeriesException extends RuntimeException {
+		private static final long serialVersionUID = 5038718705424238685L;
 	}
 }

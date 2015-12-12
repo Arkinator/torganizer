@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import torganizer.core.entities.Player;
+import torganizer.core.entities.Team;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.matches.Game;
 import torganizer.core.persistance.objectservice.GlobalObjectService;
@@ -77,6 +78,20 @@ public class DataSourceTest {
 		assertEquals(p2.getUid(), game.getSideB());
 		assertEquals(p1.getUid(), game.getWinner());
 		assertEquals(p1.getUid(), game.getAdminSubmittedWinner());
+	}
+
+	@Test
+	public void teamPersistanceTest() {
+		Team t = new Team("testTeam");
+		t.setLiquipediaFlagCode("flagCode");
+		t.setShortName("shortName");
+		final UUID teamId = t.getUid();
+		globalObjectService.addTeam(t);
+
+		t = globalObjectService.getTeamById(teamId);
+		assertEquals("testTeam", t.getName());
+		assertEquals("flagCode", t.getLiquipediaFlagCode());
+		assertEquals("shortName", t.getShortName());
 	}
 
 	@Test

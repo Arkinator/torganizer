@@ -5,10 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import torganizer.utils.CryptoUtils;
@@ -22,12 +20,14 @@ public class TestUserCreationRemote {
 	private static ResteasyWebTarget target;
 	private static IUserRestInterface token;
 
+	@Ignore
 	@Test
 	public void testGetSaltCommand() {
 		final Long salt = Long.decode(getToken().getLoginSalt("fjdksa"));
 		assertNotNull(salt);
 	}
 
+	@Ignore
 	@Test
 	public void testUserCreation() {
 		final UserInformation userInfo = new UserInformation();
@@ -46,16 +46,16 @@ public class TestUserCreationRemote {
 		return token;
 	}
 
-	@BeforeClass
-	public static void startup() {
-		client = new ResteasyClientBuilder().build();
-		target = client.target("http://localhost:8080/torganizer/user");
-		token = target.proxy(IUserRestInterface.class);
-	}
-
-	@AfterClass
-	public static void shutdown() {
-		client.close();
-	}
+	// @BeforeClass
+	// public static void startup() {
+	// client = new ResteasyClientBuilder().build();
+	// target = client.target("http://localhost:8080/torganizer/user");
+	// token = target.proxy(IUserRestInterface.class);
+	// }
+	//
+	// @AfterClass
+	// public static void shutdown() {
+	// client.close();
+	// }
 
 }

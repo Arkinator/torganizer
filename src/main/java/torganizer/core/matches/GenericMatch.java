@@ -29,4 +29,6 @@ public abstract class GenericMatch extends AbstractToEntity implements IToEntity
 	public abstract void setSideB(UUID sideB);
 
 	public abstract UUID getSideB();
+
+	public abstract void submitResultAdmin(UUID player, int scorePlayer, int scoreOtherPlayer);
 }

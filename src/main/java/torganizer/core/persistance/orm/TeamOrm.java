@@ -1,5 +1,7 @@
 package torganizer.core.persistance.orm;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,12 +14,9 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import torganizer.core.types.StarcraftLeague;
-import torganizer.core.types.StarcraftRace;
-
 @Entity
-@Table(name = "PLAYERS")
-public class PlayerOrm {
+@Table(name = "TEAMS")
+public class TeamOrm {
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "entity") )
 	@Id
 	@GeneratedValue(generator = "generator")
@@ -28,17 +27,14 @@ public class PlayerOrm {
 	@PrimaryKeyJoinColumn
 	private EntityOrm entity;
 
-	@Column(name = "ADMIN")
-	private Boolean admin;
+	@Column(name = "OWNER")
+	private UUID owner;
 
-	@Column(name = "BNETCODE")
-	private int battleNetCode;
+	@Column(name = "SHORTNAME")
+	private String shortname;
 
-	@Column(name = "RACE")
-	private StarcraftRace race;
-
-	@Column(name = "LEAGUE")
-	private StarcraftLeague league;
+	@Column(name = "FLAGCODE")
+	private String flagcode;
 
 	public Long getId() {
 		return id;
@@ -56,35 +52,27 @@ public class PlayerOrm {
 		this.entity = entity;
 	}
 
-	public Boolean getAdmin() {
-		return admin;
+	public UUID getOwner() {
+		return owner;
 	}
 
-	public void setAdmin(final Boolean admin) {
-		this.admin = admin;
+	public void setOwner(final UUID owner) {
+		this.owner = owner;
 	}
 
-	public int getBattleNetCode() {
-		return battleNetCode;
+	public String getShortname() {
+		return shortname;
 	}
 
-	public void setBattleNetCode(final int battleNetCode) {
-		this.battleNetCode = battleNetCode;
+	public void setShortname(final String shortname) {
+		this.shortname = shortname;
 	}
 
-	public StarcraftRace getRace() {
-		return race;
+	public String getFlagcode() {
+		return flagcode;
 	}
 
-	public void setRace(final StarcraftRace race) {
-		this.race = race;
-	}
-
-	public StarcraftLeague getLeague() {
-		return league;
-	}
-
-	public void setLeague(final StarcraftLeague league) {
-		this.league = league;
+	public void setFlagcode(final String flagcode) {
+		this.flagcode = flagcode;
 	}
 }

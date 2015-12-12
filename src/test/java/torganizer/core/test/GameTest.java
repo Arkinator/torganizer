@@ -18,6 +18,7 @@ import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.Player;
 import torganizer.core.matches.AbstractMatch;
 import torganizer.core.matches.Game;
+import torganizer.core.matches.GenericMatch;
 import torganizer.core.matches.TimeSlot;
 import torganizer.utils.TOrganizerDateUtils;
 
@@ -73,6 +74,17 @@ public class GameTest {
 		final Game game = new Game(playerA.getUid(), playerB.getUid(), "");
 
 		game.submitResultAdmin(playerA.getUid());
+		assertEquals(playerA.getUid(), game.getWinner());
+	}
+
+	@Test
+	public void adminAdjudicatesEmptyGame_testCorrectInheritance() {
+		final Player admin = new Player("playerC");
+		admin.setAdmin(true);
+
+		final GenericMatch game = new Game(playerA.getUid(), playerB.getUid(), "");
+
+		game.submitResultAdmin(playerA.getUid(), 1, 0);
 		assertEquals(playerA.getUid(), game.getWinner());
 	}
 

@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import torganizer.core.entities.IToEntity;
+import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
+import torganizer.core.persistance.objectservice.GlobalObjectService;
 import torganizer.utils.EloCalculation;
 import torganizer.utils.TristanPlayerInfo;
 
@@ -184,42 +186,15 @@ public class TrisTournament extends BasicRoundBasedTournament {
 		return standings;
 	}
 
-	// public String printStanding() {
-	// final StringBuilder result = new StringBuilder();
-	// int place = 1;
-	// for (final TristanPlayerInfo info : standings) {
-	// result.append(place++);
-	// result.append(".\t");
-	// result.append(getGlobalObjectService().getPlayerById(info.getPlayer()).getName());
-	// result.append(" (");
-	// result.append(info.getElo());
-	// result.append(")\n");
-	// }
-	// return result.toString();
-	// }
-	//
-	// public String printMatchesForRound(final int i) {
-	// final StringBuilder result = new StringBuilder();
-	// final DecimalFormat df = new DecimalFormat("#.00");
-	// df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
-	// for (final BestOfMatchSinglePlayer match : rounds.get(i)) {
-	// result.append(getGlobalObjectService().getPlayerById(match.getSideA()).getName());
-	// result.append(" vs ");
-	// result.append(getGlobalObjectService().getPlayerById(match.getSideB()).getName());
-	// result.append(" ");
-	// result.append(match.getScore(match.getSideA()));
-	// result.append("-");
-	// result.append(match.getScore(match.getSideB()));
-	// result.append(" (");
-	// final EloCalculation elo = new
-	// EloCalculation(infoMap.get(match.getSideA()).getPreviousElo(),
-	// infoMap.get(match.getSideB()).getPreviousElo());
-	// elo.setFactualResult(match.getFinalScore());
-	// final double deltaElo = elo.getPlayerBAdjustment() *
-	// TrisTournament.eloSpeedupFactor;
-	// result.append(df.format(deltaElo));
-	// result.append(")\n");
-	// }
-	// return result.toString();
-	// }
+	public void initializeEloValues(final GlobalObjectService globalObjectService, final double[] initialEloValues) {
+		for (final TristanPlayerInfo info : this.standings) {
+			final Player p = globalObjectService.getPlayerById(info.getPlayer());
+			info.setElo(initialEloValues[p.getLeague().ordinal()]);
+		}
+		updateNextRound();
+	}
+
+	public TristanPlayerInfo getInfo(final UUID key) {
+		return infoMap.get(key);
+	}
 }

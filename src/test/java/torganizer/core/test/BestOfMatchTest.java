@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
+import torganizer.core.matches.GenericMatch;
 
 public class BestOfMatchTest {
 	@Test
@@ -43,5 +44,17 @@ public class BestOfMatchTest {
 		final Player playerA = new Player("playerA");
 		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA.getUid(), null, "");
 		assertEquals(playerA.getUid(), set.getWinner());
+	}
+
+	@Test
+	public void testSexyResultSubmittance() {
+		final Player playerA = new Player("playerA");
+		final Player playerB = new Player("playerB");
+		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA.getUid(), playerB.getUid(), "");
+		final GenericMatch castedPtr = set;
+		castedPtr.submitResultAdmin(playerA.getUid(), 2, 1);
+		assertEquals(playerA.getUid(), set.getWinner());
+		assertEquals(2, set.getScoreSideA());
+		assertEquals(1, set.getScoreSideB());
 	}
 }

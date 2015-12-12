@@ -52,6 +52,7 @@
 				<value>torganizer.core.persistance.orm.PlayerOrm</value>
 				<value>torganizer.core.persistance.orm.EntityOrm</value>
 				<value>torganizer.core.persistance.orm.MatchOrm</value>
+				<value>torganizer.core.persistance.orm.TeamOrm</value>
 			</list>
 		</property>
 	</bean>

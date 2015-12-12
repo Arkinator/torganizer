@@ -87,4 +87,21 @@ public class Game extends AbstractMatch {
 	public UUID getAdminSubmittedWinner() {
 		return adminSubmittedResult;
 	}
+
+	@Override
+	public void submitResultAdmin(final UUID player, final int scorePlayer, final int scoreOtherPlayer) {
+		if (getSideA().equals(player)) {
+			if (scorePlayer > scoreOtherPlayer) {
+				submitResultAdmin(getSideA());
+			} else {
+				submitResultAdmin(getSideB());
+			}
+		} else {
+			if (scorePlayer > scoreOtherPlayer) {
+				submitResultAdmin(getSideB());
+			} else {
+				submitResultAdmin(getSideA());
+			}
+		}
+	}
 }

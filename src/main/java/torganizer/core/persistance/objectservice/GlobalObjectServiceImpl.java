@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import torganizer.core.entities.AbstractToEntity;
 import torganizer.core.entities.Player;
+import torganizer.core.entities.Team;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.matches.Game;
 import torganizer.core.persistance.interfaces.EntityDao;
@@ -95,5 +96,19 @@ public class GlobalObjectServiceImpl implements GlobalObjectService {
 		public CanNotUpdatePojoException(final String string) {
 			super(string);
 		}
+	}
+
+	@Override
+	public void addTeam(final Team team) {
+		entityDao.persist(team.getEntityOrm());
+	}
+
+	@Override
+	public Team getTeamById(final UUID teamId) {
+		final EntityOrm entity = entityDao.getById(teamId);
+		if (entity == null) {
+			return null;
+		}
+		return new Team(entity);
 	}
 }

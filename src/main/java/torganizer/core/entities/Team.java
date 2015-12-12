@@ -4,13 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import torganizer.core.persistance.orm.EntityOrm;
+import torganizer.core.persistance.orm.TeamOrm;
+
 public class Team extends AbstractToEntity implements IToParticipant {
 	private UUID owner;
 	private final List<UUID> lieutenants;
+	private String shortName;
+	private String liquipediaFlagCode;
 
 	public Team(final String name) {
 		super(name);
 		this.lieutenants = new ArrayList<UUID>();
+		getEntityOrm().setTeam(new TeamOrm());
+		getEntityOrm().getTeam().setEntity(getEntityOrm());
+	}
+
+	public Team(final EntityOrm entity) {
+		super(entity);
+		this.lieutenants = new ArrayList<UUID>();
+		this.shortName = getEntityOrm().getTeam().getShortname();
+		this.liquipediaFlagCode = getEntityOrm().getTeam().getFlagcode();
 	}
 
 	public void addPlayer(final Player newPlayer) {
@@ -45,6 +59,7 @@ public class Team extends AbstractToEntity implements IToParticipant {
 
 	public void setOwner(final UUID owner) {
 		this.owner = owner;
+		getEntityOrm().getTeam().setOwner(owner);
 	}
 
 	public List<UUID> getLieutenants() {
@@ -62,5 +77,23 @@ public class Team extends AbstractToEntity implements IToParticipant {
 	@Override
 	public void callback(final IToEntity sender) {
 
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(final String shortName) {
+		this.shortName = shortName;
+		getEntityOrm().getTeam().setShortname(shortName);
+	}
+
+	public String getLiquipediaFlagCode() {
+		return liquipediaFlagCode;
+	}
+
+	public void setLiquipediaFlagCode(final String liquipediaFlagCode) {
+		this.liquipediaFlagCode = liquipediaFlagCode;
+		getEntityOrm().getTeam().setFlagcode(liquipediaFlagCode);
 	}
 }
