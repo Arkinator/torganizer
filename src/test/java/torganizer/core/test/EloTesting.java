@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -33,19 +34,48 @@ public class EloTesting {
 	private GlobalObjectService globalObjectService;
 	private TrisTournament tournament;
 
-	public static String[][] playerInfo = { //
-			{ "2050", "391", "Grandmaster", "P", "C6" }, //
-			{ "2000", "391", "Silver", "P", "AI" }, //
-			{ "1950", "365", "Gold", "T", "UR" }, //
-			{ "1900", "882", "Platinum", "Z", "AI" }, //
-			{ "1850", "359", "Platinum", "P", "UR" }, //
-			{ "1800", "1459", "Diamond", "T", "FG" }, //
-			{ "1750", "365", "Gold", "T", "UR" }, //
-			{ "1700", "887", "Master", "T", "GR" }, //
-			{ "1650", "987", "Bronze", "P", "UR" }, //
-			{ "1600", "809", "Master", "T", "BG" }, //
-			{ "1550", "809", "Bronze", "T", "UR" }, //
-			{ "1500", "552", "Gold", "Z", "UR" } };
+	public static String[][] playerInfo = { { "Acadien", "391", "Diamond", "P", "AI" }, //
+			{ "Athreos", "882", "Platinum", "Z", "AI" }, //
+			{ "Apogee", "1459", "Diamond", "T", "UR" }, //
+			{ "Blaze", "887", "Master", "T", "UR" }, //
+			{ "Broda", "809", "Master", "T", "UR" }, //
+			{ "Cobaltt", "552", "Gold", "Z", "UR" }, //
+			{ "Colttarren", "359", "Platinum", "P", "UR" }, //
+			{ "Coltrane", "987", "Bronze", "P", "UR" }, //
+			{ "DaDaNkEnGiNe", "365", "Gold", "T", "UR" }, //
+			{ "Electric", "423", "Diamond", "Z" }, //
+			{ "eXiled", "1678", "Diamond", "P" }, //
+			{ "Exothermic", "532", "Platinum", "Z", "GR" }, //
+			{ "Fish", "618", "Silver", "R", "GR" }, //
+			{ "FusTup", "2205", "Gold", "Z", "UR" }, //
+			{ "JuPiteR", "1347", "Platinum", "P", "GR" }, //
+			{ "Logistic", "468", "Platinum", "Z", "UR" }, //
+			{ "Meristematic", "358", "Silver", "P", "C6" }, //
+			{ "Miyamori", "624", "Gold", "Z", "BG" }, //
+			{ "Monk", "893", "Diamond", "T", "UR" }, //
+			{ "Msyu", "848", "Diamond", "Z" }, //
+			{ "Ninkazi", "450", "Master", "T", "GR" }, //
+			{ "Padula", "475", "Gold", "T", "UR" }, //
+			{ "Picur", "915", "Diamond", "Z", "UR" }, //
+			{ "Polar", "508", "Diamond", "R", "UR" }, //
+			{ "Psosa", "2697", "Diamond", "Z", "AI" }, //
+			{ "RainOnSKy", "897", "Grandmaster", "R", "BG" }, //
+			{ "SauCeBoSS", "894", "Diamond", "Z", "FG" }, //
+			{ "sMeeZy", "592", "Diamond", "Z", "UR" }, //
+			{ "Soken", "902", "Gold", "T", "UR" }, //
+			{ "Sworn", "892", "Master", "Z", "UR" }, //
+			{ "Synprime", "473", "Diamond", "P", "OG" }, //
+			{ "TheRunedEXP", "1160", "Silver", "Z", "BG" }, //
+			{ "TheWagon", "249", "Master", "Z", "AI" }, //
+			{ "Vespasian", "314", "Diamond", "T" }, //
+			{ "Vash", "160", "Gold", "P", "C6" }, //
+			{ "IIIIIIIIIIII(Vintage)", "8535", "Master", "T", "BG" }, //
+			{ "Whitelion", "1834", "Diamond", "Z", "UR" }, //
+			{ "XelaWella", "1441", "Diamond", "T", "UR" }, //
+			{ "Xilogh", "401", "Diamond", "Z", "UR" }, //
+			{ "Yeezus", "750", "Diamond", "P", "BG" }, //
+			// { "gdoggcasey", "750", "Diamond", "P", "AI" }, //
+			{ "grimm", "750", "Silver", "P", "UR" } };
 	public static String[][] teamInfo = { { "Team Unrivaled", "UR", "team unrivaled", "UnrivaledMini.png" }, //
 			{ "All Inspiration", "AI", "all-inspiration", "All-Inspirationlogo_std.png" }, //
 			{ "Guns and Roaches", "GR", "guns and roaches", "GunsandRoachesMini.png" }, //
@@ -53,8 +83,12 @@ public class EloTesting {
 			{ "Outset Gaming", "OG", "outset gaming", "Outsetlogo_std.png" }, //
 			{ "Formless Gaming", "FG", "formless gaming", "Formlesslogo_std.png" }, //
 			{ "Born Gosu", "BG", "born gosu", "BornGosulogo_std.png" } };
+	public static double[] baseEloRatings = new double[] { 1500., 1600., 1700., 1800., 1900., 2000., 2100. };
+	public static double[] fakeEloRatings = new double[] { 1500., 1500., 1500., 1500., 1500., 1500., 1500. };
 
 	public static Map<String, UUID> teamMap = new HashMap<>();
+
+	final Map<UUID, Player> playerCache = new HashMap<>();
 
 	@Test
 	public void testCorrectMatches() {
@@ -63,7 +97,7 @@ public class EloTesting {
 		final List<UUID> playerList = new ArrayList<>();
 
 		for (final String[] infoStrings : playerInfo) {
-			final Player p = new Player(infoStrings[0]);
+			final Player p = new Player(calcEloRating(StarcraftLeague.valueOf(infoStrings[2])).toString());
 			p.setBattleNetCode(Integer.parseInt(infoStrings[1]));
 			p.setRace(StarcraftRace.parseShort(infoStrings[3]));
 			p.setLeague(StarcraftLeague.valueOf(infoStrings[2]));
@@ -74,35 +108,68 @@ public class EloTesting {
 			globalObjectService.addPlayer(p);
 		}
 
+		for (final UUID uuid : playerList) {
+			playerCache.put(uuid, globalObjectService.getPlayerById(uuid));
+		}
+		// 83 from 2.8 speedup and 5 repition threshold (100 std)
+		// 174 from 7.2 speedup and 4 repition threshold (200)
+		// 261 from 14.5 speedup and 7 repition threshold
+		// 134.6759047619047 from 8.5 speedup and 5 repition threshold (200)
+		// 226.4433333333332 with 0.5 speedup and 7 threshold (all same elo)
+		// 123.71476190476183 with 8.599999999999985 speedup and 3 threshold
+		final String temp = simulateTournamentWithValues(playerList);
+		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		final StringSelection data = new StringSelection(temp + "");
+		clipBoard.setContents(data, data);
+	}
+
+	private String simulateTournamentWithValues(final List<UUID> playerList) {
 		tournament = new TrisTournament(10, 3, playerList, "#UNIT");
 		final TrisTournamentPrinter printer = new TrisTournamentPrinter(tournament, globalObjectService);
 
-		tournament.initializeEloValues(globalObjectService, new double[] { 1500., 1600., 1700., 1800., 1900., 2000., 2100. });
+		double overallEloDiff = 0;
+		tournament.initializeEloValues(playerCache, baseEloRatings);
 		for (int i = 0; i < 10; i++) {
 			for (final BestOfMatchSinglePlayer match : tournament.getBestOfMatchForRound(i)) {
-				final Player pA = globalObjectService.getPlayerById(match.getSideA());
-				final Player pB = globalObjectService.getPlayerById(match.getSideB());
-				final EloCalculation calc = new EloCalculation(Double.parseDouble(pA.getName()), Double.parseDouble(pB.getName()));
-				int scoreA = 0;
-				int scoreB = 0;
-				for (int j = 0; j < 3; j++) {
-					if (Math.random() < calc.getExpectedScore()) {
-						scoreA++;
-					} else {
-						scoreB++;
-					}
-					if ((scoreA == 2) || (scoreB == 2)) {
-						break;
-					}
+				final Player pA = playerCache.get(match.getSideA());
+				final Player pB = playerCache.get(match.getSideB());
+				if (Math.random() > 0.1) {
+					tournament.giveStrikeToPlayer(pA.getUid());
 				}
-				match.submitResultAdmin(pA.getUid(), scoreA, scoreB);
+				if ((pA != null) && (pB != null)) {
+					final EloCalculation calc = new EloCalculation(Double.parseDouble(pA.getName()), Double.parseDouble(pB.getName()));
+					int scoreA = 0;
+					int scoreB = 0;
+
+					overallEloDiff += Math.abs(Double.parseDouble(pA.getName()) - Double.parseDouble(pB.getName()));
+					for (int j = 0; j < 3; j++) {
+						if (Math.random() < calc.getExpectedScore()) {
+							scoreA++;
+						} else {
+							scoreB++;
+						}
+						if ((scoreA == 2) || (scoreB == 2)) {
+							break;
+						}
+					}
+					match.submitResultAdmin(pA.getUid(), scoreA, scoreB);
+				}
 			}
 		}
+
 		final String p = printer.printLiquipediaPage();
-		System.out.println(p);
-		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		final StringSelection data = new StringSelection(p);
-		clipBoard.setContents(data, data);
+		// return (overallEloDiff / (10 * playerInfo.length * 0.5));
+		// System.out.println(p);
+		return p;
+	}
+
+	private static Random rand = new Random();
+	private double c = 0.0;
+
+	private Double calcEloRating(final StarcraftLeague league) {
+		final double baseRating = (baseEloRatings[league.ordinal()] * 1.5) - 750;
+		c += 0.01;
+		return ((int) (baseRating + (200 * rand.nextGaussian()))) + c;
 	}
 
 	private void addTeams() {

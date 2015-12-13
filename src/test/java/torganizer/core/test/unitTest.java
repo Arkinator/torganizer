@@ -77,6 +77,7 @@ public class unitTest {
 		System.out.println(printer.printStanding());
 		tournament.initializeEloValues(globalObjectService, new double[] { 1500., 1600., 1700., 1800., 1900., 2000., 2100. });
 		playMatch(0, "Logistic", 2, 1);
+		playMatch(0, "Broda", 2, 0);
 		final String p = printer.printLiquipediaPage();
 		System.out.println(p);
 		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();

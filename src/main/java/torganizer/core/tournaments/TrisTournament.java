@@ -21,7 +21,8 @@ import torganizer.utils.TristanPlayerInfo;
  *
  */
 public class TrisTournament extends BasicRoundBasedTournament {
-	public static final double eloSpeedupFactor = 10.;
+	public static double eloSpeedupFactor = 8.;
+	public static int playerRepititionThreshold = 5;
 	private final int numberOfRounds;
 	private final List<TristanPlayerInfo> standings;
 	private final Map<UUID, TristanPlayerInfo> infoMap;
@@ -94,16 +95,21 @@ public class TrisTournament extends BasicRoundBasedTournament {
 			// account for uneven amount of players
 			playerList.add(null);
 			final List<BestOfMatchSinglePlayer> matchesForRound = new ArrayList<BestOfMatchSinglePlayer>();
-			for (int i = 0; i < calculateMatchesPerRound(); i++) {
+			for (int i = 0; i < calculateMatchesPerRound(playerList.size()); i++) {
 				final UUID playerA = playerList.remove(0);
 				final UUID playerB = playerList.remove(0);
 				matchesForRound.add(createNewMatch(playerA, playerB));
 			}
 			return matchesForRound;
 		} else {
-			standings.forEach(info -> playerList.add(info.getPlayer()));
+			standings.forEach(info -> {
+				if (info.isEligibleToPlay()) {
+					playerList.add(info.getPlayer());
+				}
+			});
 			final List<BestOfMatchSinglePlayer> matchesForRound = new ArrayList<BestOfMatchSinglePlayer>();
-			for (int i = 0; i < calculateMatchesPerRound(); i++) {
+			final int numMatches = calculateMatchesPerRound(playerList.size());
+			for (int i = 0; i < numMatches; i++) {
 				final UUID playerA = playerList.remove(0);
 				final UUID playerB = seekOpponentForPlayer(playerA, playerList);
 				matchesForRound.add(createNewMatch(playerA, playerB));
@@ -117,7 +123,7 @@ public class TrisTournament extends BasicRoundBasedTournament {
 		int distance = -1;
 		final TristanPlayerInfo playerInfo = infoMap.get(player);
 		for (final UUID possibleOpponent : playerList) {
-			if (!playerInfo.hasPlayerFacedOpponentBefore(possibleOpponent)) {
+			if (!playerInfo.hasPlayerFacedOpponentBeforeInNMatches(possibleOpponent, playerRepititionThreshold, getCurrentRound())) {
 				playerList.remove(possibleOpponent);
 				return possibleOpponent;
 			}
@@ -127,26 +133,25 @@ public class TrisTournament extends BasicRoundBasedTournament {
 				distance = newDistance;
 			}
 		}
-		System.out.println("Finding best match at " + distance + " distance");
 		playerList.remove(bestMatch);
 		return bestMatch;
 	}
 
 	private List<BestOfMatchSinglePlayer> createRound() {
 		final List<BestOfMatchSinglePlayer> matchesForRound = new ArrayList<BestOfMatchSinglePlayer>();
-		for (int i = 0; i < calculateMatchesPerRound(); i++) {
+		for (int i = 0; i < calculateMatchesPerRound(getParticipants().size()); i++) {
 			matchesForRound.add(createNewMatch(null, null));
 		}
 		return matchesForRound;
 	}
 
-	private int calculateMatchesPerRound() {
-		if ((getParticipants().size() % 2) == 0) {
-			return getParticipants().size() / 2;
+	private int calculateMatchesPerRound(final int numOfPlayers) {
+		if ((numOfPlayers % 2) == 0) {
+			return numOfPlayers / 2;
 		} else {
 			// always take a bye for the extra player in case of an uneven
 			// number of participants
-			return (getParticipants().size() / 2) + 1;
+			return (numOfPlayers / 2) + 1;
 		}
 	}
 
@@ -198,7 +203,19 @@ public class TrisTournament extends BasicRoundBasedTournament {
 		updateNextRound();
 	}
 
+	public void initializeEloValues(final Map<UUID, Player> playerCache, final double[] initialEloValues) {
+		for (final TristanPlayerInfo info : this.standings) {
+			final Player p = playerCache.get(info.getPlayer());
+			info.setElo(initialEloValues[p.getLeague().ordinal()]);
+		}
+		updateNextRound();
+	}
+
 	public TristanPlayerInfo getInfo(final UUID key) {
 		return infoMap.get(key);
+	}
+
+	public void giveStrikeToPlayer(final UUID uid) {
+		infoMap.get(uid).addStrike(getCurrentRound());
 	}
 }

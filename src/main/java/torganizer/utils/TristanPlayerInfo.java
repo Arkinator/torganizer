@@ -13,12 +13,14 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 	private double elo;
 	private final List<Double> eloPerRound;
 	private final Map<UUID, Integer> roundOfLastEncounter;
+	private final List<Integer> strikes;
 
 	public TristanPlayerInfo(final UUID player) {
 		this.player = player;
 		this.eloPerRound = new ArrayList<>();
 		this.elo = EloCalculation.defaultEloValue;
 		this.roundOfLastEncounter = new HashMap<>();
+		this.strikes = new ArrayList<>();
 	}
 
 	public void adjustElo(final double eloAdjustment) {
@@ -56,8 +58,12 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 		return roundOfLastEncounter.get(opponent);
 	}
 
-	public boolean hasPlayerFacedOpponentBefore(final UUID opponent) {
-		return getRoundOfLastEncounter(opponent) != null;
+	public boolean hasPlayerFacedOpponentBeforeInNMatches(final UUID opponent, final int threshold, final int round) {
+		final Integer lastEncounter = getRoundOfLastEncounter(opponent);
+		if (lastEncounter == null) {
+			return false;
+		}
+		return (round - lastEncounter) <= threshold;
 	}
 
 	public double getEloForRound(final int round) {
@@ -65,5 +71,31 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 			return elo;
 		}
 		return eloPerRound.get(round);
+	}
+
+	public void addStrike(final int round) {
+		strikes.add(round);
+	}
+
+	public boolean isEligibleToPlay() {
+		return getNumberOfStrikes() < 3;
+	}
+
+	public boolean isEligibleToPlay(final int round) {
+		return getNumberOfStrikes(round) < 3;
+	}
+
+	public int getNumberOfStrikes() {
+		return strikes.size();
+	}
+
+	public int getNumberOfStrikes(final int round) {
+		int numberOfStrikes = 0;
+		for (final Integer strike : strikes) {
+			if (strike < round) {
+				numberOfStrikes++;
+			}
+		}
+		return numberOfStrikes;
 	}
 }
