@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 import torganizer.core.entities.Player;
+import torganizer.core.types.StarcraftRace;
 import torganizer.utils.TristanPlayerInfo;
 
 public class TristanPlayerInfoTest {
@@ -16,8 +17,8 @@ public class TristanPlayerInfoTest {
 	public void calculateEloTest() {
 		final Player playerA = new Player("kfldösa");
 		final Player playerB = new Player("fsdafdsa");
-		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA.getUid());
-		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB.getUid());
+		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA);
+		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB);
 		playerAInfo.adjustElo(10);
 		assertTrue(playerAInfo.getElo() > playerBInfo.getElo());
 	}
@@ -26,8 +27,8 @@ public class TristanPlayerInfoTest {
 	public void testSorting() {
 		final Player playerA = new Player("kfldösa");
 		final Player playerB = new Player("fsdafdsa");
-		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA.getUid());
-		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB.getUid());
+		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA);
+		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB);
 		playerAInfo.setElo(1000.);
 		playerBInfo.setElo(500.);
 		assertTrue(playerAInfo.compareTo(playerBInfo) > 0);
@@ -37,8 +38,8 @@ public class TristanPlayerInfoTest {
 	public void testSortingInList() {
 		final Player playerA = new Player("kfldösa");
 		final Player playerB = new Player("fsdafdsa");
-		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA.getUid());
-		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB.getUid());
+		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA);
+		final TristanPlayerInfo playerBInfo = new TristanPlayerInfo(playerB);
 		playerAInfo.setElo(1000.);
 		playerBInfo.setElo(500.);
 		final List<TristanPlayerInfo> list = new ArrayList<>();
@@ -47,5 +48,17 @@ public class TristanPlayerInfoTest {
 		list.sort(null);
 		assertEquals(playerBInfo, list.get(0));
 		assertEquals(playerAInfo, list.get(1));
+	}
+
+	@Test
+	public void testRaceChange() {
+		final Player playerA = new Player("kfldösa");
+		playerA.setRace(StarcraftRace.Terran);
+		final TristanPlayerInfo playerAInfo = new TristanPlayerInfo(playerA);
+		assertEquals(StarcraftRace.Terran, playerAInfo.getRaceForRound(0));
+		assertEquals(StarcraftRace.Terran, playerAInfo.getRaceForRound(1));
+		playerAInfo.addRaceChangeForRound(0, StarcraftRace.Zerg);
+		assertEquals(StarcraftRace.Terran, playerAInfo.getRaceForRound(0));
+		assertEquals(StarcraftRace.Zerg, playerAInfo.getRaceForRound(1));
 	}
 }

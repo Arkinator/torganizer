@@ -94,22 +94,22 @@ public class EloTesting {
 	public void testCorrectMatches() {
 		addTeams();
 
-		final List<UUID> playerList = new ArrayList<>();
+		final List<Player> playerList = new ArrayList<>();
 
 		for (final String[] infoStrings : playerInfo) {
 			final Player p = new Player(calcEloRating(StarcraftLeague.valueOf(infoStrings[2])).toString());
 			p.setBattleNetCode(Integer.parseInt(infoStrings[1]));
 			p.setRace(StarcraftRace.parseShort(infoStrings[3]));
 			p.setLeague(StarcraftLeague.valueOf(infoStrings[2]));
-			playerList.add(p.getUid());
+			playerList.add(p);
 			if (infoStrings.length > 4) {
 				p.setTeamUid(teamMap.get(infoStrings[4]));
 			}
 			globalObjectService.addPlayer(p);
 		}
 
-		for (final UUID uuid : playerList) {
-			playerCache.put(uuid, globalObjectService.getPlayerById(uuid));
+		for (final Player p : playerList) {
+			playerCache.put(p.getUid(), p);
 		}
 		// 83 from 2.8 speedup and 5 repition threshold (100 std)
 		// 174 from 7.2 speedup and 4 repition threshold (200)
@@ -117,13 +117,15 @@ public class EloTesting {
 		// 134.6759047619047 from 8.5 speedup and 5 repition threshold (200)
 		// 226.4433333333332 with 0.5 speedup and 7 threshold (all same elo)
 		// 123.71476190476183 with 8.599999999999985 speedup and 3 threshold
+
+		// 97.83931707317076 vs 97.23151219512195 vs 105.36092682926828
 		final String temp = simulateTournamentWithValues(playerList);
 		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		final StringSelection data = new StringSelection(temp + "");
 		clipBoard.setContents(data, data);
 	}
 
-	private String simulateTournamentWithValues(final List<UUID> playerList) {
+	private String simulateTournamentWithValues(final List<Player> playerList) {
 		tournament = new TrisTournament(10, 3, playerList, "#UNIT");
 		final TrisTournamentPrinter printer = new TrisTournamentPrinter(tournament, globalObjectService);
 
@@ -158,9 +160,9 @@ public class EloTesting {
 		}
 
 		final String p = printer.printLiquipediaPage();
-		// return (overallEloDiff / (10 * playerInfo.length * 0.5));
+		return (overallEloDiff / (10 * playerInfo.length * 0.5)) + " ";
 		// System.out.println(p);
-		return p;
+		// return p;
 	}
 
 	private static Random rand = new Random();

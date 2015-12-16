@@ -13,19 +13,10 @@ import torganizer.core.entities.Player;
 import torganizer.core.entities.Team;
 import torganizer.utils.TristanPlayerInfo;
 
-public class TrisTournamentLiquipediaStandingsPrinter {
-	private static final String strikeSymbolLink = "[[File:Ambox-warning-32px.png|17px]] ";
-	private final TrisTournament tournament;
-	private final Map<UUID, Player> playerCache;
-	private final Map<UUID, Team> teamCache;
-	private final StringBuilder result;
-
+public class TrisTournamentLiquipediaStandingsPrinter extends TrisTournamentLiquipediaBasicPrinter {
 	public TrisTournamentLiquipediaStandingsPrinter(final TrisTournament tournament, final Map<UUID, Player> playerCache, final Map<UUID, Team> teamCache,
 			final StringBuilder result) {
-		this.tournament = tournament;
-		this.playerCache = playerCache;
-		this.teamCache = teamCache;
-		this.result = result;
+		super(tournament, playerCache, teamCache, result);
 	}
 
 	public String execute(final int round) {
@@ -33,24 +24,27 @@ public class TrisTournamentLiquipediaStandingsPrinter {
 		df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
 		printLiquipediaHeaderStandings();
 		int place = 1;
-		for (final TristanPlayerInfo info : produceStandingForRound(round)) {
+		for (final TristanPlayerInfo info : produceStandingForRound(round + 1)) {
 			final Player player = playerCache.get(info.getPlayer());
-			result.append("|");
+			if (place <= 8) {
+				result.append(" bgcolor=\"#B8F2B8\" ");
+			}
+			result.append("\n|");
 			result.append(place++);
 			result.append("||{{");
-			result.append(player.getRace().getLiquipediaCode());
+			result.append(info.getRaceForRound(tournament.getCurrentRound()).getLiquipediaCode());
 			result.append("}}||");
 			result.append(player.getLeague().getLiquipediaImageCode());
 			result.append("||");
-			printPlayerInfo(player);
-			printPlayerStrikes(info, round);
+			printPlayerTeamAndName(player);
+			printPlayerStrikes(info, round + 1);
 			result.append("||");
 			result.append(player.getBattleNetCode());
 			result.append("||'''");
-			result.append(df.format(info.getEloForRound(round)));
-			result.append("'''\n|-\n");
+			result.append(df.format(info.getEloForRound(round + 1)));
+			result.append("'''\n|-");
 		}
-		result.append("|}");
+		result.append("\n|}");
 		return result.toString();
 	}
 
@@ -65,21 +59,6 @@ public class TrisTournamentLiquipediaStandingsPrinter {
 		return result;
 	}
 
-	private void printPlayerStrikes(final TristanPlayerInfo info, final int round) {
-		for (int i = 0; i < info.getNumberOfStrikes(round); i++) {
-			result.append(strikeSymbolLink);
-		}
-	}
-
-	private void printPlayerInfo(final Player player) {
-		if (player.getTeamUid() != null) {
-			result.append("[[File:");
-			result.append(teamCache.get(player.getTeamUid()).getLiquipediaFlagCode());
-			result.append("]]");
-		}
-		result.append(player.getName());
-	}
-
 	private void printLiquipediaHeaderStandings() {
 		result.append("{|class=\"wikitable sortable\" style=\"width:500px\"\n");
 		result.append("!colspan=15|Current Standing\n");
@@ -90,6 +69,6 @@ public class TrisTournamentLiquipediaStandingsPrinter {
 		result.append("!width=100px|ID\n");
 		result.append("!width=10px|SC2-Code\n");
 		result.append("!width=25px|ELO\n");
-		result.append("|-\n");
+		result.append("|-");
 	}
 }

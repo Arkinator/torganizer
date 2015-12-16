@@ -72,20 +72,30 @@ public class TrisTournamentPrinter {
 
 	public String printLiquipediaPage() {
 		final StringBuilder result = new StringBuilder();
-		result.append("=#UNIT - Season 1=\n");
-		result.append("{{tabs start");
+		final TrisTournamentLiquipediStatisticsPrinter statistics = new TrisTournamentLiquipediStatisticsPrinter(tournament, playerCache, teamCache, result);
+		final TrisTournamentLiquipediaMatchInfoPrinter printer = new TrisTournamentLiquipediaMatchInfoPrinter(tournament, playerCache, teamCache, result);
+		final TrisTournamentLiquipediaStandingsPrinter standingsPrinter = new TrisTournamentLiquipediaStandingsPrinter(tournament, playerCache, teamCache, result);
+
+		statistics.execute();
+		result.append("=");
+		result.append(tournament.getName());
+		result.append("=\n");
+		result.append("{{tabs start|title1=Overview");
 		for (int i = 1; i <= tournament.getNumberOfRounds(); i++) {
-			result.append("|title" + i + "=Week " + i);
+			result.append("|title" + (i + 1) + "=Week " + i);
 		}
 		result.append("}}\n");
-		final TrisTournamentLiquipediaMatchInfoPrinter printer = new TrisTournamentLiquipediaMatchInfoPrinter(tournament, playerCache, teamCache);
-		final TrisTournamentLiquipediaStandingsPrinter standingsPrinter = new TrisTournamentLiquipediaStandingsPrinter(tournament, playerCache, teamCache, result);
+		result.append("\n{{tab 1}}\n\n==Overview==\n");
+		result.append("===Current Standings===\n");
+		standingsPrinter.execute(tournament.getCurrentRound() + 1);
+		statistics.printDetailedStatistics();
+
 		for (int i = 0; i < tournament.getNumberOfRounds(); i++) {
-			result.append("\n{{tab " + (i + 1) + "}}\n\n===Results Week " + (i + 1) + "===\n");
-			result.append("==Standings==\n");
+			result.append("\n{{tab " + (i + 2) + "}}\n\n==Results Week " + (i + 1) + "==\n");
+			result.append("===Standings===\n");
 			standingsPrinter.execute(i);
-			result.append("\n==Matches==\n");
-			result.append(printer.execute(i));
+			result.append("\n===Matches===\n");
+			printer.execute(i);
 		}
 		return result.toString();
 	}

@@ -11,6 +11,7 @@ import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.persistance.objectservice.GlobalObjectService;
+import torganizer.core.types.StarcraftRace;
 import torganizer.utils.EloCalculation;
 import torganizer.utils.TristanPlayerInfo;
 
@@ -27,14 +28,20 @@ public class TrisTournament extends BasicRoundBasedTournament {
 	private final List<TristanPlayerInfo> standings;
 	private final Map<UUID, TristanPlayerInfo> infoMap;
 
-	public TrisTournament(final int numberOfRounds, final int bestOfSeriesLength, final List<UUID> playerList, final String name) {
-		super(bestOfSeriesLength, playerList, name);
+	public TrisTournament(final int numberOfRounds, final int bestOfSeriesLength, final List<Player> playerList, final String name) {
+		super(bestOfSeriesLength, transformPlayerList(playerList), name);
 		this.numberOfRounds = numberOfRounds;
 		standings = new ArrayList<TristanPlayerInfo>();
 		playerList.forEach(player -> standings.add(new TristanPlayerInfo(player)));
 		infoMap = new HashMap<>();
 		standings.forEach(info -> infoMap.put(info.getPlayer(), info));
 		fillRounds();
+	}
+
+	private static List<UUID> transformPlayerList(final List<Player> playerList) {
+		final List<UUID> result = new ArrayList<UUID>();
+		playerList.forEach(p -> result.add(p.getUid()));
+		return result;
 	}
 
 	@Override
@@ -217,5 +224,9 @@ public class TrisTournament extends BasicRoundBasedTournament {
 
 	public void giveStrikeToPlayer(final UUID uid) {
 		infoMap.get(uid).addStrike(getCurrentRound());
+	}
+
+	public void addNewRaceChange(final UUID player, final StarcraftRace newRace) {
+		infoMap.get(player).addRaceChangeForRound(getCurrentRound(), newRace);
 	}
 }

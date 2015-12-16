@@ -6,19 +6,18 @@ import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import torganizer.core.entities.Player;
-import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.tournaments.TrisTournament;
+import torganizer.core.types.StarcraftRace;
 
 public class SexySwissTest {
 	static Player[] playerArray;
 	private final static int maxNumberPlayers = 6;
-	static List<UUID> playerList;
+	static List<Player> playerList;
 	private static Player admin;
 
 	@BeforeClass
@@ -26,10 +25,11 @@ public class SexySwissTest {
 		admin = new Player("admin");
 		admin.setAdmin(true);
 		playerArray = new Player[maxNumberPlayers];
-		playerList = new ArrayList<UUID>();
+		playerList = new ArrayList<Player>();
 		for (int i = 0; i < playerArray.length; i++) {
 			playerArray[i] = new Player("player" + i);
-			playerList.add(playerArray[i].getUid());
+			playerArray[i].setRace(StarcraftRace.Terran);
+			playerList.add(playerArray[i]);
 		}
 	}
 
@@ -48,7 +48,7 @@ public class SexySwissTest {
 
 	@Test
 	public void addPlayerListTest_unevenNumberOfPlayers() {
-		final List<UUID> unevenPlayerList = new ArrayList<UUID>();
+		final List<Player> unevenPlayerList = new ArrayList<Player>();
 		unevenPlayerList.addAll(playerList);
 		unevenPlayerList.remove(0);
 		final TrisTournament tournament = new TrisTournament(1, 1, unevenPlayerList, "");
@@ -98,7 +98,9 @@ public class SexySwissTest {
 		assertEquals(playerArray[3].getUid(), tournament.getMatchesForRound(0).get(1).getSideB());
 		assertEquals(playerArray[4].getUid(), tournament.getMatchesForRound(0).get(2).getSideA());
 		assertEquals(playerArray[5].getUid(), tournament.getMatchesForRound(0).get(2).getSideB());
-		playCurrentRound(tournament);
+		tournament.getMatchesForRound(0).get(0).submitResultAdmin(playerArray[0].getUid(), 1, 0);
+		tournament.getMatchesForRound(0).get(1).submitResultAdmin(playerArray[2].getUid(), 1, 0);
+		tournament.getMatchesForRound(0).get(2).submitResultAdmin(playerArray[4].getUid(), 1, 0);
 		// second Round
 		assertEquals(playerArray[0].getUid(), tournament.getMatchesForRound(1).get(0).getSideA());
 		assertEquals(playerArray[2].getUid(), tournament.getMatchesForRound(1).get(0).getSideB());
@@ -106,52 +108,18 @@ public class SexySwissTest {
 		assertEquals(playerArray[3].getUid(), tournament.getMatchesForRound(1).get(1).getSideB());
 		assertEquals(playerArray[4].getUid(), tournament.getMatchesForRound(1).get(2).getSideA());
 		assertEquals(playerArray[5].getUid(), tournament.getMatchesForRound(1).get(2).getSideB());
-		playCurrentRound(tournament);
-		for (int i = 2; i < 10; i++) {
-			System.out.println();
-			System.out.println(tournament.getMatchesForRound(i).get(0));
-			System.out.println(tournament.getMatchesForRound(i).get(1));
-			System.out.println(tournament.getMatchesForRound(i).get(2));
-			playCurrentRound(tournament);
-			System.out.println(tournament.getStanding());
-		}
+		tournament.getMatchesForRound(1).get(0).submitResultAdmin(playerArray[0].getUid(), 1, 0);
+		tournament.getMatchesForRound(1).get(1).submitResultAdmin(playerArray[1].getUid(), 1, 0);
+		tournament.getMatchesForRound(1).get(2).submitResultAdmin(playerArray[4].getUid(), 1, 0);
 	}
 
 	@Test
-	public void eloDemo() {
-		final List<UUID> playerList = new ArrayList<>();
-		for (int i = 0; i < 8; i++) {
-			playerList.add(UUID.randomUUID());
-		}
-		final TrisTournament tournament = new TrisTournament(30, 1, playerList, "");
-		for (int i = 0; i < 8; i++) {
-			tournament.setInitialEloValue(playerList.get(i), (i * 50) + 1000);
-		}
-		;
-		tournament.updateNextRound();
-		for (int i = 0; i < 10; i++) {
-			System.out.println();
-			// System.out.println(tournament.printStanding());
-			for (final BestOfMatchSinglePlayer match : tournament.getBestOfMatchForRound(tournament.getCurrentRound())) {
-				if (Math.random() > 0.5) {
-					match.getSet(0).submitResultAdmin(match.getSideA());
-				} else {
-					match.getSet(0).submitResultAdmin(match.getSideB());
-				}
-			}
-			// System.out.println(tournament.printMatchesForRound(i));
-		}
-	}
-
-	private void playCurrentRound(final TrisTournament tournament) {
-		for (final BestOfMatchSinglePlayer match : tournament.getBestOfMatchForRound(tournament.getCurrentRound())) {
-			for (int i = 0; i < match.getNumberOfSets(); i++) {
-				if (playerList.indexOf(match.getSideA()) > playerList.indexOf(match.getSideB())) {
-					match.getSet(i).submitResultAdmin(match.getSideA());
-				} else {
-					match.getSet(i).submitResultAdmin(match.getSideB());
-				}
-			}
-		}
+	public void testRaceChange() {
+		final TrisTournament tournament = new TrisTournament(4, 1, playerList, "");
+		assertEquals(StarcraftRace.Terran, tournament.getInfo(playerArray[0].getUid()).getRaceForRound(0));
+		assertEquals(StarcraftRace.Terran, tournament.getInfo(playerArray[0].getUid()).getRaceForRound(1));
+		tournament.addNewRaceChange(playerArray[0].getUid(), StarcraftRace.Zerg);
+		assertEquals(StarcraftRace.Terran, tournament.getInfo(playerArray[0].getUid()).getRaceForRound(0));
+		assertEquals(StarcraftRace.Zerg, tournament.getInfo(playerArray[0].getUid()).getRaceForRound(1));
 	}
 }

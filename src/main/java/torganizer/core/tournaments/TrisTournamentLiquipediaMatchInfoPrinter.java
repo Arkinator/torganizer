@@ -1,8 +1,5 @@
 package torganizer.core.tournaments;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -12,30 +9,18 @@ import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.utils.EloCalculation;
 import torganizer.utils.TristanPlayerInfo;
 
-public class TrisTournamentLiquipediaMatchInfoPrinter {
-	private static final String strikeSymbolLink = "[[File:Ambox-warning-32px.png|17px]] ";
-	private final TrisTournament tournament;
-	private final Map<UUID, Player> playerCache;
-	private final Map<UUID, Team> teamCache;
-	private StringBuilder result = new StringBuilder();
-	private final DecimalFormat df;
-
-	public TrisTournamentLiquipediaMatchInfoPrinter(final TrisTournament tournament, final Map<UUID, Player> playerCache, final Map<UUID, Team> teamCache) {
-		this.playerCache = playerCache;
-		this.teamCache = teamCache;
-		this.tournament = tournament;
-		df = new DecimalFormat("#.0");
-		df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+public class TrisTournamentLiquipediaMatchInfoPrinter extends TrisTournamentLiquipediaBasicPrinter {
+	public TrisTournamentLiquipediaMatchInfoPrinter(final TrisTournament tournament, final Map<UUID, Player> playerCache, final Map<UUID, Team> teamCache,
+			final StringBuilder result) {
+		super(tournament, playerCache, teamCache, result);
 	}
 
-	public String execute(final int round) {
-		result = new StringBuilder();
+	public void execute(final int round) {
 		printLiquipediaHeaderMatches(round);
 		for (final BestOfMatchSinglePlayer match : tournament.getBestOfMatchForRound(round)) {
 			printMatchInfo(match, round);
 		}
 		result.append("|}");
-		return result.toString();
 	}
 
 	private void printMatchInfo(final BestOfMatchSinglePlayer match, final int round) {
@@ -86,7 +71,7 @@ public class TrisTournamentLiquipediaMatchInfoPrinter {
 		result.append(" ");
 		result.append(playerA.getLeague().getLiquipediaImageCode());
 		result.append(" {{");
-		result.append(playerA.getRace().getLiquipediaCode() + "}}");
+		result.append(infoA.getRaceForRound(round).getLiquipediaCode() + "}}");
 		printPlayerStrikes(infoA, round);
 		result.append(" ||style=\"text-align:center;\"|");
 		if (isPlayed) {
@@ -97,7 +82,7 @@ public class TrisTournamentLiquipediaMatchInfoPrinter {
 		result.append(cellDividerB);
 		printPlayerStrikes(infoB, round);
 		result.append("{{");
-		result.append(playerB.getRace().getLiquipediaCode() + "}} ");
+		result.append(infoB.getRaceForRound(round).getLiquipediaCode() + "}} ");
 		result.append(playerB.getLeague().getLiquipediaImageCode());
 		result.append(" ");
 		result.append(playerB.getName());
@@ -137,7 +122,7 @@ public class TrisTournamentLiquipediaMatchInfoPrinter {
 		result.append(" ");
 		result.append(player.getLeague().getLiquipediaImageCode());
 		result.append(" {{");
-		result.append(player.getRace().getLiquipediaCode() + "}}");
+		result.append(info.getRaceForRound(round).getLiquipediaCode() + "}}");
 		printPlayerStrikes(info, round);
 		result.append("||style=\"text-align:center;\"|");
 		if (isPlayed) {
@@ -160,12 +145,6 @@ public class TrisTournamentLiquipediaMatchInfoPrinter {
 			result.append("'''" + df.format(deltaElo) + "'''");
 		}
 		result.append("\n|-\n");
-	}
-
-	private void printPlayerStrikes(final TristanPlayerInfo info, final int round) {
-		for (int i = 0; i < info.getNumberOfStrikes(round); i++) {
-			result.append(strikeSymbolLink);
-		}
 	}
 
 	private void printPlayerTeamInfo(final Player player) {

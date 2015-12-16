@@ -4,23 +4,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
+import torganizer.core.entities.Player;
 import torganizer.core.tournaments.TrisTournament;
+import torganizer.core.types.StarcraftRace;
 
 public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
-	private final UUID player;
+	private final Player player;
+	private final StarcraftRace initialRace;
 	private double elo;
 	private final List<Double> eloPerRound;
 	private final Map<UUID, Integer> roundOfLastEncounter;
 	private final List<Integer> strikes;
+	private final Map<Integer, StarcraftRace> raceSwitches;
 
-	public TristanPlayerInfo(final UUID player) {
+	public TristanPlayerInfo(final Player player) {
 		this.player = player;
 		this.eloPerRound = new ArrayList<>();
 		this.elo = EloCalculation.defaultEloValue;
 		this.roundOfLastEncounter = new HashMap<>();
+		this.raceSwitches = new HashMap<>();
 		this.strikes = new ArrayList<>();
+		this.initialRace = player.getRace();
 	}
 
 	public void adjustElo(final double eloAdjustment) {
@@ -37,7 +44,7 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 	}
 
 	public UUID getPlayer() {
-		return player;
+		return player.getUid();
 	}
 
 	@Override
@@ -97,5 +104,21 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 			}
 		}
 		return numberOfStrikes;
+	}
+
+	public StarcraftRace getRaceForRound(final int round) {
+		StarcraftRace race = initialRace;
+		int highestRaceSwitchRound = -1;
+		for (final Entry<Integer, StarcraftRace> raceSwitch : raceSwitches.entrySet()) {
+			if ((raceSwitch.getKey() < round) && (raceSwitch.getKey() > highestRaceSwitchRound)) {
+				highestRaceSwitchRound = raceSwitch.getKey();
+				race = raceSwitch.getValue();
+			}
+		}
+		return race;
+	}
+
+	public void addRaceChangeForRound(final int round, final StarcraftRace newRace) {
+		raceSwitches.put(round, newRace);
 	}
 }

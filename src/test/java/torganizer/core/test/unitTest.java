@@ -40,10 +40,10 @@ public class unitTest {
 			{ "Ninkazi", "450", "Master", "T", "GR" }, { "Padula", "475", "Gold", "T", "UR" }, { "Picur", "915", "Diamond", "Z", "UR" }, { "Polar", "508", "Diamond", "R", "UR" },
 			{ "Psosa", "2697", "Diamond", "Z", "AI" }, { "RainOnSKy", "897", "Grandmaster", "R", "BG" }, { "SauCeBoSS", "894", "Diamond", "Z", "FG" },
 			{ "sMeeZy", "592", "Diamond", "Z", "UR" }, { "Soken", "902", "Gold", "T", "UR" }, { "Sworn", "892", "Master", "Z", "UR" }, { "Synprime", "473", "Diamond", "P", "OG" },
-			{ "TheRunedEXP", "1160", "Silver", "Z", "BG" }, { "TheWagon", "249", "Master", "Z", "AI" }, { "Vespasian", "314", "Diamond", "T" },
-			{ "Vash", "160", "Gold", "P", "C6" }, { "IIIIIIIIIIII(Vintage)", "8535", "Master", "T", "BG" }, { "Whitelion", "1834", "Diamond", "Z", "UR" },
-			{ "XelaWella", "1441", "Diamond", "T", "UR" }, { "Xilogh", "401", "Diamond", "Z", "UR" }, { "Yeezus", "750", "Diamond", "P", "BG" },
-			{ "gdoggcasey", "750", "Diamond", "P", "AI" }, { "grimm", "750", "Silver", "P", "UR" } };
+			{ "TheRunedEXP", "1160", "Silver", "Z", "BG" }, { "TheWagon", "249", "Master", "Z", "AI" }, { "Stefan", "594", "Diamond", "T" }, { "Vash", "160", "Gold", "P", "C6" },
+			{ "IIIIIIIIIIII(Vintage)", "8535", "Master", "T", "BG" }, { "Whitelion", "1834", "Diamond", "Z", "UR" }, { "XelaWella", "1441", "Diamond", "T", "UR" },
+			{ "Xilogh", "401", "Diamond", "Z", "UR" }, { "ShiaLabeouf", "454", "Diamond", "P", "BG" }, { "gdoggcasey", "750", "Diamond", "P", "AI" },
+			{ "grimm", "750", "Silver", "P", "UR" } };
 	public static String[][] teamInfo = { { "Team Unrivaled", "UR", "team unrivaled", "UnrivaledMini.png" }, //
 			{ "All Inspiration", "AI", "all-inspiration", "All-Inspirationlogo_std.png" }, //
 			{ "Guns and Roaches", "GR", "guns and roaches", "GunsandRoachesMini.png" }, //
@@ -58,26 +58,34 @@ public class unitTest {
 	public void testCorrectMatches() {
 		addTeams();
 
-		final List<UUID> playerList = new ArrayList<>();
+		final List<Player> playerList = new ArrayList<>();
 
 		for (final String[] infoStrings : playerInfo) {
 			final Player p = new Player(infoStrings[0]);
 			p.setBattleNetCode(Integer.parseInt(infoStrings[1]));
 			p.setRace(StarcraftRace.parseShort(infoStrings[3]));
 			p.setLeague(StarcraftLeague.valueOf(infoStrings[2]));
-			playerList.add(p.getUid());
+			playerList.add(p);
 			if (infoStrings.length > 4) {
 				p.setTeamUid(teamMap.get(infoStrings[4]));
 			}
 			globalObjectService.addPlayer(p);
 		}
 
-		tournament = new TrisTournament(10, 3, playerList, "#UNIT");
+		tournament = new TrisTournament(10, 3, playerList, "#UNIT - Season 1");
 		final TrisTournamentPrinter printer = new TrisTournamentPrinter(tournament, globalObjectService);
-		System.out.println(printer.printStanding());
 		tournament.initializeEloValues(globalObjectService, new double[] { 1500., 1600., 1700., 1800., 1900., 2000., 2100. });
+
 		playMatch(0, "Logistic", 2, 1);
 		playMatch(0, "Broda", 2, 0);
+		playMatch(0, "Stefan", 2, 1);
+		playMatch(0, "Sworn", 0, 2);
+		changeRace("sMeeZy", StarcraftRace.Terran);
+		playMatch(0, "sMeeZy", 2, 1);
+		playMatch(0, "Xilogh", 2, 0);
+		playMatch(0, "Colttarren", 2, 1);
+		giveStrike("ShiaLabeouf");
+
 		final String p = printer.printLiquipediaPage();
 		System.out.println(p);
 		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -94,6 +102,15 @@ public class unitTest {
 			globalObjectService.addTeam(t);
 			teamMap.put(t.getShortName(), t.getUid());
 		}
+	}
+
+	private void changeRace(final String playerName, final StarcraftRace targetRace) {
+		final UUID playerUid = globalObjectService.getPlayerByName(playerName).getUid();
+		tournament.addNewRaceChange(playerUid, targetRace);
+	}
+
+	private void giveStrike(final String playerName) {
+		tournament.giveStrikeToPlayer(globalObjectService.getPlayerByName(playerName).getUid());
 	}
 
 	private void playMatch(final int round, final String playerName, final int scorePlayer, final int scoreOtherPlayer) {

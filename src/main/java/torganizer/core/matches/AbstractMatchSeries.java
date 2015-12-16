@@ -130,7 +130,7 @@ public abstract class AbstractMatchSeries<SET extends GenericMatch> extends Abst
 	}
 
 	@Override
-	public void submitResultAdmin(final UUID side, final int scoreSide, final int scoreOtherSide) {
+	public void submitResultAdmin(final UUID side, int scoreSide, int scoreOtherSide) {
 		UUID otherSide = null;
 		if (getSideA().equals(side)) {
 			otherSide = getSideB();
@@ -139,16 +139,23 @@ public abstract class AbstractMatchSeries<SET extends GenericMatch> extends Abst
 		} else {
 			throw new UnknownSideSubmittedException("The side " + side + " is not an active part in this match series!");
 		}
-		for (int i = 0; i < scoreSide; i++) {
-			submitSetWinning(side, i);
-		}
-		for (int i = 0; i < scoreOtherSide; i++) {
-			submitSetWinning(otherSide, scoreSide + i);
+		int i = 0;
+		while ((scoreSide > 0) || (scoreOtherSide > 0)) {
+			if (scoreSide > 0) {
+				submitSetWinning(side, i);
+				scoreSide--;
+				i++;
+			}
+			if (scoreOtherSide > 0) {
+				submitSetWinning(otherSide, i);
+				scoreOtherSide--;
+				i++;
+			}
 		}
 	}
 
 	private void submitSetWinning(final UUID side, final int targetSet) {
-		if (targetSet > sets.size()) {
+		if (targetSet >= sets.size()) {
 			throw new ResultTooLargeForTargetMatchSeriesException();
 		}
 		sets.get(targetSet).submitResultAdmin(side, 1, 0);
