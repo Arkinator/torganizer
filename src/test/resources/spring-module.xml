@@ -62,7 +62,7 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-	<context:component-scan base-package="torganizer.web, torganizer.core" />
+	<context:component-scan base-package="torganizer.web, torganizer.core, torganizer.actor" />
 
 	<mvc:annotation-driven />
 	<jdbc:embedded-database id="dataSource" type="HSQL" />
