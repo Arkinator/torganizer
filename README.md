@@ -1,0 +1,2 @@
+requirements doc: https://docs.google.com/document/d/1899aPGOXNLBHF5e8be37r4zVYYK2x6c1m9AGJGwlXcM/edit
+feature list: https://docs.google.com/spreadsheets/d/1ikDwmZC10YdYoT8-7AXjV6OWMUZMieJ4WejgM4qcCfk/edit
