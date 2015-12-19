@@ -17,6 +17,7 @@ import torganizer.web.data.UserInformation;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/spring-module.xml" })
+@Transactional
 public class UserActorTest {
 	@Autowired
 	private GlobalObjectService globalObjectService;
@@ -24,7 +25,6 @@ public class UserActorTest {
 	private PlayerDao playerDao;
 
 	@Test
-	@Transactional
 	public void addUserTest() {
 		final int numUsers = new ListUsersAction(playerDao).execute().size();
 		final UserInformation userInfo = new UserInformation();
@@ -32,5 +32,23 @@ public class UserActorTest {
 		assertTrue(new AddUserCommand(userInfo, globalObjectService).execute());
 		final int newUserNumber = new ListUsersAction(playerDao).execute().size();
 		assertEquals(numUsers + 1, newUserNumber);
+	}
+
+	@Test
+	public void editUserTest() {
+		UserInformation userInfo = new UserInformation();
+		final String firstName = RandomStringUtils.randomAlphanumeric(20);
+		final String secondName = RandomStringUtils.randomAlphanumeric(20);
+		userInfo.username = firstName;
+		assertTrue(new AddUserCommand(userInfo, globalObjectService).execute());
+
+		userInfo = new GetUserInfoCommand(firstName, globalObjectService).execute();
+		assertEquals(firstName, userInfo.username);
+
+		userInfo.username = secondName;
+		assertTrue(new EditUserCommand(userInfo.uid, userInfo, globalObjectService).execute());
+
+		userInfo = new GetUserInfoCommand(userInfo.uid, globalObjectService).execute();
+		assertEquals(secondName, userInfo.username);
 	}
 }

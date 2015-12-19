@@ -24,5 +24,4 @@ public class AddUserCommand extends BasicObjectAction<Boolean> {
 		final Player player = new Player(userInfo.username);
 		return player;
 	}
-
 }

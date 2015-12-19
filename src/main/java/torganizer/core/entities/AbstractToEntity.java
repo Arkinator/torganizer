@@ -9,7 +9,7 @@ import torganizer.core.persistance.orm.EntityOrm;
 public abstract class AbstractToEntity implements IToEntity {
 	private List<IToEntity> callbackList = new ArrayList<IToEntity>();
 	private final UUID uid;
-	private final String name;
+	private String name;
 
 	private final EntityOrm orm;
 
@@ -90,6 +90,11 @@ public abstract class AbstractToEntity implements IToEntity {
 
 	public final String getName() {
 		return name;
+	}
+
+	public final void setName(final String newName) {
+		this.name = newName;
+		getEntityOrm().setName(newName);
 	}
 
 	public EntityOrm getEntityOrm() {

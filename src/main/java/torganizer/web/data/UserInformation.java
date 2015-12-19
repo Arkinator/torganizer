@@ -5,6 +5,7 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import torganizer.core.entities.Player;
 import torganizer.core.persistance.orm.PlayerOrm;
 
 @XmlRootElement
@@ -20,5 +21,10 @@ public class UserInformation {
 	}
 
 	public UserInformation() {
+	}
+
+	public UserInformation(final Player p) {
+		this.username = p.getName();
+		this.uid = p.getUid();
 	}
 }
