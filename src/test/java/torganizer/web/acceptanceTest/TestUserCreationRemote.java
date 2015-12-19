@@ -1,61 +1,108 @@
 package torganizer.web.acceptanceTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.junit.Ignore;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.UUID;
+
+import javax.ws.rs.core.Application;
+
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.mock.http.MockHttpOutputMessage;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
 
-import torganizer.utils.CryptoUtils;
-import torganizer.web.IUserRestInterface;
-import torganizer.web.data.UserInformation;
+import torganizer.core.persistance.objectservice.GlobalObjectService;
 
+/**
+ * @author Josh Long
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = Application.class)
+@WebAppConfiguration
+@ContextConfiguration(locations = { "/spring-module.xml" })
 public class TestUserCreationRemote {
-	private static final String username = "newUser";
-	private static final String password = "password1234geheim";
-	private static ResteasyClient client;
-	private static ResteasyWebTarget target;
-	private static IUserRestInterface token;
+	private final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
-	@Ignore
+	private MockMvc mockMvc;
+	private final String userName = "bdussault";
+	private HttpMessageConverter mappingJackson2HttpMessageConverter;
+
+	@Autowired
+	private GlobalObjectService globalObjectService;
+
+	@Autowired
+	private WebApplicationContext webApplicationContext;
+
+	@Autowired
+	void setConverters(final HttpMessageConverter<?>[] converters) {
+		this.mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream().filter(hmc -> hmc instanceof MappingJackson2HttpMessageConverter).findAny().get();
+
+		Assert.assertNotNull("the JSON message converter must not be null", this.mappingJackson2HttpMessageConverter);
+	}
+
+	@Before
+	public void setup() throws Exception {
+		this.mockMvc = webAppContextSetup(webApplicationContext).build();
+	}
+
 	@Test
-	public void testGetSaltCommand() {
-		final Long salt = Long.decode(getToken().getLoginSalt("fjdksa"));
-		assertNotNull(salt);
+	public void userNotFound() throws Exception {
+		mockMvc.perform(get("/user/" + UUID.randomUUID())).andExpect(status().isNotFound());
 	}
 
-	@Ignore
-	@Test
-	public void testUserCreation() {
-		final UserInformation userInfo = new UserInformation();
-		userInfo.username = username;
-		final String passwordSalt = getToken().getLoginSalt(username);
-		userInfo.passwordHash = CryptoUtils.getSha256Hash(passwordSalt + password);
-		getToken().createUser(userInfo);
-		final UserInformation loginInfo = getToken().doLogin(userInfo);
-		assertEquals(username, loginInfo.username);
-		assertEquals(username, getToken().getUserInfo().username);
-		getToken().doLogout();
-		assertNull(getToken().getUserInfo());
-	}
-
-	private IUserRestInterface getToken() {
-		return token;
-	}
-
-	// @BeforeClass
-	// public static void startup() {
-	// client = new ResteasyClientBuilder().build();
-	// target = client.target("http://localhost:8080/torganizer/user");
-	// token = target.proxy(IUserRestInterface.class);
+	// @Test
+	// public void readSingleBookmark() throws Exception {
+	// mockMvc.perform(get("/" + userName + "/bookmarks/" +
+	// this.bookmarkList.get(0).getId())).andExpect(status().isOk()).andExpect(content().contentType(contentType))
+	// .andExpect(jsonPath("$.id",
+	// is(this.bookmarkList.get(0).getId().intValue()))).andExpect(jsonPath("$.uri",
+	// is("http://bookmark.com/1/" + userName)))
+	// .andExpect(jsonPath("$.description", is("A description")));
 	// }
 	//
-	// @AfterClass
-	// public static void shutdown() {
-	// client.close();
+	// @Test
+	// public void readBookmarks() throws Exception {
+	// mockMvc.perform(get("/" + userName +
+	// "/bookmarks")).andExpect(status().isOk()).andExpect(content().contentType(contentType)).andExpect(jsonPath("$",
+	// hasSize(2)))
+	// .andExpect(jsonPath("$[0].id",
+	// is(this.bookmarkList.get(0).getId().intValue()))).andExpect(jsonPath("$[0].uri",
+	// is("http://bookmark.com/1/" + userName)))
+	// .andExpect(jsonPath("$[0].description", is("A
+	// description"))).andExpect(jsonPath("$[1].id",
+	// is(this.bookmarkList.get(1).getId().intValue())))
+	// .andExpect(jsonPath("$[1].uri", is("http://bookmark.com/2/" +
+	// userName))).andExpect(jsonPath("$[1].description", is("A description")));
+	// }
+	//
+	// @Test
+	// public void createBookmark() throws Exception {
+	// final String bookmarkJson = json(new Bookmark(this.account,
+	// "http://spring.io", "a bookmark to the best resource for Spring news and
+	// information"));
+	// this.mockMvc.perform(post("/" + userName +
+	// "/bookmarks").contentType(contentType).content(bookmarkJson)).andExpect(status().isCreated());
 	// }
 
+	protected String json(final Object o) throws IOException {
+		final MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
+		this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
+		return mockHttpOutputMessage.getBodyAsString();
+	}
 }

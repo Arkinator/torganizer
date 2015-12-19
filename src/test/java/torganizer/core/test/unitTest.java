@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import torganizer.core.entities.Player;
 import torganizer.core.entities.Team;
@@ -55,6 +56,7 @@ public class unitTest {
 	public static Map<String, UUID> teamMap = new HashMap<>();
 
 	@Test
+	@Transactional
 	public void testCorrectMatches() {
 		addTeams();
 
@@ -85,6 +87,13 @@ public class unitTest {
 		playMatch(0, "Xilogh", 2, 0);
 		playMatch(0, "Colttarren", 2, 1);
 		giveStrike("ShiaLabeouf");
+		playMatch(0, "FusTup", 0, 2);
+		playMatch(0, "RainOnSKy", 2, 0);
+		playMatch(0, "Apogee", 2, 0);
+		playMatch(0, "Picur", 2, 0);
+		giveStrike("Msyu");
+		playMatch(0, "Stefan", 2, 1);
+		playMatch(0, "gdoggcasey", 0, 2);
 
 		final String p = printer.printLiquipediaPage();
 		System.out.println(p);
