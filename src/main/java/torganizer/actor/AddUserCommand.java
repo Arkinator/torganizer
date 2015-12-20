@@ -5,7 +5,6 @@ import torganizer.core.persistance.objectservice.GlobalObjectService;
 import torganizer.web.data.UserInformation;
 
 public class AddUserCommand extends BasicObjectAction<Boolean> {
-
 	private final UserInformation userInfo;
 
 	public AddUserCommand(final UserInformation userInfo, final GlobalObjectService globalObjectService) {
