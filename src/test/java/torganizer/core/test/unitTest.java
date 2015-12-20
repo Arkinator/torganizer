@@ -96,6 +96,10 @@ public class unitTest {
 		playMatch(0, "gdoggcasey", 0, 2);
 		playMatch(0, "Coltrane", 0, 2);
 		playMatch(0, "Vash", 2, 0);
+		playMatch(0, "Acadien", 2, 0);
+		playMatch(0, "Psosa", 2, 0);
+		giveStrike("IIIIIIIIIIII(Vintage)");
+		playMatch(0, "Padula", 2, 0);
 
 		final String p = printer.printLiquipediaPage();
 		System.out.println(p);

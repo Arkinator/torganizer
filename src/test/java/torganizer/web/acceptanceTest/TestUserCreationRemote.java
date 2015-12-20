@@ -89,7 +89,7 @@ public class TestUserCreationRemote {
 	// is("http://bookmark.com/1/" + userName)))
 	// .andExpect(jsonPath("$.description", is("A description")));
 	// }
-	//
+
 	// @Test
 	// public void readBookmarks() throws Exception {
 	// mockMvc.perform(get("/" + userName +
