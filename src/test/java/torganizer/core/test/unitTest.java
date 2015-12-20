@@ -94,6 +94,8 @@ public class unitTest {
 		giveStrike("Msyu");
 		playMatch(0, "Stefan", 2, 1);
 		playMatch(0, "gdoggcasey", 0, 2);
+		playMatch(0, "Coltrane", 0, 2);
+		playMatch(0, "Vash", 2, 0);
 
 		final String p = printer.printLiquipediaPage();
 		System.out.println(p);

@@ -27,13 +27,18 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.google.gson.Gson;
+
+import torganizer.core.entities.Player;
 import torganizer.core.persistance.objectservice.GlobalObjectService;
+import torganizer.web.data.UserInformation;
 
 /**
  * @author Josh Long
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+// @SpringApplicationConfiguration(classes = Application.class, locations = {
+// "/spring-module.xml" })
 @WebAppConfiguration
 @ContextConfiguration(locations = { "/spring-module.xml" })
 public class TestUserCreationRemote {
@@ -41,7 +46,8 @@ public class TestUserCreationRemote {
 
 	private MockMvc mockMvc;
 	private final String userName = "bdussault";
-	private HttpMessageConverter mappingJackson2HttpMessageConverter;
+	// private HttpMessageConverter mappingJackson2HttpMessageConverter;
+	private final Gson gson = new Gson();
 
 	@Autowired
 	private GlobalObjectService globalObjectService;
@@ -49,12 +55,15 @@ public class TestUserCreationRemote {
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 
-	@Autowired
-	void setConverters(final HttpMessageConverter<?>[] converters) {
-		this.mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream().filter(hmc -> hmc instanceof MappingJackson2HttpMessageConverter).findAny().get();
-
-		Assert.assertNotNull("the JSON message converter must not be null", this.mappingJackson2HttpMessageConverter);
-	}
+	// @Autowired
+	// void setConverters(final HttpMessageConverter<?>[] converters) {
+	// this.mappingJackson2HttpMessageConverter =
+	// Arrays.asList(converters).stream().filter(hmc -> hmc instanceof
+	// MappingJackson2HttpMessageConverter).findAny().get();
+	//
+	// Assert.assertNotNull("the JSON message converter must not be null",
+	// this.mappingJackson2HttpMessageConverter);
+	// }
 
 	@Before
 	public void setup() throws Exception {
@@ -90,19 +99,16 @@ public class TestUserCreationRemote {
 	// .andExpect(jsonPath("$[1].uri", is("http://bookmark.com/2/" +
 	// userName))).andExpect(jsonPath("$[1].description", is("A description")));
 	// }
-	//
-	// @Test
-	// public void createBookmark() throws Exception {
-	// final String bookmarkJson = json(new Bookmark(this.account,
-	// "http://spring.io", "a bookmark to the best resource for Spring news and
-	// information"));
-	// this.mockMvc.perform(post("/" + userName +
-	// "/bookmarks").contentType(contentType).content(bookmarkJson)).andExpect(status().isCreated());
-	// }
+
+	@Test
+	public void addUser() throws Exception {
+		final UserInformation userInfo = new UserInformation();
+		userInfo.username = userName;
+		final String playerJson = json(userInfo);
+		this.mockMvc.perform(post("/user/").contentType(contentType).content(playerJson)).andExpect(status().isCreated());
+	}
 
 	protected String json(final Object o) throws IOException {
-		final MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
-		this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
-		return mockHttpOutputMessage.getBodyAsString();
+		return gson.toJson(o);
 	}
 }
