@@ -1,4 +1,4 @@
-package torganizer.core.test;
+package torganizer.persistance.test;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -100,12 +100,24 @@ public class unitTest {
 		playMatch(0, "Psosa", 2, 0);
 		giveStrike("IIIIIIIIIIII(Vintage)");
 		playMatch(0, "Padula", 2, 0);
+		callDrawnMatch(0, "TheRunedEXP");
+		giveStrike("Meristematic");
+		giveStrike("TheRunedEXP");
 
 		final String p = printer.printLiquipediaPage();
 		System.out.println(p);
 		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		final StringSelection data = new StringSelection(p);
 		clipBoard.setContents(data, data);
+	}
+
+	private void callDrawnMatch(final int round, final String playerName) {
+		final UUID playerUid = globalObjectService.getPlayerByName(playerName).getUid();
+		for (final GenericMatch match : tournament.getMatchesForRound(round)) {
+			if (match.getSideA().equals(playerUid) || match.getSideB().equals(playerUid)) {
+				match.submitResultAdmin(null, 0, 0);
+			}
+		}
 	}
 
 	private void addTeams() {
@@ -130,7 +142,7 @@ public class unitTest {
 
 	private void playMatch(final int round, final String playerName, final int scorePlayer, final int scoreOtherPlayer) {
 		final UUID playerUid = globalObjectService.getPlayerByName(playerName).getUid();
-		for (final GenericMatch match : tournament.getMatchesForRound(0)) {
+		for (final GenericMatch match : tournament.getMatchesForRound(round)) {
 			if (match.getSideA().equals(playerUid) || match.getSideB().equals(playerUid)) {
 				match.submitResultAdmin(playerUid, scorePlayer, scoreOtherPlayer);
 			}

@@ -40,9 +40,12 @@ public class TrisTournamentLiquipediaMatchInfoPrinter extends TrisTournamentLiqu
 		final TristanPlayerInfo infoA = tournament.getInfo(match.getSideA());
 		final TristanPlayerInfo infoB = tournament.getInfo(match.getSideB());
 		final EloCalculation elo = new EloCalculation(tournament.getInfo(match.getSideA()).getEloForRound(round), tournament.getInfo(match.getSideB()).getEloForRound(round));
-		final boolean isPlayed = (match.getScoreSideA() != 0) || (match.getScoreSideB() != 0);
-		if (isPlayed) {
-			elo.setFactualResult(((double) match.getScoreSideA()) / (match.getScoreSideA() + match.getScoreSideB()));
+		if (match.isPlayed()) {
+			if (match.getWinner() != null) {
+				elo.setFactualResult(((double) match.getScoreSideA()) / (match.getScoreSideA() + match.getScoreSideB()));
+			} else {
+				elo.setFactualResult(0.5);
+			}
 		} else {
 			elo.setFactualResult(0.);
 		}
@@ -51,8 +54,11 @@ public class TrisTournamentLiquipediaMatchInfoPrinter extends TrisTournamentLiqu
 
 		String styleCellA = "";
 		String styleCellB = "";
-		if (isPlayed) {
-			if (match.getWinner().equals(match.getSideA())) {
+		if (match.isPlayed()) {
+			if (match.getWinner() == null) {
+				styleCellB = "background: #F2E8B8;";
+				styleCellA = "background: #F2E8B8;";
+			} else if (match.getWinner().equals(match.getSideA())) {
 				styleCellA = "background: #B8F2B8;";
 				styleCellB = "background: #F2B8B8;";
 			} else {
@@ -74,7 +80,7 @@ public class TrisTournamentLiquipediaMatchInfoPrinter extends TrisTournamentLiqu
 		result.append(infoA.getRaceForRound(round).getLiquipediaCode() + "}}");
 		printPlayerStrikes(infoA, round);
 		result.append(" ||style=\"text-align:center;\"|");
-		if (isPlayed) {
+		if (match.isPlayed()) {
 			result.append("'''" + match.getScoreSideA() + " : " + match.getScoreSideB() + "'''");
 		} else {
 			result.append(" vs ");
@@ -91,7 +97,7 @@ public class TrisTournamentLiquipediaMatchInfoPrinter extends TrisTournamentLiqu
 		result.append(cellDividerB);
 		result.append(df.format(infoB.getEloForRound(round)));
 		result.append(" ||");
-		if (!isPlayed) {
+		if (!match.isPlayed()) {
 			elo.setFactualResult(0);
 			result.append("(" + df.format(-deltaElo) + ")");
 		} else {

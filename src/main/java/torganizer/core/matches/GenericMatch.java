@@ -30,5 +30,15 @@ public abstract class GenericMatch extends AbstractToEntity implements IToEntity
 
 	public abstract UUID getSideB();
 
+	/**
+	 * Submit the result of the match as an admin. If the player is null the
+	 * game is considered played but drawn.
+	 *
+	 * @param player
+	 * @param scorePlayer
+	 * @param scoreOtherPlayer
+	 */
 	public abstract void submitResultAdmin(UUID player, int scorePlayer, int scoreOtherPlayer);
+
+	public abstract boolean isPlayed();
 }

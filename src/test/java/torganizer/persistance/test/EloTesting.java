@@ -1,4 +1,4 @@
-package torganizer.core.test;
+package torganizer.persistance.test;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;

@@ -138,7 +138,7 @@ public class KoTournament extends BasicRoundBasedTournament {
 		int round = 0;
 		for (final List<BestOfMatchSinglePlayer> list : rounds) {
 			for (final BestOfMatchSinglePlayer match : list) {
-				if (match.getWinner() == null) {
+				if (!match.isPlayed()) {
 					return round;
 				}
 			}

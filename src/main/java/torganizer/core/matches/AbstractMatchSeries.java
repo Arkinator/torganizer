@@ -9,7 +9,7 @@ import torganizer.core.persistance.orm.EntityOrm;
 import torganizer.core.persistance.orm.MatchOrm;
 
 public abstract class AbstractMatchSeries<SET extends GenericMatch> extends AbstractMatch {
-
+	private boolean adminCalledADraw = false;
 	private final List<SET> sets;
 
 	public AbstractMatchSeries(final int numberOfSets, final UUID sideA, final UUID sideB, final String name) {
@@ -130,12 +130,16 @@ public abstract class AbstractMatchSeries<SET extends GenericMatch> extends Abst
 	}
 
 	@Override
-	public void submitResultAdmin(final UUID side, int scoreSide, int scoreOtherSide) {
+	public void submitResultAdmin(UUID side, int scoreSide, int scoreOtherSide) {
 		UUID otherSide = null;
 		if (getSideA().equals(side)) {
 			otherSide = getSideB();
 		} else if (getSideB().equals(side)) {
 			otherSide = getSideA();
+		} else if (side == null) {
+			adminCalledADraw = true;
+			side = getSideA();
+			otherSide = getSideB();
 		} else {
 			throw new UnknownSideSubmittedException("The side " + side + " is not an active part in this match series!");
 		}
@@ -171,5 +175,14 @@ public abstract class AbstractMatchSeries<SET extends GenericMatch> extends Abst
 
 	public static class ResultTooLargeForTargetMatchSeriesException extends RuntimeException {
 		private static final long serialVersionUID = 5038718705424238685L;
+	}
+
+	@Override
+	public boolean isPlayed() {
+		if (adminCalledADraw) {
+			return true;
+		} else {
+			return getWinner() != null;
+		}
 	}
 }

@@ -1,17 +1,25 @@
 package torganizer.core.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import torganizer.core.entities.AbstractToEntity;
 import torganizer.core.entities.Player;
+import torganizer.core.entities.Team;
+import torganizer.core.matches.BestOfMatchSinglePlayer;
+import torganizer.core.matches.Game;
+import torganizer.core.persistance.objectservice.GlobalObjectService;
 import torganizer.core.tournaments.TrisTournament;
+import torganizer.core.tournaments.TrisTournamentPrinter;
+import torganizer.core.types.StarcraftLeague;
 import torganizer.core.types.StarcraftRace;
 
 public class SexySwissTest {
@@ -19,6 +27,56 @@ public class SexySwissTest {
 	private final static int maxNumberPlayers = 6;
 	static List<Player> playerList;
 	private static Player admin;
+	private final GlobalObjectService mockObjectService = new GlobalObjectService() {
+		@Override
+		public void updateEntity(final AbstractToEntity entity) {
+		}
+
+		@Override
+		public Team getTeamById(final UUID teamId) {
+			return null;
+		}
+
+		@Override
+		public Player getPlayerByName(final String name) {
+			return null;
+		}
+
+		@Override
+		public Player getPlayerById(final UUID submitter) {
+			return playerList.stream().filter(p -> p.getUid().equals(submitter)).findAny().get();
+		}
+
+		@Override
+		public Game getGameById(final UUID gameId) {
+			return null;
+		}
+
+		@Override
+		public BestOfMatchSinglePlayer getBestOfMatchById(final UUID gameId) {
+			return null;
+		}
+
+		@Override
+		public void addTeam(final Team t) {
+		}
+
+		@Override
+		public void addPlayer(final Player player) {
+		}
+
+		@Override
+		public void addMatch(final BestOfMatchSinglePlayer match) {
+		}
+
+		@Override
+		public void addGame(final Game game) {
+		}
+
+		@Override
+		public void addEntity(final AbstractToEntity entity) {
+		}
+	};
 
 	@BeforeClass
 	public static void initializeClass() {
@@ -29,6 +87,7 @@ public class SexySwissTest {
 		for (int i = 0; i < playerArray.length; i++) {
 			playerArray[i] = new Player("player" + i);
 			playerArray[i].setRace(StarcraftRace.Terran);
+			playerArray[i].setLeague(StarcraftLeague.values()[6 - i]);
 			playerList.add(playerArray[i]);
 		}
 	}
@@ -54,7 +113,7 @@ public class SexySwissTest {
 		final TrisTournament tournament = new TrisTournament(1, 1, unevenPlayerList, "");
 		assertEquals(tournament.getParticipants().size(), 5);
 		assertEquals(tournament.getMatchesForRound(0).size(), 3);
-		assertNotNull(tournament.getMatchesForRound(0).get(2).getWinner());
+		assertTrue(tournament.getMatchesForRound(0).get(2).isPlayed());
 	}
 
 	@Test
@@ -108,9 +167,6 @@ public class SexySwissTest {
 		assertEquals(playerArray[3].getUid(), tournament.getMatchesForRound(1).get(1).getSideB());
 		assertEquals(playerArray[4].getUid(), tournament.getMatchesForRound(1).get(2).getSideA());
 		assertEquals(playerArray[5].getUid(), tournament.getMatchesForRound(1).get(2).getSideB());
-		tournament.getMatchesForRound(1).get(0).submitResultAdmin(playerArray[0].getUid(), 1, 0);
-		tournament.getMatchesForRound(1).get(1).submitResultAdmin(playerArray[1].getUid(), 1, 0);
-		tournament.getMatchesForRound(1).get(2).submitResultAdmin(playerArray[4].getUid(), 1, 0);
 	}
 
 	@Test
@@ -121,5 +177,51 @@ public class SexySwissTest {
 		tournament.addNewRaceChange(playerArray[0].getUid(), StarcraftRace.Zerg);
 		assertEquals(StarcraftRace.Terran, tournament.getInfo(playerArray[0].getUid()).getRaceForRound(0));
 		assertEquals(StarcraftRace.Zerg, tournament.getInfo(playerArray[0].getUid()).getRaceForRound(1));
+	}
+
+	@Test
+	public void testDrawnMatch() {
+		final TrisTournament tournament = new TrisTournament(4, 1, playerList, "");
+		assertEquals(0, tournament.getCurrentRound());
+		tournament.getMatchesForRound(0).get(0).submitResultAdmin(null, 0, 0);
+		assertEquals(0, tournament.getCurrentRound());
+		tournament.getMatchesForRound(0).get(1).submitResultAdmin(playerArray[2].getUid(), 1, 0);
+		tournament.getMatchesForRound(0).get(2).submitResultAdmin(playerArray[4].getUid(), 1, 0);
+		String s = new TrisTournamentPrinter(tournament, mockObjectService).printMatchesForRound(0);
+		System.out.println(s);
+		s = new TrisTournamentPrinter(tournament, mockObjectService).printMatchesForRound(1);
+		System.out.println(s);
+		assertEquals(1, tournament.getCurrentRound());
+		assertEquals(playerArray[0].getUid(), tournament.getMatchesForRound(1).get(0).getSideA());
+		assertEquals(playerArray[2].getUid(), tournament.getMatchesForRound(1).get(0).getSideB());
+		assertEquals(playerArray[1].getUid(), tournament.getMatchesForRound(1).get(1).getSideA());
+		assertEquals(playerArray[3].getUid(), tournament.getMatchesForRound(1).get(1).getSideB());
+		assertEquals(playerArray[4].getUid(), tournament.getMatchesForRound(1).get(2).getSideA());
+		assertEquals(playerArray[5].getUid(), tournament.getMatchesForRound(1).get(2).getSideB());
+	}
+
+	@Test
+	public void testSecondRoundMatchesWhileStillInFirstRound() {
+		final TrisTournament tournament = new TrisTournament(4, 1, playerList, "");
+
+		// first Round
+		assertEquals(playerArray[0].getUid(), tournament.getMatchesForRound(0).get(0).getSideA());
+		assertEquals(playerArray[1].getUid(), tournament.getMatchesForRound(0).get(0).getSideB());
+		assertEquals(playerArray[2].getUid(), tournament.getMatchesForRound(0).get(1).getSideA());
+		assertEquals(playerArray[3].getUid(), tournament.getMatchesForRound(0).get(1).getSideB());
+		assertEquals(playerArray[4].getUid(), tournament.getMatchesForRound(0).get(2).getSideA());
+		assertEquals(playerArray[5].getUid(), tournament.getMatchesForRound(0).get(2).getSideB());
+		tournament.getMatchesForRound(0).get(0).submitResultAdmin(playerArray[0].getUid(), 1, 0);
+
+		/**
+		 * The Players facing each others are different in this test compared to
+		 * 'testCorrectMatches' since the results are different(i.e. not yet in)
+		 */
+		assertEquals(playerArray[0].getUid(), tournament.getMatchesForRound(1).get(0).getSideA());
+		assertEquals(playerArray[2].getUid(), tournament.getMatchesForRound(1).get(0).getSideB());
+		assertEquals(playerArray[3].getUid(), tournament.getMatchesForRound(1).get(1).getSideA());
+		assertEquals(playerArray[4].getUid(), tournament.getMatchesForRound(1).get(1).getSideB());
+		assertEquals(playerArray[5].getUid(), tournament.getMatchesForRound(1).get(2).getSideA());
+		assertEquals(playerArray[1].getUid(), tournament.getMatchesForRound(1).get(2).getSideB());
 	}
 }

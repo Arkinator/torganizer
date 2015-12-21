@@ -2,6 +2,7 @@ package torganizer.core.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -93,6 +94,7 @@ public class MatchTest {
 		match.getSet(2).submitResultAdmin(playerA_3.getUid());
 
 		assertEquals(teamA.getUid(), match.getWinner());
+		assertTrue(match.isPlayed());
 	}
 
 	@Test
@@ -119,6 +121,7 @@ public class MatchTest {
 		match.getSet(2).submitResultAdmin(playerA_3.getUid());
 
 		assertEquals(teamA.getUid(), match.getWinner());
+		assertTrue(match.isPlayed());
 	}
 
 	protected CtlMatch construct3v3Match() {

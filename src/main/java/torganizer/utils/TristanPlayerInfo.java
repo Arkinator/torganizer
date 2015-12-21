@@ -61,16 +61,13 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 		roundOfLastEncounter.put(opponent, round);
 	}
 
-	public Integer getRoundOfLastEncounter(final UUID opponent) {
-		return roundOfLastEncounter.get(opponent);
-	}
-
-	public boolean hasPlayerFacedOpponentBeforeInNMatches(final UUID opponent, final int threshold, final int round) {
-		final Integer lastEncounter = getRoundOfLastEncounter(opponent);
-		if (lastEncounter == null) {
-			return false;
+	public Integer getRoundOfLastEncounter(final UUID opponent, final int round) {
+		final Integer result = roundOfLastEncounter.get(opponent);
+		if ((result == null) || (result == round)) {
+			return null;
+		} else {
+			return result;
 		}
-		return (round - lastEncounter) <= threshold;
 	}
 
 	public double getEloForRound(final int round) {
@@ -120,5 +117,14 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 
 	public void addRaceChangeForRound(final int round, final StarcraftRace newRace) {
 		raceSwitches.put(round, newRace);
+	}
+
+	public void clearEncounterForRound(final int round) {
+		for (final Entry<UUID, Integer> entry : roundOfLastEncounter.entrySet()) {
+			if (entry.getValue().equals(round)) {
+				roundOfLastEncounter.remove(entry.getKey());
+				return;
+			}
+		}
 	}
 }

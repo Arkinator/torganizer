@@ -1,7 +1,9 @@
 package torganizer.core.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -18,6 +20,7 @@ public class BestOfMatchTest {
 		set.getSet(0).submitResultSideA(playerA.getUid());
 		set.getSet(0).submitResultSideB(playerA.getUid());
 		assertNull(set.getWinner());
+		assertFalse(set.isPlayed());
 	}
 
 	@Test
@@ -44,6 +47,7 @@ public class BestOfMatchTest {
 		final Player playerA = new Player("playerA");
 		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA.getUid(), null, "");
 		assertEquals(playerA.getUid(), set.getWinner());
+		assertTrue(set.isPlayed());
 	}
 
 	@Test
@@ -54,7 +58,18 @@ public class BestOfMatchTest {
 		final GenericMatch castedPtr = set;
 		castedPtr.submitResultAdmin(playerA.getUid(), 2, 1);
 		assertEquals(playerA.getUid(), set.getWinner());
+		assertTrue(set.isPlayed());
 		assertEquals(2, set.getScoreSideA());
 		assertEquals(1, set.getScoreSideB());
+	}
+
+	@Test
+	public void testDrawnSeries() {
+		final Player playerA = new Player("playerA");
+		final Player playerB = new Player("playerB");
+		final BestOfMatchSinglePlayer match = new BestOfMatchSinglePlayer(3, playerA.getUid(), playerB.getUid(), "");
+		match.submitResultAdmin(null, 0, 0);
+		assertNull(match.getWinner());
+		assertTrue(match.isPlayed());
 	}
 }

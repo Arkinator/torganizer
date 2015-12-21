@@ -1,10 +1,7 @@
 package torganizer.core.matches;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-import torganizer.core.persistance.orm.EntityOrm;
 import torganizer.core.persistance.orm.MatchOrm;
 import torganizer.core.types.MatchType;
 import torganizer.utils.GlobalUtilities;
@@ -58,13 +55,5 @@ public class BestOfMatchSinglePlayer extends AbstractMatchSeries<Game> {
 		public UnsupportedFormatException(final String string) {
 			super(string);
 		}
-	}
-
-	private List<EntityOrm> buildSetEntities() {
-		final List<EntityOrm> result = new ArrayList<EntityOrm>();
-		for (final GenericMatch match : getSets()) {
-			result.add(match.getEntityOrm());
-		}
-		return result;
 	}
 }

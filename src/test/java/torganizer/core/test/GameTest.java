@@ -36,6 +36,7 @@ public class GameTest {
 	public void getResultForUnplayedGame() {
 		final Game game = new Game(playerA.getUid(), playerB.getUid(), "");
 		assertNull(game.getWinner());
+		assertFalse(game.isPlayed());
 	}
 
 	@Test
@@ -64,6 +65,7 @@ public class GameTest {
 		game.submitResultSideB(playerB.getUid());
 
 		assertNull(game.getWinner());
+		assertFalse(game.isPlayed());
 	}
 
 	@Test

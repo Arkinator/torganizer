@@ -104,4 +104,9 @@ public class Game extends AbstractMatch {
 			}
 		}
 	}
+
+	@Override
+	public boolean isPlayed() {
+		return getWinner() != null;
+	}
 }
