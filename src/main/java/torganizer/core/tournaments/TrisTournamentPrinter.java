@@ -51,20 +51,25 @@ public class TrisTournamentPrinter {
 		for (final BestOfMatchSinglePlayer match : tournament.getBestOfMatchForRound(round)) {
 			result.append(playerCache.get(match.getSideA()).getName());
 			result.append(" vs ");
-			result.append(playerCache.get(match.getSideB()).getName());
+			if (match.getSideB() != null) {
+				result.append(playerCache.get(match.getSideB()).getName());
+			}
 			result.append(" ");
 			result.append(match.getScoreSideA());
 			result.append("-");
 			result.append(match.getScoreSideB());
 			result.append(" (");
-			final EloCalculation elo = new EloCalculation(tournament.getInfo(match.getSideA()).getEloForRound(round), tournament.getInfo(match.getSideB()).getEloForRound(round));
-			if ((match.getScoreSideA() == 0) && (match.getScoreSideB() == 0)) {
-				elo.setFactualResult(0);
-			} else {
-				elo.setFactualResult(match.getFinalScore());
+			if (match.getSideB() != null) {
+				final EloCalculation elo = new EloCalculation(tournament.getInfo(match.getSideA()).getEloForRound(round),
+						tournament.getInfo(match.getSideB()).getEloForRound(round));
+				if ((match.getScoreSideA() == 0) && (match.getScoreSideB() == 0)) {
+					elo.setFactualResult(0);
+				} else {
+					elo.setFactualResult(match.getFinalScore());
+				}
+				final double deltaElo = elo.getPlayerBAdjustment() * TrisTournament.eloSpeedupFactor;
+				result.append(df.format(deltaElo));
 			}
-			final double deltaElo = elo.getPlayerBAdjustment() * TrisTournament.eloSpeedupFactor;
-			result.append(df.format(deltaElo));
 			result.append(")\n");
 		}
 		return result.toString();

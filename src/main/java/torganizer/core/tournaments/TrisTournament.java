@@ -96,35 +96,28 @@ public class TrisTournament extends BasicRoundBasedTournament {
 
 	private List<BestOfMatchSinglePlayer> createMatchesForRoundAccordingToStanding(final int round) {
 		final List<UUID> playerList = new ArrayList<UUID>();
-		if (standings == null) {
-			playerList.addAll(this.getParticipants());
-			Collections.shuffle(playerList);
-			// account for uneven amount of players
-			playerList.add(null);
-			final List<BestOfMatchSinglePlayer> matchesForRound = new ArrayList<BestOfMatchSinglePlayer>();
-			for (int i = 0; i < calculateMatchesPerRound(playerList.size()); i++) {
-				final UUID playerA = playerList.remove(0);
-				final UUID playerB = playerList.remove(0);
-				matchesForRound.add(createNewMatch(playerA, playerB));
-				addNewEncounterForPlayer(playerA, playerB, round);
+		standings.forEach(info -> {
+			if (info.isEligibleToPlay()) {
+				playerList.add(info.getPlayer());
+			} else {
+				penalizePlayer(info, round);
 			}
-			return matchesForRound;
-		} else {
-			standings.forEach(info -> {
-				if (info.isEligibleToPlay()) {
-					playerList.add(info.getPlayer());
-				}
-			});
-			final List<BestOfMatchSinglePlayer> matchesForRound = new ArrayList<BestOfMatchSinglePlayer>();
-			final int numMatches = calculateMatchesPerRound(playerList.size());
-			for (int i = 0; i < numMatches; i++) {
-				final UUID playerA = playerList.remove(0);
-				final UUID playerB = seekOpponentForPlayer(playerA, playerList, round);
-				matchesForRound.add(createNewMatch(playerA, playerB));
-				addNewEncounterForPlayer(playerA, playerB, round);
-			}
-			return matchesForRound;
+		});
+		final List<BestOfMatchSinglePlayer> matchesForRound = new ArrayList<BestOfMatchSinglePlayer>();
+		final int numMatches = calculateMatchesPerRound(playerList.size());
+		for (int i = 0; i < numMatches; i++) {
+			final UUID playerA = playerList.remove(0);
+			final UUID playerB = seekOpponentForPlayer(playerA, playerList, round);
+			matchesForRound.add(createNewMatch(playerA, playerB));
+			addNewEncounterForPlayer(playerA, playerB, round);
 		}
+		return matchesForRound;
+	}
+
+	private void penalizePlayer(final TristanPlayerInfo info, final int round) {
+		final EloCalculation elo = new EloCalculation(info.getElo(), info.getElo());
+		elo.setFactualResult(0.);
+		info.adjustElo(elo.getPlayerAAdjustment(), round);
 	}
 
 	private void addNewEncounterForPlayer(final UUID playerA, final UUID playerB, final int round) {
@@ -242,5 +235,13 @@ public class TrisTournament extends BasicRoundBasedTournament {
 
 	public void addNewRaceChange(final UUID player, final StarcraftRace newRace) {
 		infoMap.get(player).addRaceChangeForRound(getCurrentRound(), newRace);
+	}
+
+	public void setPlayerToHoliday(final UUID uid) {
+		infoMap.get(uid).setHoliday(true);
+	}
+
+	public void setPlayerToReturnFromHoliday(final UUID uid) {
+		infoMap.get(uid).setHoliday(false);
 	}
 }

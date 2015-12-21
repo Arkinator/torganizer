@@ -19,6 +19,7 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 	private final Map<UUID, Integer> roundOfLastEncounter;
 	private final List<Integer> strikes;
 	private final Map<Integer, StarcraftRace> raceSwitches;
+	private boolean isOnHoliday = false;
 
 	public TristanPlayerInfo(final Player player) {
 		this.player = player;
@@ -31,6 +32,17 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 	}
 
 	public void adjustElo(final double eloAdjustment) {
+		eloPerRound.add(this.elo);
+		this.elo += eloAdjustment * TrisTournament.eloSpeedupFactor;
+	}
+
+	public void adjustElo(final double eloAdjustment, final int round) {
+		if (eloPerRound.size() > (round + 1)) {
+			throw new RuntimeException("You can not report ELO for a past round");
+		}
+		if (eloPerRound.size() == (round + 1)) {
+			this.elo = eloPerRound.remove(round);
+		}
 		eloPerRound.add(this.elo);
 		this.elo += eloAdjustment * TrisTournament.eloSpeedupFactor;
 	}
@@ -82,7 +94,7 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 	}
 
 	public boolean isEligibleToPlay() {
-		return getNumberOfStrikes() < 3;
+		return (getNumberOfStrikes() < 3) && (!isOnHoliday);
 	}
 
 	public boolean isEligibleToPlay(final int round) {
@@ -126,5 +138,13 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 				return;
 			}
 		}
+	}
+
+	public void setHoliday(final boolean isOnHoliday) {
+		this.isOnHoliday = isOnHoliday;
+	}
+
+	public boolean isOnHoliday() {
+		return isOnHoliday;
 	}
 }

@@ -197,11 +197,6 @@ public class SexySwissTest {
 		final TristanPlayerInfo infoPlayer1 = tournament.getInfo(playerArray[1].getUid());
 		assertEquals(infoPlayer1.getEloForRound(0), infoPlayer1.getEloForRound(1), 0.01);
 
-		String s = new TrisTournamentPrinter(tournament, mockObjectService).printMatchesForRound(0);
-		System.out.println(s);
-		s = new TrisTournamentPrinter(tournament, mockObjectService).printMatchesForRound(1);
-		System.out.println(s);
-
 		assertEquals(1, tournament.getCurrentRound());
 		assertEquals(playerArray[2].getUid(), tournament.getMatchesForRound(1).get(0).getSideA());
 		assertEquals(playerArray[4].getUid(), tournament.getMatchesForRound(1).get(0).getSideB());
@@ -234,5 +229,49 @@ public class SexySwissTest {
 		assertEquals(playerArray[4].getUid(), tournament.getMatchesForRound(1).get(1).getSideB());
 		assertEquals(playerArray[5].getUid(), tournament.getMatchesForRound(1).get(2).getSideA());
 		assertEquals(playerArray[1].getUid(), tournament.getMatchesForRound(1).get(2).getSideB());
+	}
+
+	@Test
+	public void testHolidayInFirstWeek() {
+		final TrisTournament tournament = new TrisTournament(4, 1, playerList, "");
+		tournament.setPlayerToHoliday(playerArray[0].getUid());
+		tournament.updateNextRound();
+		tournament.updateNextRound();
+		tournament.updateNextRound();
+		tournament.updateNextRound();
+		tournament.updateNextRound();
+		tournament.setPlayerToReturnFromHoliday(playerArray[0].getUid());
+
+		// first Round
+		assertEquals(playerArray[1].getUid(), tournament.getMatchesForRound(0).get(0).getSideA());
+		assertEquals(playerArray[2].getUid(), tournament.getMatchesForRound(0).get(0).getSideB());
+		assertEquals(playerArray[3].getUid(), tournament.getMatchesForRound(0).get(1).getSideA());
+		assertEquals(playerArray[4].getUid(), tournament.getMatchesForRound(0).get(1).getSideB());
+		assertEquals(playerArray[5].getUid(), tournament.getMatchesForRound(0).get(2).getSideA());
+		assertEquals(null, tournament.getMatchesForRound(0).get(2).getSideB());
+		// assertEquals(playerArray[0].getUid(),
+		// tournament.getMatchesForRound(0).get(3).getSideA());
+		// assertEquals(null,
+		// tournament.getMatchesForRound(0).get(3).getSideB());
+		assertEquals(0, tournament.getCurrentRound());
+		tournament.getMatchesForRound(0).get(0).submitResultAdmin(playerArray[1].getUid(), 1, 0);
+		assertEquals(0, tournament.getCurrentRound());
+		tournament.getMatchesForRound(0).get(1).submitResultAdmin(playerArray[3].getUid(), 1, 0);
+		assertEquals(1, tournament.getCurrentRound());
+		final TristanPlayerInfo playerInfo = tournament.getInfo(playerArray[0].getUid());
+		assertEquals(playerInfo.getEloForRound(0) - 40, playerInfo.getEloForRound(1), 0.1);
+		assertEquals(playerInfo.getEloForRound(1), playerInfo.getElo(), 0.1);
+	}
+
+	@Test
+	public void testHolidayOption() {
+		final TrisTournament tournament = new TrisTournament(4, 1, playerList, "");
+		tournament.setPlayerToHoliday(playerArray[0].getUid());
+		tournament.getMatchesForRound(0).get(0).submitResultAdmin(playerArray[0].getUid(), 1, 0);
+		tournament.getMatchesForRound(0).get(1).submitResultAdmin(playerArray[2].getUid(), 1, 0);
+		tournament.getMatchesForRound(0).get(2).submitResultAdmin(playerArray[4].getUid(), 1, 0);
+
+		// second Round
+		assertNull(tournament.getMatchesForRound(1).get(2).getSideB());
 	}
 }
