@@ -96,13 +96,20 @@ public class unitTest {
 		playMatch(0, "gdoggcasey", 0, 2);
 		playMatch(0, "Coltrane", 0, 2);
 		playMatch(0, "Vash", 2, 0);
-		playMatch(0, "Acadien", 2, 0);
+		callDrawnMatch(0, "Acadien");
+		giveStrike("Acadien");
 		playMatch(0, "Psosa", 2, 0);
 		giveStrike("IIIIIIIIIIII(Vintage)");
 		playMatch(0, "Padula", 2, 0);
 		callDrawnMatch(0, "TheRunedEXP");
 		giveStrike("Meristematic");
 		giveStrike("TheRunedEXP");
+		playMatch(0, "Cobaltt", 2, 0);
+		giveStrike("eXiled");
+		giveStrike("Monk");
+		callDrawnMatch(0, "Monk");
+		playMatch(0, "XelaWella", 2, 0);
+		giveStrike("Whitelion");
 
 		final String p = printer.printLiquipediaPage();
 		System.out.println(p);

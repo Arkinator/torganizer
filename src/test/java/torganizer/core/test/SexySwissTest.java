@@ -21,6 +21,7 @@ import torganizer.core.tournaments.TrisTournament;
 import torganizer.core.tournaments.TrisTournamentPrinter;
 import torganizer.core.types.StarcraftLeague;
 import torganizer.core.types.StarcraftRace;
+import torganizer.utils.TristanPlayerInfo;
 
 public class SexySwissTest {
 	static Player[] playerArray;
@@ -182,22 +183,32 @@ public class SexySwissTest {
 	@Test
 	public void testDrawnMatch() {
 		final TrisTournament tournament = new TrisTournament(4, 1, playerList, "");
+		final double elo0Before = tournament.getInfo(playerArray[0].getUid()).getEloForRound(0);
 		assertEquals(0, tournament.getCurrentRound());
 		tournament.getMatchesForRound(0).get(0).submitResultAdmin(null, 0, 0);
 		assertEquals(0, tournament.getCurrentRound());
 		tournament.getMatchesForRound(0).get(1).submitResultAdmin(playerArray[2].getUid(), 1, 0);
 		tournament.getMatchesForRound(0).get(2).submitResultAdmin(playerArray[4].getUid(), 1, 0);
+
+		final double elo0After = tournament.getInfo(playerArray[0].getUid()).getEloForRound(0);
+		final double elo1After = tournament.getInfo(playerArray[0].getUid()).getEloForRound(1);
+		assertEquals(elo0Before, elo0After, 0.01);
+		assertEquals(elo0Before, elo1After, 0.01);
+		final TristanPlayerInfo infoPlayer1 = tournament.getInfo(playerArray[1].getUid());
+		assertEquals(infoPlayer1.getEloForRound(0), infoPlayer1.getEloForRound(1), 0.01);
+
 		String s = new TrisTournamentPrinter(tournament, mockObjectService).printMatchesForRound(0);
 		System.out.println(s);
 		s = new TrisTournamentPrinter(tournament, mockObjectService).printMatchesForRound(1);
 		System.out.println(s);
+
 		assertEquals(1, tournament.getCurrentRound());
-		assertEquals(playerArray[0].getUid(), tournament.getMatchesForRound(1).get(0).getSideA());
-		assertEquals(playerArray[2].getUid(), tournament.getMatchesForRound(1).get(0).getSideB());
-		assertEquals(playerArray[1].getUid(), tournament.getMatchesForRound(1).get(1).getSideA());
-		assertEquals(playerArray[3].getUid(), tournament.getMatchesForRound(1).get(1).getSideB());
-		assertEquals(playerArray[4].getUid(), tournament.getMatchesForRound(1).get(2).getSideA());
-		assertEquals(playerArray[5].getUid(), tournament.getMatchesForRound(1).get(2).getSideB());
+		assertEquals(playerArray[2].getUid(), tournament.getMatchesForRound(1).get(0).getSideA());
+		assertEquals(playerArray[4].getUid(), tournament.getMatchesForRound(1).get(0).getSideB());
+		assertEquals(playerArray[0].getUid(), tournament.getMatchesForRound(1).get(1).getSideA());
+		assertEquals(playerArray[5].getUid(), tournament.getMatchesForRound(1).get(1).getSideB());
+		assertEquals(playerArray[1].getUid(), tournament.getMatchesForRound(1).get(2).getSideA());
+		assertEquals(playerArray[3].getUid(), tournament.getMatchesForRound(1).get(2).getSideB());
 	}
 
 	@Test
