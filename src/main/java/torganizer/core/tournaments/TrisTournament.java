@@ -11,12 +11,14 @@ import torganizer.core.entities.IToEntity;
 import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.persistance.objectservice.GlobalObjectService;
+import torganizer.core.persistance.orm.EntityOrm;
 import torganizer.core.types.StarcraftRace;
 import torganizer.utils.EloCalculation;
 import torganizer.utils.TristanPlayerInfo;
 
 /**
  * The format is called Tristan
+ * TRuely Intelligent Swiss TournAmeNt
  *
  * @author jules
  *
@@ -36,6 +38,15 @@ public class TrisTournament extends BasicRoundBasedTournament {
 		infoMap = new HashMap<>();
 		standings.forEach(info -> infoMap.put(info.getPlayer(), info));
 		fillRounds();
+	}
+
+	public TrisTournament(final EntityOrm entity, final GlobalObjectService globalObjectService) {
+		super(entity, globalObjectService);
+		this.numberOfRounds = entity.getTournament().getNumberOfRounds();
+		standings = new ArrayList<TristanPlayerInfo>();
+		entity.getTournament().getTristanInfos().forEach(info -> standings.add(new TristanPlayerInfo(info, globalObjectService)));
+		infoMap = new HashMap<>();
+		standings.forEach(info -> infoMap.put(info.getPlayer(), info));
 	}
 
 	private static List<UUID> transformPlayerList(final List<Player> playerList) {

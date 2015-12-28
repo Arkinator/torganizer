@@ -13,7 +13,8 @@ import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.matches.Game;
 import torganizer.core.persistance.interfaces.EntityDao;
 import torganizer.core.persistance.orm.EntityOrm;
-import torganizer.exceptions.NotYetImplementedException;
+import torganizer.core.tournaments.TrisTournament;
+import torganizer.core.types.TournamentType;
 
 @Transactional
 @Component(value = "globalObjectServiceImpl")
@@ -25,10 +26,6 @@ public class GlobalObjectServiceImpl implements GlobalObjectService {
 		this.entityDao = entityDao;
 	}
 
-	public void createEntity(final AbstractToEntity entity) {
-		entityDao.persist(entity.getEntityOrm());
-	}
-
 	@Override
 	public Player getPlayerById(final UUID id) {
 		return new Player(entityDao.getById(id).getPlayer());
@@ -36,7 +33,7 @@ public class GlobalObjectServiceImpl implements GlobalObjectService {
 
 	@Override
 	public void addEntity(final AbstractToEntity entity) {
-		throw new NotYetImplementedException();
+		entityDao.persist(entity.getEntityOrm());
 	}
 
 	@Override
@@ -44,6 +41,9 @@ public class GlobalObjectServiceImpl implements GlobalObjectService {
 		final EntityOrm entity = entityDao.getByName(name);
 		if (entity == null) {
 			return null;
+		}
+		if (entity.getPlayer() == null) {
+			throw new IncompatibleTypeException("The referenced Object is not a Player");
 		}
 		return new Player(entity.getPlayer());
 	}
@@ -64,6 +64,9 @@ public class GlobalObjectServiceImpl implements GlobalObjectService {
 		if (entity == null) {
 			return null;
 		}
+		if (entity.getMatch() == null) {
+			throw new IncompatibleTypeException("The referenced Object is not a Match");
+		}
 		return new Game(entity.getMatch());
 	}
 
@@ -72,6 +75,9 @@ public class GlobalObjectServiceImpl implements GlobalObjectService {
 		final EntityOrm entity = entityDao.getById(gameId);
 		if (entity == null) {
 			return null;
+		}
+		if (entity.getMatch() == null) {
+			throw new IncompatibleTypeException("The referenced Object is not a Match");
 		}
 		return new BestOfMatchSinglePlayer(entity.getMatch());
 	}
@@ -90,14 +96,6 @@ public class GlobalObjectServiceImpl implements GlobalObjectService {
 		entityDao.update(entity.getEntityOrm());
 	}
 
-	public class CanNotUpdatePojoException extends RuntimeException {
-		private static final long serialVersionUID = 6645786466265975027L;
-
-		public CanNotUpdatePojoException(final String string) {
-			super(string);
-		}
-	}
-
 	@Override
 	public void addTeam(final Team team) {
 		entityDao.persist(team.getEntityOrm());
@@ -110,5 +108,36 @@ public class GlobalObjectServiceImpl implements GlobalObjectService {
 			return null;
 		}
 		return new Team(entity);
+	}
+
+	@Override
+	public TrisTournament getTournamentById(final UUID uid) {
+		final EntityOrm entity = entityDao.getById(uid);
+		if (entity == null) {
+			return null;
+		}
+		if (entity.getTournament() == null) {
+			throw new IncompatibleTypeException("The referenced Object is not a Tournament");
+		}
+		if (entity.getTournament().getType() == TournamentType.TrisTournament) {
+			return new TrisTournament(entity, this);
+		}
+		throw new IncompatibleTypeException("The type " + entity.getTournament().getType() + " could not be converted");
+	}
+
+	public static class CanNotUpdatePojoException extends RuntimeException {
+		private static final long serialVersionUID = 6645786466265975027L;
+
+		public CanNotUpdatePojoException(final String string) {
+			super(string);
+		}
+	}
+
+	public static class IncompatibleTypeException extends RuntimeException {
+		private static final long serialVersionUID = 9193238995765925362L;
+
+		public IncompatibleTypeException(final String string) {
+			super(string);
+		}
 	}
 }

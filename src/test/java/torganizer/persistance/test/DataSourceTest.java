@@ -3,6 +3,8 @@ package torganizer.persistance.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -18,6 +20,7 @@ import torganizer.core.entities.Team;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.matches.Game;
 import torganizer.core.persistance.objectservice.GlobalObjectService;
+import torganizer.core.tournaments.TrisTournament;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/spring-module.xml" })
@@ -122,5 +125,25 @@ public class DataSourceTest {
 		assertEquals(p1.getUid(), match.getSet(0).getWinner());
 		assertEquals(p2.getUid(), match.getSet(1).getWinner());
 		assertEquals(p1.getUid(), match.getSet(2).getWinner());
+	}
+
+	@Test
+	public void tournamentPersistanceTest() {
+		final String tournamentName = "mySuperTourney";
+		final Player p1 = new Player("player1");
+		final Player p2 = new Player("player2");
+		final Player p3 = new Player("player3");
+		final Player p4 = new Player("player4");
+		final List<Player> pList = new ArrayList<>();
+		pList.add(p1);
+		pList.add(p2);
+		pList.add(p3);
+		pList.add(p4);
+		TrisTournament tourney = new TrisTournament(2, 3, pList, tournamentName);
+
+		globalObjectService.addEntity(tourney);
+		final UUID tournamentId = tourney.getUid();
+		tourney = globalObjectService.getTournamentById(tournamentId);
+		assertEquals(tournamentName, tourney.getName());
 	}
 }

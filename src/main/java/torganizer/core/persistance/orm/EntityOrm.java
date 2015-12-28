@@ -36,6 +36,9 @@ public class EntityOrm {
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "entity", cascade = CascadeType.ALL)
 	private TeamOrm team;
 
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "entity", cascade = CascadeType.ALL)
+	private TournamentOrm tournament;
+
 	public Long getId() {
 		return id;
 	}
@@ -82,5 +85,13 @@ public class EntityOrm {
 
 	public void setTeam(final TeamOrm team) {
 		this.team = team;
+	}
+
+	public TournamentOrm getTournament() {
+		return tournament;
+	}
+
+	public void setTournament(final TournamentOrm tournament) {
+		this.tournament = tournament;
 	}
 }

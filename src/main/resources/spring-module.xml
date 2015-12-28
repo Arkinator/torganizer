@@ -54,6 +54,9 @@
 				<value>torganizer.core.persistance.orm.EntityOrm</value>
 				<value>torganizer.core.persistance.orm.MatchOrm</value>
 				<value>torganizer.core.persistance.orm.TeamOrm</value>
+				<value>torganizer.core.persistance.orm.TournamentOrm</value>
+				<value>torganizer.core.persistance.orm.TournamentRoundOrm</value>
+				<value>torganizer.core.persistance.orm.TristanInfoOrm</value>
 			</list>
 		</property>
 	</bean>

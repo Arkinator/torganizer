@@ -7,6 +7,7 @@ import torganizer.core.entities.Player;
 import torganizer.core.entities.Team;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.matches.Game;
+import torganizer.core.tournaments.TrisTournament;
 
 public interface GlobalObjectService {
 	Player getPlayerById(UUID submitter);
@@ -30,4 +31,6 @@ public interface GlobalObjectService {
 	void addTeam(Team t);
 
 	Team getTeamById(UUID teamId);
+
+	TrisTournament getTournamentById(UUID tournamentId);
 }

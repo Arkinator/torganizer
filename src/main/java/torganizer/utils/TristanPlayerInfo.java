@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import torganizer.core.entities.Player;
+import torganizer.core.persistance.objectservice.GlobalObjectService;
+import torganizer.core.persistance.orm.TristanInfoOrm;
 import torganizer.core.tournaments.TrisTournament;
 import torganizer.core.types.StarcraftRace;
 
@@ -29,6 +31,11 @@ public class TristanPlayerInfo implements Comparable<TristanPlayerInfo> {
 		this.raceSwitches = new HashMap<>();
 		this.strikes = new ArrayList<>();
 		this.initialRace = player.getRace();
+	}
+
+	public TristanPlayerInfo(final TristanInfoOrm info, final GlobalObjectService globalObjectService) {
+		this.player = globalObjectService.getPlayerById(info.getPlayerId());
+
 	}
 
 	public void adjustElo(final double eloAdjustment) {

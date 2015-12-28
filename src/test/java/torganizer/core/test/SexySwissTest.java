@@ -6,19 +6,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import torganizer.core.entities.AbstractToEntity;
 import torganizer.core.entities.Player;
-import torganizer.core.entities.Team;
-import torganizer.core.matches.BestOfMatchSinglePlayer;
-import torganizer.core.matches.Game;
-import torganizer.core.persistance.objectservice.GlobalObjectService;
 import torganizer.core.tournaments.TrisTournament;
-import torganizer.core.tournaments.TrisTournamentPrinter;
 import torganizer.core.types.StarcraftLeague;
 import torganizer.core.types.StarcraftRace;
 import torganizer.utils.TristanPlayerInfo;
@@ -28,56 +21,6 @@ public class SexySwissTest {
 	private final static int maxNumberPlayers = 6;
 	static List<Player> playerList;
 	private static Player admin;
-	private final GlobalObjectService mockObjectService = new GlobalObjectService() {
-		@Override
-		public void updateEntity(final AbstractToEntity entity) {
-		}
-
-		@Override
-		public Team getTeamById(final UUID teamId) {
-			return null;
-		}
-
-		@Override
-		public Player getPlayerByName(final String name) {
-			return null;
-		}
-
-		@Override
-		public Player getPlayerById(final UUID submitter) {
-			return playerList.stream().filter(p -> p.getUid().equals(submitter)).findAny().get();
-		}
-
-		@Override
-		public Game getGameById(final UUID gameId) {
-			return null;
-		}
-
-		@Override
-		public BestOfMatchSinglePlayer getBestOfMatchById(final UUID gameId) {
-			return null;
-		}
-
-		@Override
-		public void addTeam(final Team t) {
-		}
-
-		@Override
-		public void addPlayer(final Player player) {
-		}
-
-		@Override
-		public void addMatch(final BestOfMatchSinglePlayer match) {
-		}
-
-		@Override
-		public void addGame(final Game game) {
-		}
-
-		@Override
-		public void addEntity(final AbstractToEntity entity) {
-		}
-	};
 
 	@BeforeClass
 	public static void initializeClass() {

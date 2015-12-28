@@ -54,13 +54,14 @@ public class unitTest {
 			{ "Born Gosu", "BG", "born gosu", "BornGosulogo_std.png" } };
 
 	public static Map<String, UUID> teamMap = new HashMap<>();
+	private List<Player> playerList;
 
 	@Test
 	@Transactional
 	public void testCorrectMatches() {
 		addTeams();
 
-		final List<Player> playerList = new ArrayList<>();
+		playerList = new ArrayList<>();
 
 		for (final String[] infoStrings : playerInfo) {
 			final Player p = new Player(infoStrings[0]);
@@ -75,14 +76,37 @@ public class unitTest {
 		}
 
 		tournament = new TrisTournament(10, 3, playerList, "#UNIT - Season 1");
-		final TrisTournamentPrinter printer = new TrisTournamentPrinter(tournament, globalObjectService);
 		tournament.initializeEloValues(globalObjectService, new double[] { 1500., 1600., 1700., 1800., 1900., 2000., 2100. });
 
+		// Week 1
+		playWeek1();
+		// Week 2
+		playMatch(1, "FusTup", 2, 0);
+		playMatch(1, "Psosa", 2, 1);
+		playMatch(1, "Cobaltt", 2, 0);
+		giveStrike("Vash");
+		playMatch(1, "Stefan", 2, 1);
+		playMatch(1, "ShiaLabeouf", 2, 0);
+		playMatch(1, "TheWagon", 2, 0);
+		giveStrike("IIIIIIIIIIII(Vintage)");
+		playMatch(1, "Acadien", 2, 1);
+		playMatch(1, "Colttarren", 0, 2);
+
+		final TrisTournamentPrinter printer = new TrisTournamentPrinter(tournament, globalObjectService);
+		final String p = printer.printLiquipediaPage();
+		System.out.println(p);
+		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		final StringSelection data = new StringSelection(p);
+		clipBoard.setContents(data, data);
+	}
+
+	private void playWeek1() {
 		playMatch(0, "Logistic", 2, 1);
 		playMatch(0, "Broda", 2, 0);
 		playMatch(0, "Stefan", 2, 1);
 		playMatch(0, "Sworn", 0, 2);
 		changeRace("sMeeZy", StarcraftRace.Terran);
+		changeRace("eXiled", StarcraftRace.Zerg);
 		playMatch(0, "sMeeZy", 2, 1);
 		playMatch(0, "Xilogh", 2, 0);
 		playMatch(0, "Colttarren", 2, 1);
@@ -110,12 +134,29 @@ public class unitTest {
 		callDrawnMatch(0, "Monk");
 		playMatch(0, "XelaWella", 2, 0);
 		giveStrike("Whitelion");
+		renamePlayer("eXiled", "GoatDragon", 342, StarcraftLeague.Diamond, StarcraftRace.Zerg, "UR");
+	}
 
-		final String p = printer.printLiquipediaPage();
-		System.out.println(p);
-		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		final StringSelection data = new StringSelection(p);
-		clipBoard.setContents(data, data);
+	private void renamePlayer(final String oldName, final String newName, final int newCharacterCode, final StarcraftLeague leauge, final StarcraftRace race,
+			final String teamShort) {
+		final Player p = globalObjectService.getPlayerByName(oldName);
+		p.setName(newName);
+		p.setBattleNetCode(newCharacterCode);
+		p.setLeague(leauge);
+		p.setRace(race);
+		p.setTeamUid(teamMap.get(teamShort));
+		globalObjectService.updateEntity(p);
+		// the next step is only for this specific scenario:
+		for (final Player player : playerList) {
+			if (player.getName().equals(oldName)) {
+				player.setName(newName);
+				player.setBattleNetCode(newCharacterCode);
+				player.setLeague(leauge);
+				player.setRace(race);
+				player.setTeamUid(teamMap.get(teamShort));
+				return;
+			}
+		}
 	}
 
 	private void callDrawnMatch(final int round, final String playerName) {
