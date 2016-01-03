@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import torganizer.core.ApplicationContextProvider;
+import torganizer.core.persistance.objectservice.GlobalObjectService;
 import torganizer.core.persistance.orm.EntityOrm;
 
 public abstract class AbstractToEntity implements IToEntity {
@@ -99,5 +101,9 @@ public abstract class AbstractToEntity implements IToEntity {
 
 	public EntityOrm getEntityOrm() {
 		return orm;
+	}
+
+	public static GlobalObjectService getGlobalObjectService() {
+		return ApplicationContextProvider.getGlobalObjectService();
 	}
 }

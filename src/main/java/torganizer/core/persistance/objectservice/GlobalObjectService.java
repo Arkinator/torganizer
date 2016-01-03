@@ -10,7 +10,7 @@ import torganizer.core.matches.Game;
 import torganizer.core.tournaments.TrisTournament;
 
 public interface GlobalObjectService {
-	Player getPlayerById(UUID submitter);
+	Player getPlayerById(UUID id);
 
 	void addEntity(AbstractToEntity entity);
 

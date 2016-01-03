@@ -66,6 +66,9 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
+	<bean id="applicationContextProvider"
+		class="torganizer.core.ApplicationContextProvider" />
+
 	<context:component-scan
 		base-package="torganizer.web, torganizer.core, torganizer.actor" />
 

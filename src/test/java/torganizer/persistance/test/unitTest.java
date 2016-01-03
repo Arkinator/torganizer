@@ -44,7 +44,7 @@ public class unitTest {
 			{ "TheRunedEXP", "1160", "Silver", "Z", "BG" }, { "TheWagon", "249", "Master", "Z", "AI" }, { "Stefan", "594", "Diamond", "T" }, { "Vash", "160", "Gold", "P", "C6" },
 			{ "IIIIIIIIIIII(Vintage)", "8535", "Master", "T", "BG" }, { "Whitelion", "1834", "Diamond", "Z", "UR" }, { "XelaWella", "1441", "Diamond", "T", "UR" },
 			{ "Xilogh", "401", "Diamond", "Z", "UR" }, { "ShiaLabeouf", "454", "Diamond", "P", "BG" }, { "gdoggcasey", "750", "Diamond", "P", "AI" },
-			{ "grimm", "750", "Silver", "P", "UR" } };
+			{ "grimm", "750", "Silver", "P", "UR" }, { "Ransack", "527", "Gold", "T", "UR" } };
 	public static String[][] teamInfo = { { "Team Unrivaled", "UR", "team unrivaled", "UnrivaledMini.png" }, //
 			{ "All Inspiration", "AI", "all-inspiration", "All-Inspirationlogo_std.png" }, //
 			{ "Guns and Roaches", "GR", "guns and roaches", "GunsandRoachesMini.png" }, //
@@ -77,10 +77,24 @@ public class unitTest {
 
 		tournament = new TrisTournament(10, 3, playerList, "#UNIT - Season 1");
 		tournament.initializeEloValues(globalObjectService, new double[] { 1500., 1600., 1700., 1800., 1900., 2000., 2100. });
+		goOnHoliday("Ransack");
 
 		// Week 1
 		playWeek1();
 		// Week 2
+		playWeek2();
+		playMatch(2, "DaDaNkEnGiNe", 2, 0);
+
+		final TrisTournamentPrinter printer = new TrisTournamentPrinter(tournament, globalObjectService);
+		final String p = printer.printLiquipediaPage();
+		System.out.println(p);
+		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		final StringSelection data = new StringSelection(p);
+		clipBoard.setContents(data, data);
+	}
+
+	private void playWeek2() {
+		returnFromHoliday("Ransack");
 		playMatch(1, "FusTup", 2, 0);
 		playMatch(1, "Psosa", 2, 1);
 		playMatch(1, "Cobaltt", 2, 0);
@@ -91,13 +105,44 @@ public class unitTest {
 		giveStrike("IIIIIIIIIIII(Vintage)");
 		playMatch(1, "Acadien", 2, 1);
 		playMatch(1, "Colttarren", 0, 2);
-
-		final TrisTournamentPrinter printer = new TrisTournamentPrinter(tournament, globalObjectService);
-		final String p = printer.printLiquipediaPage();
-		System.out.println(p);
-		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		final StringSelection data = new StringSelection(p);
-		clipBoard.setContents(data, data);
+		changeRace("sMeeZy", StarcraftRace.Zerg);
+		playMatch(1, "Picur", 2, 0);
+		playMatch(1, "DaDaNkEnGiNe", 2, 1);
+		playMatch(1, "JuPiteR", 2, 0);
+		playMatch(1, "Acadien", 2, 1);
+		playMatch(1, "Broda", 2, 0);
+		giveStrike("RainOnSKy");
+		playMatch(1, "Coltrane", 2, 0);
+		giveStrike("TheRunedEXP");
+		playMatch(1, "Ninkazi", 2, 0);
+		// Sauce drops out
+		playMatch(1, "Monk", 2, 0);
+		giveStrike("SauCeBoSS");
+		giveStrike("SauCeBoSS");
+		giveStrike("SauCeBoSS");
+		// double w/o meri vs fish
+		callDrawnMatch(1, "Meristematic");
+		giveStrike("Meristematic");
+		giveStrike("Fish");
+		// double w/o Padula vs miyamori
+		callDrawnMatch(1, "Miyamori");
+		giveStrike("Miyamori");
+		giveStrike("Padula");
+		// double w/o blaze vs sworn
+		callDrawnMatch(1, "Blaze");
+		giveStrike("Blaze");
+		giveStrike("Sworn");
+		// double w/o syn vs whitelion
+		callDrawnMatch(1, "Synprime");
+		giveStrike("Synprime");
+		giveStrike("Whitelion");
+		playMatch(1, "Logistic", 2, 0);
+		giveStrike("Athreos");
+		// msyu drops out
+		playMatch(1, "Polar", 1, 2);
+		changeLeague("Padula", StarcraftLeague.Platinum);
+		changeLeague("Picur", StarcraftLeague.Master);
+		tournament.updateNextRound();
 	}
 
 	private void playWeek1() {
@@ -135,6 +180,7 @@ public class unitTest {
 		playMatch(0, "XelaWella", 2, 0);
 		giveStrike("Whitelion");
 		renamePlayer("eXiled", "GoatDragon", 342, StarcraftLeague.Diamond, StarcraftRace.Zerg, "UR");
+		renamePlayer("Msyu", "YellOwSky", 364, StarcraftLeague.Master, StarcraftRace.Protoss, "UR");
 	}
 
 	private void renamePlayer(final String oldName, final String newName, final int newCharacterCode, final StarcraftLeague leauge, final StarcraftRace race,
@@ -157,6 +203,31 @@ public class unitTest {
 				return;
 			}
 		}
+	}
+
+	private void changeLeague(final String name, final StarcraftLeague newLeague) {
+		final Player p = globalObjectService.getPlayerByName(name);
+		p.setLeague(newLeague);
+		globalObjectService.updateEntity(p);
+		// the next step is only for this specific scenario:
+		for (final Player player : playerList) {
+			if (player.getName().equals(name)) {
+				player.setLeague(newLeague);
+				return;
+			}
+		}
+	}
+
+	private void returnFromHoliday(final String playerName) {
+		final UUID playerUid = globalObjectService.getPlayerByName(playerName).getUid();
+		tournament.setPlayerToReturnFromHoliday(playerUid);
+		// tournament.updateNextRound();
+	}
+
+	private void goOnHoliday(final String playerName) {
+		final UUID playerUid = globalObjectService.getPlayerByName(playerName).getUid();
+		tournament.setPlayerToHoliday(playerUid);
+		tournament.updateNextRound();
 	}
 
 	private void callDrawnMatch(final int round, final String playerName) {

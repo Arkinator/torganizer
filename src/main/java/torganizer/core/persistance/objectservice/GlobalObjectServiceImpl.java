@@ -28,7 +28,14 @@ public class GlobalObjectServiceImpl implements GlobalObjectService {
 
 	@Override
 	public Player getPlayerById(final UUID id) {
-		return new Player(entityDao.getById(id).getPlayer());
+		if (id == null) {
+			return null;
+		}
+		final EntityOrm entity = entityDao.getById(id);
+		if (entity == null) {
+			return null;
+		}
+		return new Player(entity.getPlayer());
 	}
 
 	@Override

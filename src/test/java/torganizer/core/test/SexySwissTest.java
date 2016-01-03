@@ -5,12 +5,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import torganizer.core.ApplicationContextProvider;
 import torganizer.core.entities.Player;
+import torganizer.core.persistance.objectservice.DummyObjectService;
 import torganizer.core.tournaments.TrisTournament;
 import torganizer.core.types.StarcraftLeague;
 import torganizer.core.types.StarcraftRace;
@@ -34,6 +37,7 @@ public class SexySwissTest {
 			playerArray[i].setLeague(StarcraftLeague.values()[6 - i]);
 			playerList.add(playerArray[i]);
 		}
+		ApplicationContextProvider.setGlobalObjectService(new DummyObjectService(Arrays.asList(playerArray)));
 	}
 
 	@Test

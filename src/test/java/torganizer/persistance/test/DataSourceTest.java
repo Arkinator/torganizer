@@ -103,7 +103,7 @@ public class DataSourceTest {
 		final Player p2 = new Player("player2");
 
 		// create new match
-		BestOfMatchSinglePlayer match = new BestOfMatchSinglePlayer(3, p1.getUid(), p2.getUid(), RandomStringUtils.randomAlphabetic(20));
+		BestOfMatchSinglePlayer match = new BestOfMatchSinglePlayer(3, p1, p2, RandomStringUtils.randomAlphabetic(20));
 		globalObjectService.addMatch(match);
 		final UUID matchId = match.getUid();
 		match = null;
@@ -130,20 +130,35 @@ public class DataSourceTest {
 	@Test
 	public void tournamentPersistanceTest() {
 		final String tournamentName = "mySuperTourney";
-		final Player p1 = new Player("player1");
-		final Player p2 = new Player("player2");
-		final Player p3 = new Player("player3");
-		final Player p4 = new Player("player4");
-		final List<Player> pList = new ArrayList<>();
-		pList.add(p1);
-		pList.add(p2);
-		pList.add(p3);
-		pList.add(p4);
+		final List<Player> pList = collectPlayerList();
 		TrisTournament tourney = new TrisTournament(2, 3, pList, tournamentName);
+
+		tourney.getMatchesForRound(0).get(0).submitResultAdmin(pList.get(0).getUid(), 2, 1);
 
 		globalObjectService.addEntity(tourney);
 		final UUID tournamentId = tourney.getUid();
 		tourney = globalObjectService.getTournamentById(tournamentId);
 		assertEquals(tournamentName, tourney.getName());
+
+		tourney.getMatchesForRound(0).get(1).submitResultAdmin(pList.get(2).getUid(), 2, 0);
+
+		globalObjectService.updateEntity(tourney);
+		tourney = globalObjectService.getTournamentById(tournamentId);
+		assertEquals(pList.get(0).getUid(), tourney.getMatchesForRound(0).get(0).getWinner());
+		assertEquals(2, ((BestOfMatchSinglePlayer) tourney.getMatchesForRound(0).get(0)).getScoreSideA());
+		assertEquals(0, ((BestOfMatchSinglePlayer) tourney.getMatchesForRound(0).get(0)).getScoreSideB());
+		assertEquals(pList.get(2).getUid(), tourney.getMatchesForRound(0).get(1).getWinner());
+		assertEquals(2, ((BestOfMatchSinglePlayer) tourney.getMatchesForRound(0).get(1)).getScoreSideA());
+		assertEquals(1, ((BestOfMatchSinglePlayer) tourney.getMatchesForRound(0).get(1)).getScoreSideB());
+	}
+
+	private List<Player> collectPlayerList() {
+		final List<Player> pList = new ArrayList<>();
+		for (int i = 0; i < 5; i++) {
+			final Player p = new Player("player" + i);
+			pList.add(p);
+			globalObjectService.addEntity(p);
+		}
+		return pList;
 	}
 }

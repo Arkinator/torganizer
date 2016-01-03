@@ -13,6 +13,7 @@ import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.persistance.objectservice.GlobalObjectService;
 import torganizer.core.persistance.orm.EntityOrm;
 import torganizer.core.types.StarcraftRace;
+import torganizer.core.types.TournamentType;
 import torganizer.utils.EloCalculation;
 import torganizer.utils.TristanPlayerInfo;
 
@@ -38,6 +39,9 @@ public class TrisTournament extends BasicRoundBasedTournament {
 		infoMap = new HashMap<>();
 		standings.forEach(info -> infoMap.put(info.getPlayer(), info));
 		fillRounds();
+		getEntityOrm().getTournament().setType(TournamentType.TrisTournament);
+		getEntityOrm().getTournament().setNumberOfRounds(numberOfRounds);
+		updateNextRound();
 	}
 
 	public TrisTournament(final EntityOrm entity, final GlobalObjectService globalObjectService) {

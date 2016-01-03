@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import torganizer.core.entities.IToEntity;
+import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.matches.GenericMatch;
 import torganizer.core.persistance.objectservice.GlobalObjectService;
@@ -55,9 +56,18 @@ public abstract class BasicRoundBasedTournament extends AbstractTournament {
 		return currentRound;
 	}
 
-	protected BestOfMatchSinglePlayer createNewMatch(final UUID playerA, final UUID playerB) {
+	protected BestOfMatchSinglePlayer createNewMatch(final UUID playerAId, final UUID playerBId) {
+		final long t1 = System.nanoTime();
+		final Player playerA = getGlobalObjectService().getPlayerById(playerAId);
+		final long t2 = System.nanoTime();
+		final Player playerB = getGlobalObjectService().getPlayerById(playerBId);
+		final long t3 = System.nanoTime();
 		final BestOfMatchSinglePlayer match = new BestOfMatchSinglePlayer(bestOfMatchLength, playerA, playerB, GlobalUtilities.createNewSetName(this));
 		match.addCallbackObject(this);
+		final long t4 = System.nanoTime();
+		System.out.println("\n\ta: " + GlobalUtilities.formatNanoTimeDiff(t1, t2) + //
+				"\n\tb: " + GlobalUtilities.formatNanoTimeDiff(t2, t3) + //
+				"\ngesamt: " + GlobalUtilities.formatNanoTimeDiff(t1, t4));
 		return match;
 	}
 

@@ -19,6 +19,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import torganizer.core.types.MatchType;
+import torganizer.core.types.StarcraftLeague;
+import torganizer.core.types.StarcraftRace;
 
 @Entity
 @Table(name = "MATCHES")
@@ -38,6 +40,18 @@ public class MatchOrm {
 
 	@Column(name = "SIDEB")
 	private UUID sideBId;
+
+	@Column(name = "SIDEA_RACE")
+	private StarcraftRace sideARace;
+
+	@Column(name = "SIDEB_RACE")
+	private StarcraftRace sideBRace;
+
+	@Column(name = "SIDEA_LEAGUE")
+	private StarcraftLeague sideALeague;
+
+	@Column(name = "SIDEB_LEAGUE")
+	private StarcraftLeague sideBLeague;
 
 	@Column(name = "WINNER")
 	private UUID winner;
@@ -147,5 +161,37 @@ public class MatchOrm {
 
 	public void setNumberOfSets(final int numberOfSets) {
 		this.numberOfSets = numberOfSets;
+	}
+
+	public StarcraftRace getSideARace() {
+		return sideARace;
+	}
+
+	public void setSideARace(final StarcraftRace sideARace) {
+		this.sideARace = sideARace;
+	}
+
+	public StarcraftRace getSideBRace() {
+		return sideBRace;
+	}
+
+	public void setSideBRace(final StarcraftRace sideBRace) {
+		this.sideBRace = sideBRace;
+	}
+
+	public StarcraftLeague getSideALeague() {
+		return sideALeague;
+	}
+
+	public void setSideALeague(final StarcraftLeague sideALeague) {
+		this.sideALeague = sideALeague;
+	}
+
+	public StarcraftLeague getSideBLeague() {
+		return sideBLeague;
+	}
+
+	public void setSideBLeague(final StarcraftLeague sideBLeague) {
+		this.sideBLeague = sideBLeague;
 	}
 }

@@ -8,14 +8,17 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import torganizer.core.ApplicationContextProvider;
 import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
+import torganizer.core.persistance.objectservice.DummyObjectService;
 import torganizer.core.tournaments.BasicRoundBasedTournament;
 import torganizer.core.tournaments.KoTournament;
 
@@ -42,6 +45,7 @@ public class KoTournamentTest {
 				playerListEightPlayers.add(playerArray[i].getUid());
 			}
 		}
+		ApplicationContextProvider.setGlobalObjectService(new DummyObjectService(Arrays.asList(playerArray)));
 	}
 
 	@Test

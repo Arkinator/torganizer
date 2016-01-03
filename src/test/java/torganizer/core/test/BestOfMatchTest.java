@@ -10,13 +10,15 @@ import org.junit.Test;
 import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.matches.GenericMatch;
+import torganizer.core.types.StarcraftLeague;
+import torganizer.core.types.StarcraftRace;
 
 public class BestOfMatchTest {
 	@Test
 	public void testOneRoundPlayed() {
 		final Player playerA = new Player("playerA");
 		final Player playerB = new Player("playerB");
-		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA.getUid(), playerB.getUid(), "");
+		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA, playerB, "");
 		set.getSet(0).submitResultSideA(playerA.getUid());
 		set.getSet(0).submitResultSideB(playerA.getUid());
 		assertNull(set.getWinner());
@@ -27,7 +29,7 @@ public class BestOfMatchTest {
 	public void testTwoRoundsPlayed_Decided() {
 		final Player playerA = new Player("playerA");
 		final Player playerB = new Player("playerB");
-		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA.getUid(), playerB.getUid(), "");
+		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA, playerB, "");
 		set.getSet(0).submitResultSideA(playerA.getUid());
 		set.getSet(0).submitResultSideB(playerA.getUid());
 		set.getSet(1).submitResultSideA(playerA.getUid());
@@ -39,13 +41,13 @@ public class BestOfMatchTest {
 	public void createBestOf4Failure() {
 		final Player playerA = new Player("playerA");
 		final Player playerB = new Player("playerB");
-		new BestOfMatchSinglePlayer(4, playerA.getUid(), playerB.getUid(), "");
+		new BestOfMatchSinglePlayer(4, playerA, playerB, "");
 	}
 
 	@Test
 	public void testForOneSideBeingNull_byeShouldHappen() {
 		final Player playerA = new Player("playerA");
-		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA.getUid(), null, "");
+		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA, null, "");
 		assertEquals(playerA.getUid(), set.getWinner());
 		assertTrue(set.isPlayed());
 	}
@@ -54,7 +56,7 @@ public class BestOfMatchTest {
 	public void testSexyResultSubmittance() {
 		final Player playerA = new Player("playerA");
 		final Player playerB = new Player("playerB");
-		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA.getUid(), playerB.getUid(), "");
+		final BestOfMatchSinglePlayer set = new BestOfMatchSinglePlayer(3, playerA, playerB, "");
 		final GenericMatch castedPtr = set;
 		castedPtr.submitResultAdmin(playerA.getUid(), 2, 1);
 		assertEquals(playerA.getUid(), set.getWinner());
@@ -67,9 +69,22 @@ public class BestOfMatchTest {
 	public void testDrawnSeries() {
 		final Player playerA = new Player("playerA");
 		final Player playerB = new Player("playerB");
-		final BestOfMatchSinglePlayer match = new BestOfMatchSinglePlayer(3, playerA.getUid(), playerB.getUid(), "");
+		final BestOfMatchSinglePlayer match = new BestOfMatchSinglePlayer(3, playerA, playerB, "");
 		match.submitResultAdmin(null, 0, 0);
 		assertNull(match.getWinner());
 		assertTrue(match.isPlayed());
+	}
+
+	@Test
+	public void testPlayerDetails() {
+		final Player playerA = new Player("playerA");
+		playerA.setRace(StarcraftRace.Terran);
+		playerA.setLeague(StarcraftLeague.Bronze);
+		final Player playerB = new Player("playerB");
+		playerB.setRace(StarcraftRace.Zerg);
+		playerB.setLeague(StarcraftLeague.Grandmaster);
+		final BestOfMatchSinglePlayer match = new BestOfMatchSinglePlayer(3, playerA, playerB, "");
+		assertEquals(StarcraftRace.Terran, match.getSideAInfo().getRace());
+		assertEquals(StarcraftLeague.Bronze, match.getSideAInfo().getLeague());
 	}
 }
