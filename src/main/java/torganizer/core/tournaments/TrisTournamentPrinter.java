@@ -48,7 +48,7 @@ public class TrisTournamentPrinter {
 		final StringBuilder result = new StringBuilder();
 		final DecimalFormat df = new DecimalFormat("#.0");
 		df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
-		for (final BestOfMatchSinglePlayer match : tournament.getBestOfMatchForRound(round)) {
+		for (final BestOfMatchSinglePlayer match : tournament.getBestOfMatchesForRound(round)) {
 			result.append(playerCache.get(match.getSideA()).getName());
 			result.append(" vs ");
 			if (match.getSideB() != null) {

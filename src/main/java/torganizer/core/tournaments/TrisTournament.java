@@ -12,6 +12,7 @@ import torganizer.core.entities.Player;
 import torganizer.core.matches.BestOfMatchSinglePlayer;
 import torganizer.core.persistance.objectservice.GlobalObjectService;
 import torganizer.core.persistance.orm.EntityOrm;
+import torganizer.core.persistance.orm.TournamentRoundOrm;
 import torganizer.core.types.StarcraftRace;
 import torganizer.core.types.TournamentType;
 import torganizer.utils.EloCalculation;
@@ -38,9 +39,16 @@ public class TrisTournament extends BasicRoundBasedTournament {
 		playerList.forEach(player -> standings.add(new TristanPlayerInfo(player)));
 		infoMap = new HashMap<>();
 		standings.forEach(info -> infoMap.put(info.getPlayer(), info));
-		fillRounds();
 		getEntityOrm().getTournament().setType(TournamentType.TrisTournament);
 		getEntityOrm().getTournament().setNumberOfRounds(numberOfRounds);
+		getEntityOrm().getTournament().setRounds(new ArrayList<>());
+		for (int i = 0; i < numberOfRounds; i++) {
+			final TournamentRoundOrm t = new TournamentRoundOrm();
+			t.setTournament(getEntityOrm().getTournament());
+			t.setRoundInTournament(i);
+			getEntityOrm().getTournament().getRounds().add(t);
+		}
+		fillRounds();
 		updateNextRound();
 	}
 
@@ -126,7 +134,16 @@ public class TrisTournament extends BasicRoundBasedTournament {
 			matchesForRound.add(createNewMatch(playerA, playerB));
 			addNewEncounterForPlayer(playerA, playerB, round);
 		}
+		updateOrmWithMatchesForRound(matchesForRound, round);
 		return matchesForRound;
+	}
+
+	private void updateOrmWithMatchesForRound(final List<BestOfMatchSinglePlayer> matchesForRound, final int round) {
+		if (getEntityOrm().getTournament().getRounds().get(round).getMatches() == null) {
+			getEntityOrm().getTournament().getRounds().get(round).setMatches(new ArrayList<>());
+		}
+		getEntityOrm().getTournament().getRounds().get(round).getMatches().clear();
+		matchesForRound.forEach(match -> getEntityOrm().getTournament().getRounds().get(round).getMatches().add(match.getUid()));
 	}
 
 	private void penalizePlayer(final TristanPlayerInfo info, final int round) {

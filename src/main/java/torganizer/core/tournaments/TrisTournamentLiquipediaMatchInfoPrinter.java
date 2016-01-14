@@ -17,7 +17,7 @@ public class TrisTournamentLiquipediaMatchInfoPrinter extends TrisTournamentLiqu
 
 	public void execute(final int round) {
 		printLiquipediaHeaderMatches(round);
-		for (final BestOfMatchSinglePlayer match : tournament.getBestOfMatchForRound(round)) {
+		for (final BestOfMatchSinglePlayer match : tournament.getBestOfMatchesForRound(round)) {
 			printMatchInfo(match, round);
 		}
 		result.append("|}");

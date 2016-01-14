@@ -78,7 +78,7 @@ public abstract class BasicRoundBasedTournament extends AbstractTournament {
 		return list;
 	}
 
-	public List<BestOfMatchSinglePlayer> getBestOfMatchForRound(final int round) {
+	public List<BestOfMatchSinglePlayer> getBestOfMatchesForRound(final int round) {
 		final List<BestOfMatchSinglePlayer> list = new ArrayList<BestOfMatchSinglePlayer>();
 		list.addAll(rounds.get(round));
 		return list;

@@ -3,6 +3,7 @@ package torganizer.core.persistance.orm;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -51,7 +52,7 @@ public class TournamentOrm {
 	@Column(name = "PLAYER_ID")
 	private List<UUID> participantList;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tournament")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tournament", cascade = { CascadeType.ALL })
 	private List<TournamentRoundOrm> rounds;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tournament")

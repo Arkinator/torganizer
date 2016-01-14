@@ -132,7 +132,7 @@ public class EloTesting {
 		double overallEloDiff = 0;
 		tournament.initializeEloValues(playerCache, baseEloRatings);
 		for (int i = 0; i < 10; i++) {
-			for (final BestOfMatchSinglePlayer match : tournament.getBestOfMatchForRound(i)) {
+			for (final BestOfMatchSinglePlayer match : tournament.getBestOfMatchesForRound(i)) {
 				final Player pA = playerCache.get(match.getSideA());
 				final Player pB = playerCache.get(match.getSideB());
 				if (Math.random() > 0.1) {

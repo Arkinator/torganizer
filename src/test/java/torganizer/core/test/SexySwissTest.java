@@ -68,11 +68,11 @@ public class SexySwissTest {
 	public void testCorrectRoundCalculation() {
 		final TrisTournament tournament = new TrisTournament(1, 1, playerList, "");
 		assertEquals(0, tournament.getCurrentRound());
-		tournament.getBestOfMatchForRound(0).get(0).getSet(0).submitResultAdmin(tournament.getBestOfMatchForRound(0).get(0).getSideA());
+		tournament.getBestOfMatchesForRound(0).get(0).getSet(0).submitResultAdmin(tournament.getBestOfMatchesForRound(0).get(0).getSideA());
 		assertEquals(0, tournament.getCurrentRound());
-		tournament.getBestOfMatchForRound(0).get(1).getSet(0).submitResultAdmin(tournament.getBestOfMatchForRound(0).get(1).getSideA());
+		tournament.getBestOfMatchesForRound(0).get(1).getSet(0).submitResultAdmin(tournament.getBestOfMatchesForRound(0).get(1).getSideA());
 		assertEquals(0, tournament.getCurrentRound());
-		tournament.getBestOfMatchForRound(0).get(2).getSet(0).submitResultAdmin(tournament.getBestOfMatchForRound(0).get(2).getSideA());
+		tournament.getBestOfMatchesForRound(0).get(2).getSet(0).submitResultAdmin(tournament.getBestOfMatchesForRound(0).get(2).getSideA());
 		assertEquals(1, tournament.getCurrentRound());
 	}
 

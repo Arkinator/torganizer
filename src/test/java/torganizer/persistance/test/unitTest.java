@@ -79,11 +79,11 @@ public class unitTest {
 		tournament.initializeEloValues(globalObjectService, new double[] { 1500., 1600., 1700., 1800., 1900., 2000., 2100. });
 		goOnHoliday("Ransack");
 
-		// Week 1
 		playWeek1();
-		// Week 2
 		playWeek2();
-		playMatch(2, "DaDaNkEnGiNe", 2, 0);
+		playWeek3();
+		// Week 4
+		// playMatch(3, "Ninkazi", 2, 0);
 
 		final TrisTournamentPrinter printer = new TrisTournamentPrinter(tournament, globalObjectService);
 		final String p = printer.printLiquipediaPage();
@@ -91,6 +91,52 @@ public class unitTest {
 		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		final StringSelection data = new StringSelection(p);
 		clipBoard.setContents(data, data);
+	}
+
+	private void playWeek3() {
+		playMatch(2, "DaDaNkEnGiNe", 2, 0);
+		playMatch(2, "sMeeZy", 0, 2);
+		playMatch(2, "Xilogh", 2, 0);
+		playMatch(2, "YellOwSky", 2, 0);
+		playMatch(2, "Coltrane", 2, 0);
+		giveStrike("TheRunedEXP");
+		// GoatDragon drops out
+		changeRace("sMeeZy", StarcraftRace.Terran);
+		playMatch(2, "Picur", 2, 1);
+		playMatch(2, "Fish", 2, 0);
+		playMatch(2, "Monk", 2, 1);
+		playMatch(2, "FusTup", 0, 2);
+		giveStrike("FusTup");
+		playMatch(2, "Cobaltt", 0, 2);
+		giveStrike("Athreos");
+		playMatch(2, "Meristematic", 0, 2);
+		giveStrike("Meristematic");
+		playMatch(2, "Colttarren", 1, 2);
+		playMatch(2, "ShiaLabeouf", 2, 0);
+		giveStrike("GoatDragon");
+		giveStrike("GoatDragon");
+		playMatch(2, "XelaWella", 0, 2);
+		giveStrike("XelaWella");
+		playMatch(2, "Logistic", 0, 2);
+		callDrawnMatch(2, "Broda");
+		giveStrike("Broda");
+		giveStrike("TheWagon");
+		callDrawnMatch(2, "Ninkazi");
+		giveStrike("Ninkazi");
+		giveStrike("RainOnSKy");
+		callDrawnMatch(2, "Sworn");
+		giveStrike("Sworn");
+		giveStrike("IIIIIIIIIIII(Vintage)");
+		callDrawnMatch(2, "gdoggcasey");
+		giveStrike("gdoggcasey");
+		giveStrike("Synprime");
+		callDrawnMatch(2, "Electric");
+		giveStrike("Electric");
+		giveStrike("JuPiteR");
+		callDrawnMatch(2, "Padula");
+		giveStrike("Padula");
+		giveStrike("Exothermic");
+		tournament.updateNextRound();
 	}
 
 	private void playWeek2() {
