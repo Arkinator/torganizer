@@ -38,20 +38,21 @@ public class unitTest {
 			{ "Electric", "423", "Diamond", "Z" }, { "eXiled", "1678", "Diamond", "P" }, { "Exothermic", "532", "Platinum", "Z", "GR" }, { "Fish", "618", "Silver", "R", "GR" },
 			{ "FusTup", "2205", "Gold", "Z", "UR" }, { "JuPiteR", "1347", "Platinum", "P", "GR" }, { "Logistic", "468", "Platinum", "Z", "UR" },
 			{ "Meristematic", "358", "Silver", "P", "C6" }, { "Miyamori", "624", "Gold", "Z", "BG" }, { "Monk", "893", "Diamond", "T", "UR" }, { "Msyu", "848", "Diamond", "Z" },
-			{ "Ninkazi", "450", "Master", "T", "GR" }, { "Padula", "475", "Gold", "T", "UR" }, { "Picur", "915", "Diamond", "Z", "UR" }, { "Polar", "508", "Diamond", "R", "UR" },
+			{ "Ninkazi", "450", "Master", "T", "RG" }, { "Padula", "475", "Gold", "T", "UR" }, { "Picur", "915", "Diamond", "Z", "UR" }, { "Polar", "508", "Diamond", "R", "UR" },
 			{ "Psosa", "2697", "Diamond", "Z", "AI" }, { "RainOnSKy", "897", "Grandmaster", "R", "BG" }, { "SauCeBoSS", "894", "Diamond", "Z", "FG" },
 			{ "sMeeZy", "592", "Diamond", "Z", "UR" }, { "Soken", "902", "Gold", "T", "UR" }, { "Sworn", "892", "Master", "Z", "UR" }, { "Synprime", "473", "Diamond", "P", "OG" },
 			{ "TheRunedEXP", "1160", "Silver", "Z", "BG" }, { "TheWagon", "249", "Master", "Z", "AI" }, { "Stefan", "594", "Diamond", "T" }, { "Vash", "160", "Gold", "P", "C6" },
 			{ "IIIIIIIIIIII(Vintage)", "8535", "Master", "T", "BG" }, { "Whitelion", "1834", "Diamond", "Z", "UR" }, { "XelaWella", "1441", "Diamond", "T", "UR" },
 			{ "Xilogh", "401", "Diamond", "Z", "UR" }, { "ShiaLabeouf", "454", "Diamond", "P", "BG" }, { "gdoggcasey", "750", "Diamond", "P", "AI" },
 			{ "grimm", "750", "Silver", "P", "UR" }, { "Ransack", "527", "Gold", "T", "UR" } };
-	public static String[][] teamInfo = { { "Team Unrivaled", "UR", "team unrivaled", "UnrivaledMini.png" }, //
+	public static String[][] teamInfo = { { "Team Unrivaled", "UR", "team unrivaled", "Unrivaledlogo_std.png" }, //
 			{ "All Inspiration", "AI", "all-inspiration", "All-Inspirationlogo_std.png" }, //
-			{ "Guns and Roaches", "GR", "guns and roaches", "GunsandRoachesMini.png" }, //
+			{ "Guns and Roaches", "GR", "guns and roaches", "GunsandRoacheslogo_std.png" }, //
 			{ "CTL Team 6", "C6", "ctl team 6", "CT6logo_std.png" }, //
 			{ "Outset Gaming", "OG", "outset gaming", "Outsetlogo_std.png" }, //
 			{ "Formless Gaming", "FG", "formless gaming", "Formlesslogo_std.png" }, //
-			{ "Born Gosu", "BG", "born gosu", "BornGosulogo_std.png" } };
+			{ "Born Gosu", "BG", "born gosu", "BornGosulogo_std.png" }, //
+			{ "Rival Gaming", "RG", "rival gaming", "RivalGaminglogo_std.png" } };
 
 	public static Map<String, UUID> teamMap = new HashMap<>();
 	private List<Player> playerList;
@@ -82,8 +83,16 @@ public class unitTest {
 		playWeek1();
 		playWeek2();
 		playWeek3();
-		// Week 4
-		// playMatch(3, "Ninkazi", 2, 0);
+		playWeek4();
+		// Week 5
+		playMatch(4, "Padula", 0, 2);
+		giveStrike("Padula");
+		playMatch(4, "Soken", 0, 2);
+		playMatch(4, "Blaze", 2, 0);
+		playMatch(4, "Electric", 2, 0);
+		playMatch(4, "TheWagon", 0, 2);
+		giveStrike("TheWagon");
+		tournament.updateNextRound();
 
 		final TrisTournamentPrinter printer = new TrisTournamentPrinter(tournament, globalObjectService);
 		final String p = printer.printLiquipediaPage();
@@ -91,6 +100,44 @@ public class unitTest {
 		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		final StringSelection data = new StringSelection(p);
 		clipBoard.setContents(data, data);
+	}
+
+	private void playWeek4() {
+		playMatch(3, "Ninkazi", 2, 0);
+		playMatch(3, "YellOwSky", 2, 0);
+		playMatch(3, "Electric", 0, 2);
+		playMatch(3, "Ransack", 2, 0);
+		playMatch(3, "Vash", 2, 1);
+		playMatch(3, "Cobaltt", 2, 0);
+		playMatch(3, "Picur", 2, 0);
+		giveStrike("Broda");
+		playMatch(3, "Monk", 2, 0);
+		playMatch(3, "grimm", 2, 0);
+		playMatch(3, "FusTup", 0, 2);
+		playMatch(3, "Xilogh", 2, 1);
+		playMatch(3, "Synprime", 0, 2);
+		giveStrike("Synprime");
+		playMatch(3, "Logistic", 0, 2);
+		giveStrike("Logistic");
+		giveStrike("Logistic");
+		giveStrike("Logistic");
+		playMatch(3, "Apogee", 0, 2);
+		giveStrike("Apogee");
+		playMatch(3, "gdoggcasey", 0, 2);
+		giveStrike("gdoggcasey");
+		callDrawnMatch(3, "TheWagon");
+		giveStrike("RainOnSKy");
+		giveStrike("TheWagon");
+		callDrawnMatch(3, "Polar");
+		giveStrike("Polar");
+		giveStrike("XelaWella");
+		callDrawnMatch(3, "Athreos");
+		giveStrike("Athreos");
+		giveStrike("JuPiteR");
+		callDrawnMatch(3, "Miyamori");
+		giveStrike("Miyamori");
+		giveStrike("Exothermic");
+		tournament.updateNextRound();
 	}
 
 	private void playWeek3() {
@@ -131,7 +178,6 @@ public class unitTest {
 		giveStrike("gdoggcasey");
 		giveStrike("Synprime");
 		callDrawnMatch(2, "Electric");
-		giveStrike("Electric");
 		giveStrike("JuPiteR");
 		callDrawnMatch(2, "Padula");
 		giveStrike("Padula");
@@ -172,7 +218,6 @@ public class unitTest {
 		giveStrike("Fish");
 		// double w/o Padula vs miyamori
 		callDrawnMatch(1, "Miyamori");
-		giveStrike("Miyamori");
 		giveStrike("Padula");
 		// double w/o blaze vs sworn
 		callDrawnMatch(1, "Blaze");

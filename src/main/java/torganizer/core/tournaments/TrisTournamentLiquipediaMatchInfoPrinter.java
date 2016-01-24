@@ -155,9 +155,12 @@ public class TrisTournamentLiquipediaMatchInfoPrinter extends TrisTournamentLiqu
 
 	private void printPlayerTeamInfo(final Player player) {
 		if (player.getTeamUid() != null) {
-			result.append("{{TeamPart/");
-			result.append(teamCache.get(player.getTeamUid()).getLiquipediaName());
-			result.append("}}");
+			// result.append("{{TeamPart/");
+			// result.append(teamCache.get(player.getTeamUid()).getLiquipediaName());
+			// result.append("}}");
+			result.append("[[File:");
+			result.append(teamCache.get(player.getTeamUid()).getLiquipediaFlagCode());
+			result.append("]]");
 		} else {
 			result.append(" ");
 		}
