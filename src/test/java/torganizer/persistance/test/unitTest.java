@@ -33,11 +33,11 @@ public class unitTest {
 	private TrisTournament tournament;
 
 	public static String[][] playerInfo = { { "Acadien", "391", "Diamond", "P", "AI" }, { "Athreos", "882", "Platinum", "Z", "AI" }, { "Apogee", "1459", "Diamond", "T", "UR" },
-			{ "Blaze", "887", "Master", "T", "UR" }, { "Broda", "809", "Master", "T", "UR" }, { "Cobaltt", "552", "Gold", "Z", "UR" },
+			{ "blazejwa", "887", "Master", "T", "UR" }, { "Broda", "809", "Master", "T", "UR" }, { "Cobaltt", "552", "Gold", "Z", "UR" },
 			{ "Colttarren", "359", "Platinum", "P", "UR" }, { "Coltrane", "987", "Bronze", "P", "UR" }, { "DaDaNkEnGiNe", "365", "Gold", "T", "UR" },
 			{ "Electric", "423", "Diamond", "Z" }, { "eXiled", "1678", "Diamond", "P" }, { "Exothermic", "532", "Platinum", "Z", "GR" }, { "Fish", "618", "Silver", "R", "GR" },
 			{ "FusTup", "2205", "Gold", "Z", "UR" }, { "JuPiteR", "1347", "Platinum", "P", "GR" }, { "Logistic", "468", "Platinum", "Z", "UR" },
-			{ "Meristematic", "358", "Silver", "P", "C6" }, { "Miyamori", "624", "Gold", "Z", "BG" }, { "Monk", "893", "Diamond", "T", "UR" }, { "Msyu", "848", "Diamond", "Z" },
+			{ "Meristematic", "358", "Silver", "P", "C6" }, { "Miyamori", "624", "Gold", "Z", "BG" }, { "Monk", "893", "Diamond", "T", "UR" }, { "Msyu", "848", "Diamond", "P" },
 			{ "Ninkazi", "450", "Master", "T", "RG" }, { "Padula", "475", "Gold", "T", "UR" }, { "Picur", "915", "Diamond", "Z", "UR" }, { "Polar", "508", "Diamond", "R", "UR" },
 			{ "Psosa", "2697", "Diamond", "Z", "AI" }, { "RainOnSKy", "897", "Grandmaster", "R", "BG" }, { "SauCeBoSS", "894", "Diamond", "Z", "FG" },
 			{ "sMeeZy", "592", "Diamond", "Z", "UR" }, { "Soken", "902", "Gold", "T", "UR" }, { "Sworn", "892", "Master", "Z", "UR" }, { "Synprime", "473", "Diamond", "P", "OG" },
@@ -84,14 +84,25 @@ public class unitTest {
 		playWeek2();
 		playWeek3();
 		playWeek4();
-		// Week 5
-		playMatch(4, "Padula", 0, 2);
-		giveStrike("Padula");
-		playMatch(4, "Soken", 0, 2);
-		playMatch(4, "Blaze", 2, 0);
-		playMatch(4, "Electric", 2, 0);
-		playMatch(4, "TheWagon", 0, 2);
-		giveStrike("TheWagon");
+		playWeek5();
+		playMatch(5, "YellOwSky", 2, 1);
+		playMatch(5, "Ninkazi", 0, 2);
+		giveStrike("Ninkazi");
+		playMatch(5, "DaDaNkEnGiNe", 2, 0);
+		playMatch(5, "Colttarren", 2, 0);
+		playMatch(5, "FusTup", 2, 0);
+		playMatch(5, "Xilogh", 2, 1);
+		playMatch(5, "Acadien", 0, 2);
+		giveStrike("Acadien");
+		playMatch(5, "Ransack", 2, 0);
+		playMatch(5, "Polar", 0, 2);
+		playMatch(5, "Cobaltt", 1, 2);
+		playMatch(5, "Psosa", 0, 2);
+		giveStrike("Psosa");
+		giveStrike("Psosa");
+		playMatch(5, "Soken", 2, 0);
+		giveStrike("Acadien");
+		giveStrike("Acadien");
 		tournament.updateNextRound();
 
 		final TrisTournamentPrinter printer = new TrisTournamentPrinter(tournament, globalObjectService);
@@ -100,6 +111,48 @@ public class unitTest {
 		final Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		final StringSelection data = new StringSelection(p);
 		clipBoard.setContents(data, data);
+
+		//
+		// p = printer.printLiquipediaPage();
+		// System.out.println(p);
+		// data = new StringSelection(p);
+		// clipBoard.setContents(data, data);
+	}
+
+	private void playWeek5() {
+		// Week 5
+		playMatch(4, "Padula", 0, 2);
+		giveStrike("Padula");
+		playMatch(4, "Soken", 0, 2);
+		playMatch(4, "blazejwa", 2, 0);
+		playMatch(4, "Electric", 2, 0);
+		playMatch(4, "TheWagon", 0, 2);
+		giveStrike("TheWagon");
+		giveStrike("TheWagon");
+		playMatch(4, "Coltrane", 0, 2);
+		playMatch(4, "FusTup", 2, 1);
+		playMatch(4, "Xilogh", 0, 2);
+		playMatch(4, "Broda", 0, 2);
+		giveStrike("Broda");
+		callDrawnMatch(4, "sMeeZy");
+		giveStrike("sMeeZy");
+		giveStrike("Psosa");
+		playMatch(4, "Cobaltt", 1, 2);
+		playMatch(4, "Ninkazi", 2, 0);
+		giveStrike("ShiaLabeouf");
+		giveStrike("ShiaLabeouf");
+		playMatch(4, "Exothermic", 2, 0);
+		callDrawnMatch(4, "Sworn");
+		giveStrike("Sworn");
+		callDrawnMatch(4, "Apogee");
+		giveStrike("Apogee");
+		callDrawnMatch(4, "XelaWella");
+		giveStrike("XelaWella");
+		giveStrike("gdoggcasey");
+		callDrawnMatch(4, "Whitelion");
+		giveStrike("Whitelion");
+		giveStrike("JuPiteR");
+		tournament.updateNextRound();
 	}
 
 	private void playWeek4() {
@@ -127,7 +180,6 @@ public class unitTest {
 		giveStrike("gdoggcasey");
 		callDrawnMatch(3, "TheWagon");
 		giveStrike("RainOnSKy");
-		giveStrike("TheWagon");
 		callDrawnMatch(3, "Polar");
 		giveStrike("Polar");
 		giveStrike("XelaWella");
@@ -219,9 +271,9 @@ public class unitTest {
 		// double w/o Padula vs miyamori
 		callDrawnMatch(1, "Miyamori");
 		giveStrike("Padula");
-		// double w/o blaze vs sworn
-		callDrawnMatch(1, "Blaze");
-		giveStrike("Blaze");
+		// double w/o blazejwa vs sworn
+		callDrawnMatch(1, "blazejwa");
+		giveStrike("blazejwa");
 		giveStrike("Sworn");
 		// double w/o syn vs whitelion
 		callDrawnMatch(1, "Synprime");
@@ -353,7 +405,7 @@ public class unitTest {
 	private void playMatch(final int round, final String playerName, final int scorePlayer, final int scoreOtherPlayer) {
 		final UUID playerUid = globalObjectService.getPlayerByName(playerName).getUid();
 		for (final GenericMatch match : tournament.getMatchesForRound(round)) {
-			if (match.getSideA().equals(playerUid) || match.getSideB().equals(playerUid)) {
+			if (playerUid.equals(match.getSideA()) || playerUid.equals(match.getSideB())) {
 				match.submitResultAdmin(playerUid, scorePlayer, scoreOtherPlayer);
 			}
 		}
